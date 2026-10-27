@@ -1,17 +1,7 @@
 "use client";
 
-import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Check, GripVertical, Maximize2, Minimize2, Settings2, X } from "lucide-react";
+import { Check, Settings2 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { DEFAULT_LAYOUT, WIDGETS, type HomeSummary, type WidgetSize } from "@/components/home/widgets";
 import { Button } from "@/components/ui/button";
@@ -28,67 +18,12 @@ const SPAN: Record<WidgetSize, string> = {
   m: "md:col-span-3",
   l: "md:col-span-6",
 };
-const NEXT_SIZE: Record<WidgetSize, WidgetSize> = { s: "m", m: "l", l: "s" };
 
-function SortableWidget({
-  item,
-  editing,
-  summary,
-  onResize,
-  onRemove,
-}: {
-  item: LayoutItem;
-  editing: boolean;
-  summary: HomeSummary;
-  onResize: () => void;
-  onRemove: () => void;
-}) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: item.id,
-    disabled: !editing,
-  });
-  const widget = WIDGETS.find((w) => w.id === item.id);
-  if (!widget) return null;
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Translate.toString(transform), transition }}
-      className={`relative col-span-1 ${SPAN[item.size]} ${isDragging ? "z-10 opacity-80" : ""}`}
-    >
-      {widget.render(summary)}
-      {editing && (
-        <div className="fade-in absolute top-3 right-3 flex items-center gap-0.5 rounded-full border border-line bg-surface p-0.5 shadow-card">
-          <button
-            type="button"
-            aria-label={`Move ${widget.label}`}
-            className="cursor-grab rounded-full p-1.5 text-ink-2 hover:bg-surface-2 active:cursor-grabbing"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical size={13} aria-hidden />
-          </button>
-          <button
-            type="button"
-            aria-label={`Resize ${widget.label}`}
-            onClick={onResize}
-            className="pressable cursor-pointer rounded-full p-1.5 text-ink-2 hover:bg-surface-2"
-          >
-            {item.size === "l" ? <Minimize2 size={13} aria-hidden /> : <Maximize2 size={13} aria-hidden />}
-          </button>
-          <button
-            type="button"
-            aria-label={`Remove ${widget.label}`}
-            onClick={onRemove}
-            className="pressable cursor-pointer rounded-full p-1.5 text-ink-2 hover:bg-surface-2"
-          >
-            <X size={13} aria-hidden />
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
+// Dragging is only possible while customizing, so its library loads when that starts.
+const SortableGrid = dynamic(() => import("@/components/home/sortable-grid").then((m) => m.SortableGrid), {
+  ssr: false,
+  loading: () => <Skeleton className="h-64 rounded-3xl" />,
+});
 
 function greeting(name: string) {
   const hour = new Date().getHours();
@@ -107,22 +42,9 @@ export default function HomePage() {
   const [draft, setDraft] = useState<LayoutItem[] | null>(null);
   const layout: LayoutItem[] = draft ?? profile?.home_layout ?? DEFAULT_LAYOUT;
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
-
   function change(next: LayoutItem[]) {
     setDraft(next);
     update.mutate({ home_layout: next });
-  }
-
-  function onDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const from = layout.findIndex((item) => item.id === active.id);
-    const to = layout.findIndex((item) => item.id === over.id);
-    change(arrayMove(layout, from, to));
   }
 
   function toggleWidget(id: string) {
@@ -168,24 +90,17 @@ export default function HomePage() {
           </Button>
         </div>
       ) : (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-          <SortableContext items={layout.map((item) => item.id)} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
-              {layout.map((item) => (
-                <SortableWidget
-                  key={item.id}
-                  item={item}
-                  editing={editing}
-                  summary={summary}
-                  onResize={() =>
-                    change(layout.map((other) => (other.id === item.id ? { ...other, size: NEXT_SIZE[other.size] } : other)))
-                  }
-                  onRemove={() => change(layout.filter((other) => other.id !== item.id))}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
+        editing ? (
+          <SortableGrid layout={layout} summary={summary} onChange={change} />
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
+            {layout.map((item) => (
+              <div key={item.id} className={`col-span-1 ${SPAN[item.size]}`}>
+                {WIDGETS.find((widget) => widget.id === item.id)?.render(summary)}
+              </div>
+            ))}
+          </div>
+        )
       )}
 
       {picking && (
