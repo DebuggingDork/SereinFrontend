@@ -4,7 +4,7 @@ import { ChartCard } from "@/components/charts/chart-card";
 import { BarsChart, DonutChart, TrendChart } from "@/components/charts/marks";
 import { PageHeader, StatTile } from "@/components/ui/primitives";
 import { useRpc } from "@/lib/data";
-import { shortDay } from "@/lib/format";
+import { shortDay, today } from "@/lib/format";
 
 // Fixed order, so a category keeps its colour between visits. Beyond this it folds into Other.
 const CATEGORY_COLORS = ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"];
@@ -44,11 +44,13 @@ export default function PlannerChartsPage() {
           table={{ columns: ["Day", "Done", "Due", "Rate"], rows: (rate.data ?? []).map((r) => [shortDay(r.day), r.completed, r.due, r.rate === null ? "–" : `${r.rate}%`]) }}
         >
           <TrendChart
-            data={(rate.data ?? []).map((r) => ({ day: r.day, rate: r.rate === null ? null : Number(r.rate) }))}
+            // Today is still in progress, so it stays off the line instead of reading as a drop.
+            data={(rate.data ?? []).map((r) => ({ day: r.day, rate: r.rate === null || r.day === today() ? null : Number(r.rate) }))}
             x="day"
             xFormat={shortDay}
             series={[{ key: "rate", label: "Completion", color: "var(--planner)" }]}
             format={(v) => `${v}%`}
+            domain={[0, 100]}
             connectNulls
           />
         </ChartCard>
