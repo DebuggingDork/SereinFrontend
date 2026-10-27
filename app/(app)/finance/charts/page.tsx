@@ -53,12 +53,13 @@ export default function FinanceChartsPage() {
     const rows = compare.data ?? [];
     const thisMonth = monthBounds();
     const lastMonth = monthBounds(shiftMonth(today(), -1));
-    const days = new Map<number, { day: number; thisMonth: number; lastMonth: number }>();
+    // Days that have not happened yet stay empty, so the line stops at today.
+    const days = new Map<number, { day: number; thisMonth: number | null; lastMonth: number | null }>();
     let thisRun = 0;
     let lastRun = 0;
     for (const row of rows) {
       const dayNumber = Number(row.day.slice(8, 10));
-      const entry = days.get(dayNumber) ?? { day: dayNumber, thisMonth: 0, lastMonth: 0 };
+      const entry = days.get(dayNumber) ?? { day: dayNumber, thisMonth: null, lastMonth: null };
       if (row.day >= thisMonth.from && row.day <= thisMonth.to) {
         thisRun += Number(row.total);
         entry.thisMonth = thisRun;
