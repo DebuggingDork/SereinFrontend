@@ -27,10 +27,11 @@ export function useProfile() {
     queryKey: ["profile"],
     queryFn: async () => {
       const supabase = supabaseBrowser();
+      // The session is on hand already, and row-level security decides what comes back.
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      const { data, error } = await supabase.from("profiles").select("*").eq("id", user?.id).single();
+        data: { session },
+      } = await supabase.auth.getSession();
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", session?.user.id).single();
       if (error) throw friendlyError(error);
       return data as Profile;
     },
