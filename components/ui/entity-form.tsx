@@ -103,7 +103,8 @@ export function EntityForm({
     setValues((current) => ({ ...current, [name]: value }));
     setErrors((current) => {
       if (!current[name]) return current;
-      const { [name]: _removed, ...rest } = current;
+      const rest = { ...current };
+      delete rest[name];
       return rest;
     });
   }
