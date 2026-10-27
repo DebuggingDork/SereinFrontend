@@ -72,15 +72,22 @@ export function CommandPalette() {
   const inApp = APP_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
   useEffect(() => {
+    // Opening always starts clean, whichever way it was opened.
+    function show() {
+      setQuery("");
+      setActive(0);
+      setOpen(true);
+    }
     function onKey(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
-        setOpen((current) => !current);
+        if (input.current) setOpen(false);
+        else show();
       }
       if (event.key === "Escape") setOpen(false);
     }
     function onOpen() {
-      setOpen(true);
+      show();
     }
     window.addEventListener("keydown", onKey);
     window.addEventListener("serein:search", onOpen);
@@ -89,14 +96,6 @@ export function CommandPalette() {
       window.removeEventListener("serein:search", onOpen);
     };
   }, []);
-
-  useEffect(() => {
-    if (open) {
-      setQuery("");
-      setActive(0);
-      requestAnimationFrame(() => input.current?.focus());
-    }
-  }, [open]);
 
   const commands = useMemo<Command[]>(() => {
     const go = (href: string) => () => router.push(href);
@@ -136,6 +135,7 @@ export function CommandPalette() {
           <Search size={16} className="text-ink-3" aria-hidden />
           <input
             ref={input}
+            autoFocus
             value={query}
             placeholder="Search pages and actions"
             onChange={(event) => {
