@@ -3,63 +3,15 @@
 import { ArrowLeftRight, Eye, EyeOff, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import { ACCOUNT_FIELDS, ACCOUNT_KIND_LABEL, accountPayload } from "@/components/finance/account-fields";
 import { accountOptions, useAccounts, type Account } from "@/components/finance/shared";
 import { Button } from "@/components/ui/button";
-import { EntityForm, type FieldDef } from "@/components/ui/entity-form";
+import { EntityForm } from "@/components/ui/entity-form";
 import { Modal } from "@/components/ui/modal";
 import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader, ProgressBar, StatTile } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useSave } from "@/lib/data";
 import { inr, today } from "@/lib/format";
-
-const KIND_LABEL: Record<Account["kind"], string> = {
-  bank: "Bank",
-  wallet: "Wallet",
-  cash: "Cash",
-  card: "Credit card",
-  investment: "Investment",
-};
-
-const isCard = (values: Record<string, unknown>) => values.kind === "card";
-
-export const ACCOUNT_FIELDS: FieldDef[] = [
-  {
-    name: "kind",
-    label: "Type",
-    type: "select",
-    required: true,
-    half: true,
-    options: Object.entries(KIND_LABEL).map(([value, label]) => ({ value, label })),
-  },
-  { name: "name", label: "Nickname", required: true, half: true, maxLength: 60, placeholder: "Salary account" },
-  { name: "bank_name", label: "Bank or provider", half: true, maxLength: 60, placeholder: "HDFC" },
-  {
-    name: "last_four",
-    label: "Last four digits",
-    half: true,
-    maxLength: 4,
-    inputMode: "numeric",
-    placeholder: "4092",
-    hint: "Only ever the last four.",
-  },
-  {
-    name: "balance",
-    label: "Balance today",
-    type: "number",
-    required: true,
-    half: true,
-    when: (v) => !isCard(v),
-  },
-  { name: "credit_limit", label: "Credit limit", type: "number", min: 0, half: true, when: isCard },
-  { name: "card_used", label: "Amount used", type: "number", min: 0, required: true, half: true, when: isCard },
-  { name: "statement_day", label: "Statement day", type: "number", min: 1, max: 31, half: true, when: isCard },
-  { name: "due_day", label: "Due day", type: "number", min: 1, max: 31, half: true, when: isCard },
-];
-
-export function accountPayload(values: Record<string, unknown>) {
-  const { card_used, ...rest } = values;
-  return { ...rest, balance: values.kind === "card" ? card_used : values.balance };
-}
 
 function nextDue(day: number): string {
   const now = new Date();
@@ -128,7 +80,7 @@ function AccountsContent() {
                     <div className="min-w-0">
                       <p className="truncate">{account.name}</p>
                       <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-ink-3">
-                        {KIND_LABEL[account.kind]}
+                        {ACCOUNT_KIND_LABEL[account.kind]}
                         {account.bank_name && ` · ${account.bank_name}`}
                         {account.last_four && <Chip tone="finance" className="font-mono">•••• {account.last_four}</Chip>}
                         {account.hidden && <Chip>Hidden from totals</Chip>}
