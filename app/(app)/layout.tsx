@@ -15,6 +15,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     .eq("id", user.id)
     .single();
 
+  if (profile && !profile.onboarded_at) redirect("/onboarding");
+
   return (
     <div className="min-h-dvh">
       <TopBar name={profile?.display_name ?? ""} isAdmin={profile?.role === "admin"} />
