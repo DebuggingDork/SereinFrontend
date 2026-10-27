@@ -150,7 +150,7 @@ export function GateDemo() {
     <section id="gate" className="mx-auto grid max-w-[1440px] items-start gap-10 px-6 pb-24 md:px-16 lg:grid-cols-2">
       <div>
         <p className="eyebrow">The rotating gate</p>
-        <h2 className="display mt-5 text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.04]">
+        <h2 className="display mt-5 text-[clamp(2.25rem,3.4vw,3rem)] leading-[1.08]">
           Guess wrong. <em>See what happens.</em>
         </h2>
         <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">
