@@ -15,7 +15,7 @@ export function LandingNav() {
   const { theme, toggle } = useTheme();
 
   return (
-    <header className="mx-auto grid max-w-[1440px] grid-cols-[1fr_auto] items-center px-6 py-7 md:grid-cols-[1fr_auto_1fr] md:px-16">
+    <header className="mx-auto grid max-w-[1440px] grid-cols-[1fr_auto] items-center px-6 py-7 md:grid-cols-[1fr_auto_1.14fr] md:px-16">
       <Link href="/" aria-label="Serein home">
         <Logo />
       </Link>
@@ -44,7 +44,7 @@ export function LandingNav() {
         <button
           type="button"
           onClick={toggle}
-          className="pressable h-11 cursor-pointer rounded-full border border-line bg-surface px-[18px] text-[15px] shadow-card hover:border-line-2"
+          className="pressable h-11 cursor-pointer rounded-full border border-line bg-surface px-[18px] text-sm shadow-card hover:border-line-2"
         >
           <span suppressHydrationWarning>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
         </button>
