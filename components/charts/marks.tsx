@@ -1,278 +1,32 @@
 "use client";
 
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import dynamic from "next/dynamic";
+import type { ComponentProps, ComponentType } from "react";
+import type { AreaTrendChart as Area, BarsChart as Bars, DonutChart as Donut, TrendChart as Trend } from "./recharts-marks";
 
-type Datum = Record<string, unknown>;
-type Format = (value: number) => string;
+// Recharts is the heaviest thing in the app and never part of first paint, so each
+// chart loads it on demand, holding its height so nothing below moves when it lands.
+const shell = () => <div className="skeleton absolute inset-0" aria-busy />;
 
-const AXIS_TICK = { fill: "var(--ink-3)", fontSize: 11 };
-const defaultFormat: Format = (value) => value.toLocaleString("en-IN");
+const LazyBars = dynamic(() => import("./recharts-marks").then((m) => m.BarsChart), { ssr: false, loading: shell });
+const LazyTrend = dynamic(() => import("./recharts-marks").then((m) => m.TrendChart), { ssr: false, loading: shell });
+const LazyArea = dynamic(() => import("./recharts-marks").then((m) => m.AreaTrendChart), { ssr: false, loading: shell });
+const LazyDonut = dynamic(() => import("./recharts-marks").then((m) => m.DonutChart), { ssr: false, loading: shell });
 
-export interface Series {
-  key: string;
-  label: string;
-  color: string;
+function held<P extends { height?: number }>(Chart: ComponentType<P>, fallback: number) {
+  return function HeldChart(props: P) {
+    return (
+      <div className="relative min-w-0" style={{ minHeight: props.height ?? fallback }}>
+        <Chart {...props} />
+      </div>
+    );
+  };
 }
 
-function ChartTooltip({
-  active,
-  payload,
-  label,
-  format,
-  labelFormat,
-}: {
-  active?: boolean;
-  payload?: { name?: string; value?: number; color?: string; payload?: Datum }[];
-  label?: string | number;
-  format: Format;
-  labelFormat?: (value: string) => string;
-}) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded-xl border border-line bg-surface px-3 py-2 text-xs shadow-card">
-      {label !== undefined && <p className="mb-1 text-ink-3">{labelFormat ? labelFormat(String(label)) : label}</p>}
-      {payload.map((item) => (
-        <p key={item.name} className="flex items-center gap-2">
-          <span className="size-2 rounded-[2px]" style={{ background: item.color }} />
-          <span className="text-ink-2">{item.name}</span>
-          <span className="tabular ml-auto pl-3">{format(Number(item.value ?? 0))}</span>
-        </p>
-      ))}
-    </div>
-  );
-}
-
-function axes(x: string, xFormat: ((value: string) => string) | undefined, yFormat: Format, hideY = false) {
-  return [
-    <CartesianGrid key="grid" vertical={false} stroke="var(--line)" />,
-    <XAxis
-      key="x"
-      dataKey={x}
-      tick={AXIS_TICK}
-      tickLine={false}
-      axisLine={{ stroke: "var(--line)" }}
-      tickFormatter={xFormat}
-      minTickGap={24}
-    />,
-    <YAxis
-      key="y"
-      hide={hideY}
-      tick={AXIS_TICK}
-      tickLine={false}
-      axisLine={false}
-      width={44}
-      tickFormatter={yFormat}
-    />,
-  ];
-}
-
-export function BarsChart({
-  data,
-  x,
-  series,
-  stacked,
-  height = 220,
-  format = defaultFormat,
-  axisFormat,
-  xFormat,
-  target,
-}: {
-  data: Datum[];
-  x: string;
-  series: Series[];
-  stacked?: boolean;
-  height?: number;
-  format?: Format;
-  axisFormat?: Format;
-  xFormat?: (value: string) => string;
-  target?: { value: number; label: string };
-}) {
-  return (
-    <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} barCategoryGap="24%" barGap={2}>
-        {axes(x, xFormat, axisFormat ?? format)}
-        <Tooltip
-          cursor={{ fill: "var(--surface-2)" }}
-          content={<ChartTooltip format={format} labelFormat={xFormat} />}
-        />
-        {target && (
-          <ReferenceLine
-            y={target.value}
-            stroke="var(--ink-2)"
-            strokeDasharray="4 4"
-            label={{ value: target.label, position: "insideTopRight", fill: "var(--ink-2)", fontSize: 11 }}
-          />
-        )}
-        {series.map((item, index) => (
-          <Bar
-            key={item.key}
-            dataKey={item.key}
-            name={item.label}
-            fill={item.color}
-            stackId={stacked ? "stack" : undefined}
-            radius={!stacked || index === series.length - 1 ? [4, 4, 0, 0] : 0}
-            stroke={stacked ? "var(--surface)" : undefined}
-            strokeWidth={stacked ? 1 : 0}
-            maxBarSize={36}
-            isAnimationActive={false}
-          />
-        ))}
-      </BarChart>
-    </ResponsiveContainer>
-  );
-}
-
-export function TrendChart({
-  data,
-  x,
-  series,
-  height = 220,
-  format = defaultFormat,
-  axisFormat,
-  xFormat,
-  domain,
-  connectNulls = false,
-}: {
-  data: Datum[];
-  x: string;
-  series: Series[];
-  height?: number;
-  format?: Format;
-  axisFormat?: Format;
-  xFormat?: (value: string) => string;
-  domain?: [number | "auto", number | "auto"];
-  connectNulls?: boolean;
-}) {
-  return (
-    <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={data}>
-        {axes(x, xFormat, axisFormat ?? format)}
-        {domain && <YAxis hide domain={domain} />}
-        <Tooltip
-          cursor={{ stroke: "var(--line-2)" }}
-          content={<ChartTooltip format={format} labelFormat={xFormat} />}
-        />
-        {series.map((item) => (
-          <Line
-            key={item.key}
-            type="monotone"
-            dataKey={item.key}
-            name={item.label}
-            stroke={item.color}
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4, stroke: "var(--surface)", strokeWidth: 2 }}
-            connectNulls={connectNulls}
-            isAnimationActive={false}
-          />
-        ))}
-      </LineChart>
-    </ResponsiveContainer>
-  );
-}
-
-export function AreaTrendChart({
-  data,
-  x,
-  series,
-  height = 240,
-  format = defaultFormat,
-  axisFormat,
-  xFormat,
-}: {
-  data: Datum[];
-  x: string;
-  series: Series;
-  height?: number;
-  format?: Format;
-  axisFormat?: Format;
-  xFormat?: (value: string) => string;
-}) {
-  const id = `area-${series.key}`;
-  return (
-    <ResponsiveContainer width="100%" height={height}>
-      <AreaChart data={data}>
-        <defs>
-          <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={series.color} stopOpacity={0.22} />
-            <stop offset="100%" stopColor={series.color} stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        {axes(x, xFormat, axisFormat ?? format)}
-        <Tooltip
-          cursor={{ stroke: "var(--line-2)" }}
-          content={<ChartTooltip format={format} labelFormat={xFormat} />}
-        />
-        <Area
-          type="monotone"
-          dataKey={series.key}
-          name={series.label}
-          stroke={series.color}
-          strokeWidth={2}
-          fill={`url(#${id})`}
-          isAnimationActive={false}
-        />
-      </AreaChart>
-    </ResponsiveContainer>
-  );
-}
-
-export function DonutChart({
-  data,
-  height = 220,
-  format = defaultFormat,
-  center,
-}: {
-  data: { name: string; value: number; color: string }[];
-  height?: number;
-  format?: Format;
-  center?: React.ReactNode;
-}) {
-  return (
-    <div className="relative" style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Tooltip content={<ChartTooltip format={format} />} />
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            innerRadius="62%"
-            outerRadius="92%"
-            paddingAngle={data.length > 1 ? 1.5 : 0}
-            stroke="none"
-            isAnimationActive={false}
-          >
-            {data.map((item) => (
-              <Cell key={item.name} fill={item.color} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-      {center && (
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-          {center}
-        </div>
-      )}
-    </div>
-  );
-}
+export const BarsChart = held(LazyBars as ComponentType<ComponentProps<typeof Bars>>, 220);
+export const TrendChart = held(LazyTrend as ComponentType<ComponentProps<typeof Trend>>, 220);
+export const AreaTrendChart = held(LazyArea as ComponentType<ComponentProps<typeof Area>>, 240);
+export const DonutChart = held(LazyDonut as ComponentType<ComponentProps<typeof Donut>>, 220);
 
 // A single-hue strip where darker means more. Used for meal timing.
 export function HeatStripChart({
