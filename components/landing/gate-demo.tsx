@@ -83,8 +83,8 @@ function GateDoor() {
   return (
     <form onSubmit={submit} key={shakeKey} className={shakeKey ? "shake" : ""}>
       <p className="font-mono text-xs tracking-wide text-ink-2">Attempt {attempt} of 4</p>
-      <h3 className="display mt-3 text-[26px] leading-tight">{QUESTIONS[attempt % QUESTIONS.length]}</h3>
-      <label htmlFor="gate-answer" className="mt-4 block text-[13px] text-ink-2">
+      <h3 className="display mt-[17px] text-[26px] leading-[1.2] sm:text-[32px]">{QUESTIONS[attempt % QUESTIONS.length]}</h3>
+      <label htmlFor="gate-answer" className="mt-5 block text-[13px] leading-5 text-ink-2">
         Your answer
       </label>
       <input
@@ -93,20 +93,20 @@ function GateDoor() {
         disabled={cooldown > 0}
         onChange={(event) => setAnswer(event.target.value)}
         autoComplete="off"
-        className="mt-1.5 h-[46px] w-full rounded-xl border border-line bg-field px-4 outline-none transition-colors focus:border-ink-3 disabled:opacity-60"
+        className="mt-1.5 h-12 w-full rounded-xl border border-line bg-field px-4 outline-none transition-colors focus:border-ink-3 disabled:opacity-60"
       />
-      <p role="status" className="min-h-9 pt-2 text-[13px] text-bad">
+      <p role="status" className="min-h-[52px] pt-2 text-[13px] text-bad">
         {roast}
         {cooldown > 0 && ` The door reopens in ${cooldown}s.`}
       </p>
       <div className="flex flex-wrap gap-2.5">
-        <Button type="submit" disabled={cooldown > 0} size="lg" className="!px-5">
+        <Button type="submit" disabled={cooldown > 0} size="lg" >
           Open the door
           <span className="flex size-5 items-center justify-center rounded border border-current/40">
             <CornerDownLeft size={11} aria-hidden />
           </span>
         </Button>
-        <Button variant="soft" size="lg" className="!px-5" disabled={cooldown > 0} onClick={miss}>
+        <Button variant="soft" size="lg" className="!px-[21px]" disabled={cooldown > 0} onClick={miss}>
           Try a wrong answer
         </Button>
       </div>
@@ -147,22 +147,22 @@ export function GateDemo() {
   const [view, setView] = useState<"gate" | "recovery">("gate");
 
   return (
-    <section id="gate" className="mx-auto grid max-w-[1440px] items-start gap-10 px-6 pb-24 md:px-16 lg:grid-cols-2">
+    <section id="gate" className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] items-start gap-10 px-6 pb-24 md:px-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,648px)] lg:pb-[109px]">
       <div>
         <p className="eyebrow">The rotating gate</p>
-        <h2 className="display mt-5 text-[clamp(2.25rem,3.4vw,3rem)] leading-[1.08]">
+        <h2 className="display mt-5 text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.0625]">
           Guess wrong. <em>See what happens.</em>
         </h2>
-        <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">
+        <p className="mt-5 max-w-[30rem] text-lg leading-[29px] text-ink-2">
           Every sign-in asks one of your own questions at random. Four misses and the door shuts for a while. Answers
           are hashed and compared on the server only.
         </p>
-        <div className="mt-6 flex gap-2">
+        <div className="mt-7 flex gap-2.5">
           <button
             type="button"
             aria-pressed={view === "gate"}
             onClick={() => setView("gate")}
-            className={`pressable h-11 cursor-pointer rounded-full px-5 text-[15px] ${
+            className={`pressable h-11 cursor-pointer rounded-full px-5 text-sm ${
               view === "gate" ? "bg-inverse text-on-inverse" : "border border-line hover:border-line-2"
             }`}
           >
@@ -172,16 +172,16 @@ export function GateDemo() {
             type="button"
             aria-pressed={view === "recovery"}
             onClick={() => setView("recovery")}
-            className={`pressable h-11 cursor-pointer rounded-full px-5 text-[15px] ${
+            className={`pressable h-11 cursor-pointer rounded-full px-5 text-sm ${
               view === "recovery" ? "bg-inverse text-on-inverse" : "border border-line hover:border-line-2"
             }`}
           >
             Forgot my answers
           </button>
         </div>
-        <p className="display mt-6 text-base text-ink-2 italic">— Psst: the right answer is “serein”.</p>
+        <p className="display mt-[22px] text-base text-ink-2 italic">— Psst: the right answer is “serein”.</p>
       </div>
-      <div className="rounded-3xl border border-line bg-surface p-7 sm:p-8">
+      <div className="rounded-3xl border border-line bg-surface p-7 sm:p-9">
         {view === "gate" ? <GateDoor /> : <RecoveryDemo />}
       </div>
     </section>
