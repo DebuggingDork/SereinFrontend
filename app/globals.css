@@ -56,3 +56,31 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--diary);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--planner);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
