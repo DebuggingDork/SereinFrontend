@@ -64,12 +64,26 @@ function Editor({ entry, day }: { entry: DiaryEntry | null; day: string }) {
   }, [day, save]);
 
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const isDirty = useRef(false);
   const schedule = useCallback(() => {
+    isDirty.current = true;
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => void flush(), AUTOSAVE_DELAY_MS);
+    timer.current = setTimeout(() => {
+      isDirty.current = false;
+      void flush();
+    }, AUTOSAVE_DELAY_MS);
   }, [flush]);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  // Leaving the page within the debounce window still saves what was typed.
+  const flushRef = useRef(flush);
+  flushRef.current = flush;
+  useEffect(
+    () => () => {
+      clearTimeout(timer.current);
+      if (isDirty.current) void flushRef.current();
+    },
+    [],
+  );
 
   // Grows with the writing, so the page scrolls rather than a tiny box.
   useEffect(() => {
@@ -164,7 +178,6 @@ function WriteContent() {
 
   const entry = startNew ? null : (rows[0] ?? null);
   const shownDay = entry?.entry_on ?? day;
-  const [editorKey] = useState(() => `${entryId ?? "today"}-${startNew ? "new" : "existing"}`);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -185,7 +198,8 @@ function WriteContent() {
       {isLoading ? (
         <Skeleton className="h-96 rounded-3xl" />
       ) : (
-        <Editor key={`${editorKey}-${entry?.id ?? "blank"}`} entry={entry} day={shownDay} />
+        // The key ignores the entry's id: a first save must not remount the editor mid-sentence.
+        <Editor key={entryId ?? (startNew ? "new" : "today")} entry={entry} day={shownDay} />
       )}
     </div>
   );
