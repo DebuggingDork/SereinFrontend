@@ -7,7 +7,7 @@ export function ClosingBand() {
         data-theme="dark"
         className="flex flex-col items-center gap-7 rounded-[28px] border border-line bg-[#0d0f12] px-6 py-20 text-center text-ink"
       >
-        <h2 className="display text-[clamp(2.25rem,4vw,3.5rem)] leading-none">
+        <h2 className="display text-[clamp(2.25rem,3.4vw,3rem)] leading-none">
           Come in. <em>Close the glass.</em>
         </h2>
         <LinkButton href="/login" size="lg">
