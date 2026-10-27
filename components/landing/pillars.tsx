@@ -1,0 +1,213 @@
+"use client";
+
+import { useState } from "react";
+import { inr } from "@/lib/format";
+import { LONG_NUMBER_WARNING, looksLikeLongNumber } from "@/lib/guards";
+import { Donut, HeatStrip, MoodLine, WeekBars } from "./charts";
+
+function PillarCard({
+  name,
+  color,
+  className = "",
+  children,
+}: {
+  name: string;
+  color: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <article className={`rounded-3xl border border-line bg-surface p-7 ${className}`}>
+      <h3 className="display flex items-center gap-2.5 text-[28px] leading-none">
+        <span className="size-2.5 rounded-full" style={{ background: color }} />
+        {name}
+      </h3>
+      <div className="mt-6">{children}</div>
+    </article>
+  );
+}
+
+function Ledger({ label, paid, total, tone }: { label: string; paid: number; total: number; tone: string }) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between text-[15px]">
+        <span>{label}</span>
+        <span className="tabular">
+          {inr(paid)} / {inr(total)}
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-line">
+        <div className="h-full rounded-full" style={{ width: `${(paid / total) * 100}%`, background: tone }} />
+      </div>
+    </div>
+  );
+}
+
+function CardNumberTrap() {
+  const [value, setValue] = useState("");
+  const tripped = looksLikeLongNumber(value);
+
+  return (
+    <div className="mt-6">
+      <label htmlFor="card-trap" className="text-[13px] text-ink-2">
+        Try pasting a card number
+      </label>
+      <input
+        id="card-trap"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        placeholder="4111  1111  1111  4829"
+        className={`mt-1.5 h-[46px] w-full rounded-xl border bg-field px-4 font-mono text-[15px] outline-none transition-colors placeholder:text-ink-3 focus:border-ink-3 ${
+          tripped ? "shake border-bad" : "border-line"
+        }`}
+        aria-invalid={tripped}
+        aria-describedby={tripped ? "card-trap-warning" : undefined}
+      />
+      {tripped && (
+        <p id="card-trap-warning" role="alert" className="pop-in mt-2 text-[13px] text-bad">
+          {LONG_NUMBER_WARNING}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function FinancePillar() {
+  return (
+    <PillarCard name="Finance" color="var(--finance)" className="md:col-span-7">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+        <Donut
+          size={120}
+          thickness={22}
+          segments={[
+            { value: 34, color: "#10b981" },
+            { value: 26, color: "#3b82f6" },
+            { value: 20, color: "#f59e0b" },
+            { value: 20, color: "#8b5cf6" },
+          ]}
+        >
+          <span className="tabular text-[13px]">₹38,200</span>
+        </Donut>
+        <div className="flex-1 space-y-3">
+          <p className="text-[15px] text-ink-2">People ledger</p>
+          <Ledger label="Ravi owes you" paid={3000} total={5000} tone="#10b981" />
+          <Ledger label="You owe Asha" paid={800} total={2000} tone="#059669" />
+        </div>
+      </div>
+      <CardNumberTrap />
+    </PillarCard>
+  );
+}
+
+const FOODS = ["Poha", "Curd bowl", "Dal + rice", "Whey shake"];
+
+function DietPillar() {
+  const [picked, setPicked] = useState<string[]>([]);
+  const toggle = (food: string) =>
+    setPicked((current) => (current.includes(food) ? current.filter((f) => f !== food) : [...current, food]));
+
+  return (
+    <PillarCard name="Diet" color="var(--diet)" className="md:col-span-5">
+      <p className="mb-2 text-[13px] text-ink-2">Meal timing</p>
+      <HeatStrip />
+      <div className="mt-5 flex items-center gap-4">
+        <Donut
+          size={64}
+          thickness={32}
+          segments={[
+            { value: 30, color: "#d97706" },
+            { value: 35, color: "#f59e0b" },
+            { value: 35, color: "#fcd34d" },
+          ]}
+        />
+        <p className="text-sm">Protein 30% · Carbs 35% · Fat 35%</p>
+      </div>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {FOODS.map((food) => (
+          <button
+            key={food}
+            type="button"
+            aria-pressed={picked.includes(food)}
+            onClick={() => toggle(food)}
+            className={`pressable cursor-pointer rounded-full border px-3.5 py-1.5 text-sm ${
+              picked.includes(food) ? "border-transparent bg-diet-soft text-warn" : "border-line hover:border-line-2"
+            }`}
+          >
+            {food}
+          </button>
+        ))}
+      </div>
+    </PillarCard>
+  );
+}
+
+function PlannerPillar() {
+  return (
+    <PillarCard name="Planner" color="var(--planner)" className="md:col-span-5">
+      <p className="mb-3 text-[13px] text-ink-2">On time vs late, by week</p>
+      <WeekBars />
+      <div className="mt-4 flex flex-wrap gap-2 text-sm">
+        <span className="rounded-full bg-bad-soft px-3 py-1 text-bad">Tax docs · overdue 1d</span>
+        <span className="rounded-full bg-planner-soft px-3 py-1 text-planner">Rent · 2d</span>
+        <span className="rounded-full bg-planner-soft px-3 py-1 text-planner">Resume · 5d</span>
+      </div>
+    </PillarCard>
+  );
+}
+
+const MOODS = {
+  Settled: "M2 26 C 30 14, 44 26, 66 22 S 100 4, 130 18 S 172 40, 196 24 S 240 2, 270 14 S 320 38, 340 16 S 356 6, 358 14",
+  Restless: "M2 20 C 18 2, 30 38, 52 16 S 84 38, 110 12 S 146 40, 170 14 S 212 38, 240 12 S 284 38, 310 14 S 348 30, 358 10",
+  Bright: "M2 32 C 40 28, 60 20, 96 18 S 150 10, 190 10 S 250 12, 290 6 S 340 8, 358 2",
+  Tired: "M2 8 C 40 10, 70 14, 110 20 S 170 22, 210 28 S 270 26, 300 32 S 340 34, 358 34",
+} as const;
+type Mood = keyof typeof MOODS;
+
+function DiaryPillar() {
+  const [mood, setMood] = useState<Mood>("Settled");
+
+  return (
+    <PillarCard name="Diary" color="var(--diary)" className="md:col-span-7">
+      <p className="display text-xl italic">Prompt of the day</p>
+      <p className="display mt-1 max-w-md text-2xl leading-snug">What did you notice today that you almost missed?</p>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {(Object.keys(MOODS) as Mood[]).map((name) => (
+          <button
+            key={name}
+            type="button"
+            aria-pressed={mood === name}
+            onClick={() => setMood(name)}
+            className={`pressable h-11 cursor-pointer rounded-full border px-5 text-[15px] ${
+              mood === name ? "border-transparent bg-inverse text-on-inverse" : "border-line hover:border-line-2"
+            }`}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      <p className="mt-5 text-[13px] text-ink-2">Mood, last 30 days</p>
+      <MoodLine key={mood} path={MOODS[mood]} className="ml-auto h-10 w-full max-w-[360px]" animate />
+    </PillarCard>
+  );
+}
+
+export function Pillars() {
+  return (
+    <section id="modules" className="mx-auto max-w-[1440px] px-6 pb-24 md:px-16">
+      <h2 className="display text-[clamp(2.25rem,4.4vw,3.875rem)] leading-[1.02]">
+        Four pillars. One quiet room.
+        <br />
+        <em>Zero</em> bank middlemen.
+      </h2>
+      <p className="display mt-4 text-base text-ink-2 italic">
+        Each pillar keeps its own sidebar, charts and colour. Home borrows from all four.
+      </p>
+      <div className="mt-8 grid gap-4 md:grid-cols-12">
+        <FinancePillar />
+        <DietPillar />
+        <PlannerPillar />
+        <DiaryPillar />
+      </div>
+    </section>
+  );
+}
