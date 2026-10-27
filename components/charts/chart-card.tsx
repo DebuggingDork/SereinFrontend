@@ -1,7 +1,6 @@
 "use client";
 
 import { Download, Table2 } from "lucide-react";
-import { toPng } from "html-to-image";
 import { useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 
@@ -42,6 +41,8 @@ export function ChartCard({
   async function exportImage() {
     if (!node.current) return;
     try {
+      // Only needed the moment someone exports, so it stays out of the page bundle.
+      const { toPng } = await import("html-to-image");
       const url = await toPng(node.current, {
         pixelRatio: 2,
         backgroundColor: getComputedStyle(document.body).backgroundColor,
