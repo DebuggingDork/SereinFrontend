@@ -20,6 +20,8 @@ export function FreezeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
+      if (!event.key) return;
+      
       if (event.key === "Escape") {
         setFrozen(false);
         return;
