@@ -17,14 +17,17 @@ export function Donut({
   const total = segments.reduce((sum, s) => sum + s.value, 0);
   const radius = (size - thickness) / 2;
   const circumference = 2 * Math.PI * radius;
-  let offset = 0;
+  // Each segment starts where the previous ones end.
+  const offsets = segments.map((_, index) =>
+    segments.slice(0, index).reduce((sum, s) => sum + (s.value / total) * circumference, 0),
+  );
 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <svg viewBox={`0 0 ${size} ${size}`} className="-rotate-90" role="img" aria-label="Donut chart">
         {segments.map((segment, index) => {
           const length = (segment.value / total) * circumference;
-          const circle = (
+          return (
             <circle
               key={index}
               cx={size / 2}
@@ -34,11 +37,9 @@ export function Donut({
               stroke={segment.color}
               strokeWidth={thickness}
               strokeDasharray={`${Math.max(length - gap, 0)} ${circumference - length + gap}`}
-              strokeDashoffset={-offset}
+              strokeDashoffset={-offsets[index]!}
             />
           );
-          offset += length;
-          return circle;
         })}
       </svg>
       {children && <div className="absolute inset-0 flex items-center justify-center">{children}</div>}
