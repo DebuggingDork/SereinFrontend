@@ -42,7 +42,9 @@ export default function MoodsPage() {
             xFormat={shortDay}
             series={[{ key: "score", label: "Mood", color: "var(--diary)" }]}
             format={(v) => SCORE_LABEL[Math.round(v)] ?? ""}
-            domain={[1, 5]}
+            yTicks={[1, 2, 3, 4, 5]}
+            yWidth={56}
+            dots
             connectNulls
           />
         </ChartCard>
