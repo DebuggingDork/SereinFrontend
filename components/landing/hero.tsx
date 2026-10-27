@@ -243,11 +243,11 @@ export function Hero() {
   const { freeze } = useFreeze();
 
   return (
-    <section className="mx-auto grid max-w-[1440px] items-center gap-12 px-6 pt-8 pb-20 md:px-16 lg:grid-cols-[1fr_1.02fr] lg:gap-16 lg:pt-10 lg:pb-28">
+    <section className="mx-auto grid max-w-[1440px] items-center gap-12 px-6 pt-8 pb-20 md:px-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] xl:grid-cols-[minmax(0,1fr)_776px] lg:gap-16 lg:pt-10 lg:pb-28">
       <div>
         <p className="eyebrow rise">Serein · Personal life ledger</p>
         <h1
-          className="display rise mt-6 text-[clamp(3rem,6.1vw,5.5rem)] leading-[0.98]"
+          className="display rise mt-6 max-w-[31rem] text-[clamp(2.75rem,5vw,4.5rem)] leading-[1.02]"
           style={{ "--delay": "60ms" } as React.CSSProperties}
         >
           Your money, body, time, and mind—<em>behind frosted glass.</em>
