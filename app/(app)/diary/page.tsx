@@ -24,8 +24,12 @@ function Editor({ entry, day }: { entry: DiaryEntry | null; day: string }) {
   const saving = useRef(false);
   const pending = useRef(false);
   const latest = useRef({ title, body, mood, tags, id });
-  latest.current = { title, body, mood, tags, id };
+  useEffect(() => {
+    latest.current = { title, body, mood, tags, id };
+  });
   const textarea = useRef<HTMLTextAreaElement>(null);
+
+  const flushRef = useRef<() => Promise<void>>(async () => {});
 
   // Saves are queued rather than overlapped, so a slow request cannot create a
   // duplicate entry or overwrite newer text with older text.
@@ -59,9 +63,13 @@ function Editor({ entry, day }: { entry: DiaryEntry | null; day: string }) {
     saving.current = false;
     if (pending.current) {
       pending.current = false;
-      void flush();
+      void flushRef.current();
     }
   }, [day, save]);
+
+  useEffect(() => {
+    flushRef.current = flush;
+  });
 
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isDirty = useRef(false);
@@ -72,13 +80,11 @@ function Editor({ entry, day }: { entry: DiaryEntry | null; day: string }) {
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       isDirty.current = false;
-      void flush();
+      void flushRef.current();
     }, AUTOSAVE_DELAY_MS);
-  }, [flush]);
+  }, []);
 
   // Leaving the page within the debounce window still saves what was typed.
-  const flushRef = useRef(flush);
-  flushRef.current = flush;
   useEffect(
     () => () => {
       clearTimeout(timer.current);
