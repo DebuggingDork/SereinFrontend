@@ -12,6 +12,21 @@
   --track: rgb(20 23 26 / 0.08);
 }
 
+/* Scoped, so a subtree like the hero preview can stay dark in light mode. */
+[data-theme="dark"] {
+  --page: #101215;
+  --card: #14171c;
+  --inset: #0d0f12;
+  --ink: #ecebe6;
+  --muted: #8d9198;
+  --faint: #62666d;
+  --line: rgb(255 255 255 / 0.07);
+  --line-strong: rgb(255 255 255 / 0.6);
+  --track: rgb(255 255 255 / 0.09);
+  color: var(--ink);
+  color-scheme: dark;
+}
+
 @theme inline {
   --color-page: var(--page);
   --color-card: var(--card);
