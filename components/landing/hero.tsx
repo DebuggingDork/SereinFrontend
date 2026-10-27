@@ -8,7 +8,7 @@ import { Donut, MoodLine } from "./charts";
 const TABS = ["Combined Home", "Finance", "Planner", "Diet", "Diary"] as const;
 type Tab = (typeof TABS)[number];
 
-export const MOOD_WEEK = "M2 18 C 14 8, 26 10, 36 14 S 58 22, 72 12 S 92 0, 104 10 S 122 24, 134 12 S 142 8, 146 8";
+export const MOOD_WEEK = "M1 24 C 6 18, 10 14, 16 14 S 30 20, 38 20 S 60 2, 77 2 S 98 24, 114 24 S 136 11, 147 9";
 
 function Tile({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={`rounded-2xl border border-line bg-surface p-4 ${className}`}>{children}</div>;
@@ -17,13 +17,13 @@ function Tile({ children, className = "" }: { children: React.ReactNode; classNa
 function NetWorthTile() {
   return (
     <Tile>
-      <p className="text-[13px] text-ink-2">Net worth</p>
-      <p className="figure mt-1 text-[32px] leading-tight">₹4,86,320</p>
+      <p className="text-xs text-ink-2">Net worth</p>
+      <p className="figure mt-1 text-[30px] leading-tight">₹4,86,320</p>
       <div className="mt-2 flex flex-wrap gap-1.5">
-        <span className="rounded-full bg-finance-soft px-2.5 py-0.5 font-mono text-[11px] text-good">Axis •••• 4092</span>
-        <span className="rounded-full bg-finance-soft px-2.5 py-0.5 font-mono text-[11px] text-good">GPay</span>
+        <span className="flex h-[22px] items-center rounded-full bg-finance-soft px-2 font-mono text-[11px] text-good">Axis •••• 4092</span>
+        <span className="flex h-[22px] items-center rounded-full bg-finance-soft px-2 font-mono text-[11px] text-good">GPay</span>
       </div>
-      <p className="mt-2.5 text-xs text-ink-2">Manual-first · No CVVs or bank logins</p>
+      <p className="mt-2.5 text-[11px] text-ink-2">Manual-first · No CVVs or bank logins</p>
     </Tile>
   );
 }
@@ -31,11 +31,11 @@ function NetWorthTile() {
 function TodayTile() {
   return (
     <Tile>
-      <div className="flex items-center justify-between text-[13px]">
+      <div className="flex items-center justify-between text-xs">
         <span className="text-ink-2">Today</span>
-        <span className="text-planner">14-day streak</span>
+        <span className="text-[#60a5fa]">14-day streak</span>
       </div>
-      <ul className="mt-1.5 space-y-[3px] text-sm">
+      <ul className="mt-1.5 space-y-[3px] text-[13px]">
         <li>Ship gate screen</li>
         <li>Review budget</li>
         <li className="text-ink-2">Call landlord</li>
@@ -55,22 +55,22 @@ function NutritionTile() {
           size={52}
           thickness={9}
           segments={[
-            { value: 30, color: "#b45309" },
-            { value: 35, color: "#f59e0b" },
+            { value: 30, color: "#f59e0b" },
             { value: 35, color: "#fcd34d" },
+            { value: 35, color: "#b45309" },
           ]}
         />
         <div className="leading-tight">
-          <p className="text-sm">
+          <p className="text-[13px]">
             <span className="font-semibold">1,420</span> / 2,000 kcal
           </p>
-          <p className="text-xs text-ink-2">P 30 · C 35 · F 35</p>
+          <p className="text-[11px] text-ink-2">P 30 · C 35 · F 35</p>
         </div>
       </div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line-2">
         <div className="h-full w-[71%] rounded-full bg-diet" />
       </div>
-      <p className="mt-3 inline-block rounded-lg bg-diet-soft px-3 py-2.5 text-xs text-warn">+250ml · 750ml today</p>
+      <p className="mt-3 inline-block rounded-lg bg-diet-soft px-3 py-3.5 text-xs leading-4 text-warn">+250ml · 750ml today</p>
     </Tile>
   );
 }
@@ -78,15 +78,15 @@ function NutritionTile() {
 function MoodTile() {
   return (
     <Tile>
-      <div className="flex items-center justify-between text-[13px]">
+      <div className="flex items-center justify-between text-xs">
         <span className="text-ink-2">Mood, 7 days</span>
         <span className="flex items-center gap-1.5 text-ink-2">
-          <span className="size-1.5 rounded-full bg-diary" />
+          <span className="size-1.5 rounded-full bg-[#a78bfa]" />
           Saved
         </span>
       </div>
-      <MoodLine path={MOOD_WEEK} width={148} height={26} className="mx-auto mt-2 h-7 w-[150px]" />
-      <p className="display mt-3 text-sm italic leading-snug">
+      <MoodLine path={MOOD_WEEK} width={148} height={26} color="#a78bfa" className="mx-auto mt-2 h-7 w-[134px]" />
+      <p className="display mt-[19px] text-sm italic leading-snug">
         “Walked home slowly. The rain made the street quiet…”
       </p>
     </Tile>
@@ -204,7 +204,7 @@ function ProductPreview() {
     // Always dark, whichever theme the page is in: the panel is a window into the app.
     <div
       data-theme="dark"
-      className="rise rounded-[28px] border border-line bg-[#0d0f12] p-4 text-ink shadow-[0_24px_60px_-28px_rgb(0_0_0/0.55)]"
+      className="rise rounded-[28px] border border-line bg-[#0d0f12] p-4 text-ink"
       style={{ "--delay": "160ms" } as React.CSSProperties}
     >
       <div className="flex items-center justify-between gap-2">
@@ -215,7 +215,7 @@ function ProductPreview() {
               role="tab"
               aria-selected={tab === name}
               onClick={() => setTab(name)}
-              className={`pressable cursor-pointer rounded-xl px-2.5 py-2.5 text-[13px] whitespace-nowrap ${
+              className={`pressable h-11 cursor-pointer rounded-xl px-2.5 text-xs whitespace-nowrap ${
                 tab === name ? "bg-[#272b33] text-ink" : "text-ink-2 hover:text-ink"
               }`}
             >
@@ -226,9 +226,9 @@ function ProductPreview() {
         <button
           type="button"
           onClick={freeze}
-          className="pressable hidden shrink-0 cursor-pointer items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2 text-[13px] sm:flex"
+          className="pressable hidden h-11 shrink-0 cursor-pointer items-center gap-2 rounded-xl border border-line bg-surface px-3 text-[13px] sm:flex"
         >
-          Freeze Screen <span className="kbd h-5">⌘F</span>
+          Freeze Screen <span className="kbd h-5 min-w-8 border-ink-2 text-[11px]">⌘F</span>
         </button>
       </div>
 
@@ -243,7 +243,7 @@ export function Hero() {
   const { freeze } = useFreeze();
 
   return (
-    <section className="mx-auto grid max-w-[1440px] items-center gap-12 px-6 pt-8 pb-20 md:px-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] xl:grid-cols-[minmax(0,1fr)_776px] lg:gap-16 lg:pt-10 lg:pb-28">
+    <section className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-12 px-6 pt-8 pb-20 md:px-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] xl:grid-cols-[minmax(0,1fr)_776px] lg:gap-16 lg:pt-12 lg:pb-36">
       <div>
         <p className="eyebrow rise">Serein · Personal life ledger</p>
         <h1
@@ -253,17 +253,17 @@ export function Hero() {
           Your money, body, time, and mind—<em>behind frosted glass.</em>
         </h1>
         <p
-          className="rise mt-6 max-w-[30rem] text-lg leading-relaxed text-ink-2"
+          className="rise mt-[29px] max-w-[30rem] text-lg leading-[29px] text-ink-2"
           style={{ "--delay": "120ms" } as React.CSSProperties}
         >
           Four deeply focused modules and one customizable home. No bank-sync middlemen, no bloated AI noise, and a
           rotating security gate that roasts trespassers.
         </p>
         <div
-          className="rise mt-8 flex flex-wrap gap-3"
+          className="rise mt-[34px] flex flex-wrap gap-3"
           style={{ "--delay": "180ms" } as React.CSSProperties}
         >
-          <LinkButton href="/login" size="lg">
+          <LinkButton href="/login" size="lg" className="!px-7">
             Enter the Gate
           </LinkButton>
           <Button variant="outline" size="lg" onClick={freeze}>
@@ -271,7 +271,7 @@ export function Hero() {
           </Button>
         </div>
         <p
-          className="display rise mt-9 max-w-[24rem] text-base leading-snug text-ink-2 italic"
+          className="display rise mt-8 max-w-[24rem] text-base leading-5 text-ink-2 italic"
           style={{ "--delay": "240ms" } as React.CSSProperties}
         >
           — Typed balances never break. Bank syncs do, quietly, on the day you need them.

@@ -53,8 +53,10 @@ export function MoodLine({
   height = 40,
   className = "",
   animate = false,
+  color = "var(--diary)",
 }: {
   path: string;
+  color?: string;
   width?: number;
   height?: number;
   className?: string;
@@ -64,7 +66,7 @@ export function MoodLine({
     <svg viewBox={`0 0 ${width} ${height}`} className={className} fill="none" aria-hidden>
       <path
         d={path}
-        stroke="var(--diary)"
+        stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         pathLength={1}
@@ -84,11 +86,11 @@ export function WeekBars() {
     { onTime: 80, late: 9 },
   ];
   return (
-    <div className="flex h-[90px] items-end gap-3" role="img" aria-label="On-time completions growing week by week">
+    <div className="flex h-[90px] items-end gap-[9px]" role="img" aria-label="On-time completions growing week by week">
       {weeks.map((week, index) => (
         <div key={index} className="flex flex-1 flex-col justify-end">
-          <div style={{ height: week.late }} className="bg-planner/30" />
-          <div style={{ height: week.onTime }} className="bg-planner" />
+          <div style={{ height: week.late }} className="bg-[#bcd0f7]" />
+          <div style={{ height: week.onTime }} className="bg-[#2563eb]" />
         </div>
       ))}
     </div>
