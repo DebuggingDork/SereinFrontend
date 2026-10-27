@@ -27,6 +27,8 @@ export interface FieldDef {
   when?: (values: FormValues) => boolean;
   inputMode?: "numeric" | "decimal" | "text";
   maxLength?: number;
+  pattern?: RegExp;
+  patternMessage?: string;
 }
 
 export type FormValues = Record<string, string | boolean>;
@@ -52,7 +54,7 @@ function schemaFor(fields: FieldDef[], values: FormValues) {
       continue;
     }
     if (field.type === "number") {
-      let number = z.coerce.number({ message: `${field.label} must be a number.` });
+      let number = z.coerce.number<string>({ message: `${field.label} must be a number.` });
       if (field.min !== undefined) number = number.min(field.min, `${field.label} must be at least ${field.min}.`);
       if (field.max !== undefined) number = number.max(field.max, `${field.label} can be at most ${field.max}.`);
       shape[field.name] = field.required
@@ -62,7 +64,13 @@ function schemaFor(fields: FieldDef[], values: FormValues) {
     }
     let text = z.string().trim();
     if (field.maxLength) text = text.max(field.maxLength, `${field.label} is too long.`);
-    const guarded = text.refine((value) => !looksLikeLongNumber(value), { message: LONG_NUMBER_WARNING });
+    let guarded = text.refine((value) => !looksLikeLongNumber(value), { message: LONG_NUMBER_WARNING });
+    if (field.pattern) {
+      const pattern = field.pattern;
+      guarded = guarded.refine((value) => value === "" || pattern.test(value), {
+        message: field.patternMessage ?? `${field.label} is not valid.`,
+      });
+    }
     shape[field.name] = field.required
       ? z.string().trim().min(1, `${field.label} is required.`).pipe(guarded)
       : guarded.transform((value) => (value === "" ? null : value));
