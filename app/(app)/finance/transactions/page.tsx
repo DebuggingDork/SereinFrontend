@@ -252,8 +252,7 @@ function TransactionsContent() {
                   tx={tx}
                   onEdit={() => setEditing(tx)}
                   onDuplicate={() => {
-                    const { id: _id, ...copy } = tx;
-                    setEditing({ ...copy, occurred_on: today(), checked: false });
+                    setEditing({ ...tx, id: undefined, occurred_on: today(), checked: false });
                   }}
                   onDelete={() => remove.mutate(tx.id)}
                   onToggleChecked={() => save.mutate({ id: tx.id, checked: !tx.checked })}
