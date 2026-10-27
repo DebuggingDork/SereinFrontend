@@ -42,6 +42,10 @@
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-track: var(--track);
+  --color-finance: var(--finance);
+  --color-diet: var(--diet);
+  --color-planner: var(--planner);
+  --color-diary: var(--diary);
   --font-serif: var(--font-fraunces);
   --font-sans: var(--font-instrument-sans);
   --font-mono: var(--font-jetbrains-mono);
