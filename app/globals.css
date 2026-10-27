@@ -10,6 +10,11 @@
   --line: rgb(20 23 26 / 0.08);
   --line-strong: rgb(20 23 26 / 0.55);
   --track: rgb(20 23 26 / 0.08);
+
+  --finance: #10b981;
+  --diet: #f59e0b;
+  --planner: #3b82f6;
+  --diary: #8b5cf6;
 }
 
 /* Scoped, so a subtree like the hero preview can stay dark in light mode. */
