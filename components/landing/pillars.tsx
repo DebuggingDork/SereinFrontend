@@ -194,7 +194,7 @@ function DiaryPillar() {
 export function Pillars() {
   return (
     <section id="modules" className="mx-auto max-w-[1440px] px-6 pb-24 md:px-16">
-      <h2 className="display text-[clamp(2.25rem,4.4vw,3.875rem)] leading-[1.02]">
+      <h2 className="display text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.02]">
         Four pillars. One quiet room.
         <br />
         <em>Zero</em> bank middlemen.
