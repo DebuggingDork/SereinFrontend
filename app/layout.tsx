@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Geist_Mono } from "next/font/google";
+import { Fraunces, Geist_Mono, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -7,6 +7,11 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   style: ["normal", "italic"],
   axes: ["opsz", "SOFT", "WONK"],
+});
+
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
@@ -24,7 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${instrumentSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
