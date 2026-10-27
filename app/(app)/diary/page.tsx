@@ -67,6 +67,8 @@ function Editor({ entry, day }: { entry: DiaryEntry | null; day: string }) {
   const isDirty = useRef(false);
   const schedule = useCallback(() => {
     isDirty.current = true;
+    // Honest from the first keystroke: "Saved" only ever describes what is on the server.
+    setState("saving");
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       isDirty.current = false;
