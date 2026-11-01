@@ -215,7 +215,10 @@ export function TrendChart({
           cursor={{ stroke: "var(--line-2)" }}
           content={<ChartTooltip format={format} labelFormat={xFormat} />}
         />
-        {series.map((item) => (
+        {series.map((item) => {
+          // A line needs two readings, so a series with only one shows it as a dot.
+          const lone = data.filter((row) => typeof row[item.key] === "number").length === 1;
+          return (
           <Line
             key={item.key}
             type={dots ? "linear" : "monotone"}
@@ -223,12 +226,13 @@ export function TrendChart({
             name={item.label}
             stroke={item.color}
             strokeWidth={dots ? 1.5 : 2}
-            dot={dots ? { r: 3.5, fill: item.color, stroke: "var(--surface)", strokeWidth: 1.5 } : false}
+            dot={dots || lone ? { r: 3.5, fill: item.color, stroke: "var(--surface)", strokeWidth: 1.5 } : false}
             activeDot={{ r: 4, stroke: "var(--surface)", strokeWidth: 2 }}
             connectNulls={connectNulls}
             isAnimationActive={false}
           />
-        ))}
+          );
+        })}
       </LineChart>
     </ResponsiveContainer>
   );
