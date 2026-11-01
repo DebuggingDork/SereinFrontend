@@ -6,9 +6,11 @@ import { useState } from "react";
 import { DEFAULT_LAYOUT, WIDGETS, type HomeSummary, type WidgetSize } from "@/components/home/widgets";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
-import { ErrorNote, PageHeader, Skeleton } from "@/components/ui/primitives";
+import { Card, ErrorNote, PageHeader, Skeleton } from "@/components/ui/primitives";
+import { ComingUp, PanelTitle, SafeToSpendPanel, WhereItWent } from "@/components/finance/panels";
+import { QuickAdd } from "@/components/finance/quick-add";
 import { useRpc } from "@/lib/data";
-import { formatDayLong, today } from "@/lib/format";
+import { formatDayLong, inr, number, today } from "@/lib/format";
 import { useProfile, useUpdateProfile } from "@/lib/profile";
 
 type LayoutItem = { id: string; size: WidgetSize };
@@ -31,6 +33,16 @@ function greeting(name: string) {
   return name ? `${part}, ${name.split(" ")[0]}` : part;
 }
 
+function brief(summary: HomeSummary) {
+  const parts = [`${inr(Math.max(0, Number(summary.safe_to_spend?.per_day ?? 0)))} safe to spend`];
+  const due = Number(summary.tasks.due);
+  if (due > 0) parts.push(`${due} task${due === 1 ? "" : "s"} due`);
+  const calories = Number(summary.nutrition.calories);
+  if (calories > 0) parts.push(`${number(calories)} kcal logged`);
+  const last = parts.pop()!;
+  return parts.length ? `${parts.join(", ")} and ${last}.` : `${last}.`;
+}
+
 export default function HomePage() {
   const { data: profile } = useProfile();
   const { data: summary, isLoading, error } = useRpc<HomeSummary>("home_summary");
@@ -40,7 +52,10 @@ export default function HomePage() {
 
   // Local edits apply instantly; the saved layout takes over once they are stored.
   const [draft, setDraft] = useState<LayoutItem[] | null>(null);
-  const layout: LayoutItem[] = draft ?? profile?.home_layout ?? DEFAULT_LAYOUT;
+  // Older layouts may name money widgets that are now always at the top of the page.
+  const layout: LayoutItem[] = (draft ?? profile?.home_layout ?? DEFAULT_LAYOUT).filter((item) =>
+    WIDGETS.some((widget) => widget.id === item.id),
+  );
 
   function change(next: LayoutItem[]) {
     setDraft(next);
@@ -55,9 +70,26 @@ export default function HomePage() {
     <main className="mx-auto max-w-[1200px] px-4 py-6 pb-28 md:px-6 lg:py-8 lg:pb-12">
       <PageHeader
         title={greeting(profile?.display_name ?? "")}
-        subtitle={formatDayLong(today())}
-        action={
-          editing ? (
+        subtitle={`${formatDayLong(today())}.${summary ? ` ${brief(summary)}` : ""}`}
+      />
+
+      <ErrorNote error={error} />
+
+      <div className="grid gap-4 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <SafeToSpendPanel />
+        </div>
+        <Card className="lg:col-span-5" title={<PanelTitle>Log it now</PanelTitle>}>
+          <QuickAdd />
+        </Card>
+        <WhereItWent className="lg:col-span-7" />
+        <ComingUp className="lg:col-span-5" />
+      </div>
+
+      <div className="mt-10 mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="display text-[28px] leading-tight">Your day</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          {editing ? (
             <>
               <Button variant="soft" onClick={() => setPicking(true)}>
                 Add or remove
@@ -70,11 +102,9 @@ export default function HomePage() {
             <Button variant="soft" onClick={() => setEditing(true)}>
               <Settings2 size={14} aria-hidden /> Customize
             </Button>
-          )
-        }
-      />
-
-      <ErrorNote error={error} />
+          )}
+        </div>
+      </div>
 
       {isLoading || !summary ? (
         <div className="grid gap-4 md:grid-cols-2">
