@@ -8,10 +8,10 @@ export function ClosingBand() {
         className="flex flex-col items-center gap-9 rounded-[28px] border border-line bg-[#0d0f12] px-6 pt-20 pb-20 text-center text-ink lg:pt-[86px]"
       >
         <h2 className="display text-[clamp(2.25rem,3.4vw,3rem)] leading-none">
-          Come in. <em>Close the glass.</em>
+          Start tracking <em>your money today.</em>
         </h2>
-        <LinkButton href="/login" size="lg" className="!h-[46px] !px-8">
-          Enter the Gate
+        <LinkButton href="/signup" size="lg" className="!h-[46px] !px-8">
+          Start saving
         </LinkButton>
       </div>
     </section>
