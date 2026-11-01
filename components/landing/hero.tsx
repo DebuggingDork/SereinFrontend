@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { LinkButton, Button } from "@/components/ui/button";
-import { useFreeze } from "@/components/shell/freeze";
+import { LinkButton } from "@/components/ui/button";
 import { Donut, MoodLine } from "./charts";
 
-const TABS = ["Combined Home", "Finance", "Planner", "Diet", "Diary"] as const;
+const TABS = ["Finance", "Home", "Planner", "Diet", "Diary"] as const;
 type Tab = (typeof TABS)[number];
 
 export const MOOD_WEEK = "M1 24 C 6 18, 10 14, 16 14 S 30 20, 38 20 S 60 2, 77 2 S 98 24, 114 24 S 136 11, 147 9";
@@ -188,16 +187,15 @@ function CombinedPreview() {
 }
 
 const PREVIEWS: Record<Tab, () => React.ReactElement> = {
-  "Combined Home": CombinedPreview,
   Finance: FinancePreview,
+  Home: CombinedPreview,
   Planner: PlannerPreview,
   Diet: DietPreview,
   Diary: DiaryPreview,
 };
 
 function ProductPreview() {
-  const [tab, setTab] = useState<Tab>("Combined Home");
-  const { freeze } = useFreeze();
+  const [tab, setTab] = useState<Tab>("Finance");
   const Preview = PREVIEWS[tab];
 
   return (
@@ -223,13 +221,6 @@ function ProductPreview() {
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={freeze}
-          className="pressable hidden h-11 shrink-0 cursor-pointer items-center gap-2 rounded-xl border border-line bg-surface px-3 text-[13px] sm:flex"
-        >
-          Freeze Screen <span className="kbd h-5 min-w-8 border-ink-2 text-[11px]">⌘F</span>
-        </button>
       </div>
 
       <div key={tab} className="fade-in mt-3 grid gap-3 sm:grid-cols-2">
