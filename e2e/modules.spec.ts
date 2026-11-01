@@ -239,3 +239,38 @@ test("home: widgets can be removed and the layout persists", async ({ page }) =>
   await expect(page.getByRole("heading", { name: "Water per day" })).toBeVisible();
   await expect(page.getByText("Calories today")).toHaveCount(0);
 });
+
+test("finance: the new entry form saves an expense and a transfer", async ({ page }) => {
+  await createReadyUser(page);
+  for (const [name, balance] of [["Salary", "5000"], ["Savings", "1000"]]) {
+    await page.goto("/finance/accounts");
+    await page.getByRole("button", { name: "Add", exact: true }).click();
+    const form = await modal(page, "New account");
+    await form.getByLabel("Nickname").fill(name!);
+    await form.getByLabel("Balance today").fill(balance!);
+    await form.getByRole("button", { name: "Save" }).click();
+    await expect(form).toBeHidden();
+  }
+
+  await page.goto("/finance/transactions?new=1");
+  let dialog = await modal(page, "New entry");
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(dialog.getByText("Enter an amount above zero.")).toBeVisible();
+
+  await dialog.getByLabel("Amount").fill("250");
+  await dialog.getByRole("group", { name: "Category" }).getByRole("button", { name: "Food" }).click();
+  await dialog.getByLabel("To who").fill("Canteen");
+  await dialog.getByLabel("Note").fill("Team lunch");
+  await dialog.getByRole("button", { name: "Save ₹250" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.getByRole("listitem").filter({ hasText: "Canteen" })).toContainText("Team lunch");
+
+  await page.getByRole("button", { name: "Add", exact: true }).first().click();
+  dialog = await modal(page, "New entry");
+  await dialog.getByRole("button", { name: "Transfer", exact: true }).click();
+  await dialog.getByLabel("Amount").fill("100");
+  await dialog.getByRole("group", { name: "To" }).getByRole("button").first().click();
+  await dialog.getByRole("button", { name: "Save ₹100" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.getByRole("listitem").filter({ hasText: " to " })).toContainText("100");
+});
