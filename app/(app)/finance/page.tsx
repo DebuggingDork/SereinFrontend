@@ -2,8 +2,7 @@
 
 import { Banknote, CreditCard, Landmark, TrendingUp, Wallet } from "lucide-react";
 import Link from "next/link";
-import { ChartCard } from "@/components/charts/chart-card";
-import { TrendChart } from "@/components/charts/marks";
+import { MonthCompareChart } from "@/components/charts/catalog/finance";
 import { useMonthCompare } from "@/components/finance/month-compare";
 import { ComingUp, PanelLink, PanelTitle, SafeToSpendPanel, WhereItWent } from "@/components/finance/panels";
 import { QuickAdd } from "@/components/finance/quick-add";
@@ -11,7 +10,7 @@ import { useAccounts, type Account, type Transaction } from "@/components/financ
 import { TransactionRow } from "@/components/finance/transaction-row";
 import { Card, Empty, PageHeader, ProgressBar, Skeleton } from "@/components/ui/primitives";
 import { useRows, useRpc } from "@/lib/data";
-import { formatDay, inr, inrCompact, today } from "@/lib/format";
+import { formatDay, inr, today } from "@/lib/format";
 
 const KIND_ICONS: Record<Account["kind"], typeof Wallet> = {
   bank: Landmark,
@@ -72,38 +71,6 @@ function YourMoney() {
         </div>
       )}
     </Card>
-  );
-}
-
-function ThisMonthChart() {
-  const { query, points } = useMonthCompare();
-  const hasSpend = points.some((point) => (point.thisMonth ?? 0) > 0 || (point.lastMonth ?? 0) > 0);
-
-  return (
-    <ChartCard
-      title="This month against last"
-      subtitle="Running total by day of the month"
-      loading={query.isLoading}
-      error={query.error}
-      empty={!hasSpend}
-      emptyHint="Spending shows up here as you log it."
-      legend={[
-        { label: "This month", color: "var(--finance)" },
-        { label: "Last month", color: "var(--ink-3)" },
-      ]}
-    >
-      <TrendChart
-        data={points}
-        x="day"
-        series={[
-          { key: "thisMonth", label: "This month", color: "var(--finance)" },
-          { key: "lastMonth", label: "Last month", color: "var(--ink-3)" },
-        ]}
-        format={inr}
-        axisFormat={inrCompact}
-        height={240}
-      />
-    </ChartCard>
   );
 }
 
@@ -198,7 +165,7 @@ export default function FinanceOverviewPage() {
         </div>
 
         <div className="min-w-0 lg:col-span-7">
-          <ThisMonthChart />
+          <MonthCompareChart />
         </div>
         <WhereItWent className="lg:col-span-5" />
 
