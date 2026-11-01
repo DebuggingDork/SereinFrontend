@@ -43,7 +43,7 @@ function SortableWidget({
     >
       {/* While arranging, the card is something to move rather than something to use. */}
       <div className="pointer-events-none h-full select-none">{widget.render(summary)}</div>
-      <div className="fade-in absolute top-3 right-3 flex items-center gap-0.5 rounded-full border border-line bg-surface p-0.5 shadow-card">
+      <div className="fade-in absolute -top-3 right-5 z-10 flex items-center gap-0.5 rounded-full border border-line bg-surface p-0.5 shadow-card">
         <button
           type="button"
           aria-label={`Move ${widget.label}`}
