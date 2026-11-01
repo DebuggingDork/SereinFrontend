@@ -22,15 +22,10 @@ export function Colophon() {
   return (
     <footer id="colophon" className="mx-auto max-w-[1440px] px-6 pb-16 text-center md:px-16">
       <p className="display text-[22px]">Serein</p>
-      <p className="display mx-auto mt-1 max-w-xl text-sm leading-[25px] text-ink-2 italic">
-        Set in Fraunces and Instrument Sans, with figures in JetBrains Mono.
-        <br />
-        Printed on warm alabaster, stored on nobody else&apos;s server but your own account.
+      <p className="mx-auto mt-1 max-w-xl text-sm leading-[25px] text-ink-2">
+        Your money, tracked by you. No bank logins, no card numbers.
       </p>
-      <p className="mt-3 flex flex-wrap items-center justify-center gap-1 text-sm text-ink-2">
-        Colophon · <span className="kbd">Esc</span> to close the glass · <span className="kbd">⌘K</span> to search · ©
-        2026
-      </p>
+      <p className="mt-3 text-sm text-ink-2">© 2026</p>
     </footer>
   );
 }
