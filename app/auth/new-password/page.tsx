@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthFrame, FormError } from "@/components/auth/auth-frame";
 import { Button } from "@/components/ui/button";
-import { Field, Input } from "@/components/ui/field";
+import { Field, PasswordInput } from "@/components/ui/field";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
 export default function NewPasswordPage() {
@@ -42,9 +42,8 @@ export default function NewPasswordPage() {
       <form onSubmit={submit} className="space-y-4">
         <FormError message={error} />
         <Field label="New password" htmlFor="password" hint="At least 8 characters.">
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoFocus
             autoComplete="new-password"
             value={password}
