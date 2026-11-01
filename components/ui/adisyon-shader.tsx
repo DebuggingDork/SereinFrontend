@@ -306,6 +306,10 @@ const UNIFORMS = {
 
 // Soft waves lose nothing at low resolution, and the browser scales them up smoothly.
 const MAX_PIXELS = 230_000
+const FRAME_MS = 1000 / 30
+// A device that can't keep up gets a still picture instead of a slow page.
+const SLOW_FRAME_MS = 70
+const FRAMES_TO_JUDGE = 20
 
 const pendingContextReleases = new WeakMap<HTMLCanvasElement, number>()
 
@@ -416,7 +420,10 @@ export function ShaderBackground({ className }: { className?: string }) {
     const start = performance.now()
     // People who ask for less motion get one still frame of the same waves.
     const timeScale = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : UNIFORMS.timeScale
-    const timeAnimated = Math.abs(timeScale) > 0.0001
+    let timeAnimated = Math.abs(timeScale) > 0.0001
+    let lastDrawn = 0
+    let judged = 0
+    let judgedTime = 0
 
     const resizeCanvas = () => {
       const rawWidth = Math.max(1, Math.round(bounds.width))
@@ -517,6 +524,16 @@ export function ShaderBackground({ className }: { className?: string }) {
     function render(now: number) {
       raf = 0
       if (disposed || !visible || !inView) return
+      if (lastDrawn > 0 && now - lastDrawn < FRAME_MS - 2) {
+        requestRender()
+        return
+      }
+      if (lastDrawn > 0 && judged < FRAMES_TO_JUDGE) {
+        judged += 1
+        judgedTime += now - lastDrawn
+        if (judged === FRAMES_TO_JUDGE && judgedTime / judged > SLOW_FRAME_MS) timeAnimated = false
+      }
+      lastDrawn = now
       const dt = lastNow === null ? 0 : Math.min((now - lastNow) / 1000, 0.1)
       lastNow = now
       const follow = 1 - Math.exp(-12 * dt)
