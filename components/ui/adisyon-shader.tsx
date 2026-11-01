@@ -99,7 +99,7 @@ float noise(vec2 p) {
 float fbm(vec2 p) {
   float v = 0.0;
   float a = 0.5;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 3; i++) {
     v += a * noise(p);
     p = p * 2.03 + vec2(17.0, 9.2);
     a *= 0.5;
@@ -281,14 +281,15 @@ const UNIFORMS = {
   scale: 2.000,
   intensity: 0.540,
   paramA: 0.470,
-  warp: 0.042,
+  warp: 0.0,
   detail: 1.536,
   contrast: 1.158,
   brightness: 0.000,
   saturation: 1.000,
   hue: 0.0000,
   vignette: 0.210,
-  blur: 0.0020,
+  // Blur shaded every pixel five times, and the warp barely showed. Both cost far more than they gave.
+  blur: 0.0,
   grain: 0.101,
   seed: 4012.0,
   rotate: 5.6549,
