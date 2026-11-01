@@ -107,6 +107,8 @@ test("wrong answers roast, rotate and cool down; lock closes the app", async ({ 
 
 test("freeze screen covers the app and keys work", async ({ page }) => {
   await createReadyUser(page);
+  // Keys only work once the page has hydrated, and this heading needs client data.
+  await expect(page.getByRole("heading", { name: "Log it now" })).toBeVisible();
   await page.keyboard.press("f");
   await expect(page.getByRole("button", { name: "Show the screen" })).toBeVisible();
   await page.keyboard.press("Escape");
