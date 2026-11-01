@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/landing/nav";
 import { lockNow, signOut } from "@/lib/api";
-import { useFreeze } from "./freeze";
 import { MODULES } from "./modules";
 import { useTheme } from "./theme";
 
@@ -73,7 +72,6 @@ function ProfileMenu({ name, isAdmin }: { name: string; isAdmin: boolean }) {
 
 export function TopBar({ name, isAdmin }: { name: string; isAdmin: boolean }) {
   const pathname = usePathname();
-  const { freeze } = useFreeze();
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
@@ -111,15 +109,6 @@ export function TopBar({ name, isAdmin }: { name: string; isAdmin: boolean }) {
             className="kbd pressable hidden h-6 cursor-pointer hover:border-ink-3 sm:inline-flex"
           >
             ⌘K
-          </button>
-          <button
-            type="button"
-            onClick={freeze}
-            className="pressable flex h-9 cursor-pointer items-center gap-2 rounded-xl border border-line bg-surface px-3 text-[13px] hover:border-line-2"
-          >
-            <span className="hidden sm:inline">Freeze Screen</span>
-            <span className="sm:hidden">Freeze</span>
-            <span className="kbd hidden h-5 sm:inline-flex">⌘F</span>
           </button>
           <ProfileMenu name={name} isAdmin={isAdmin} />
         </div>
