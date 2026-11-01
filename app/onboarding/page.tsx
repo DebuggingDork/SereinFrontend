@@ -126,7 +126,7 @@ function PreferencesStep({ onNext, onBack }: { onNext: () => void; onBack: () =>
         <EntityForm
           submitLabel="Continue"
           fields={PREFERENCE_FIELDS}
-          initial={{ display_name: profile.display_name, ...profile.preferences }}
+          initial={{ display_name: profile.display_name, salaryRule: "last_working_day", ...profile.preferences }}
           onCancel={onBack}
           onSubmit={async (values) => {
             await update.mutateAsync(preferencesPayload(values, Intl.DateTimeFormat().resolvedOptions().timeZone));
