@@ -3,7 +3,7 @@
 import { Circle } from "lucide-react";
 import Link from "next/link";
 import { WaterButtons } from "@/components/diet/water-buttons";
-import { Chip, ProgressBar, Ring } from "@/components/ui/primitives";
+import { ProgressBar, Ring } from "@/components/ui/primitives";
 import { useRows } from "@/lib/data";
 import { formatDay, inr, number, relativeDay, today } from "@/lib/format";
 
@@ -198,7 +198,7 @@ function MoodWidget({ summary }: WidgetProps) {
       href="/diary"
       color="var(--diary)"
       tint="var(--diary-soft)"
-      aside={entry?.mood && <Chip tone="diary">{MOOD_LABEL[entry.mood]}</Chip>}
+      aside={entry?.mood && <span className="text-[13px] text-ink">{MOOD_LABEL[entry.mood]}</span>}
     >
       {entry ? (
         <>
