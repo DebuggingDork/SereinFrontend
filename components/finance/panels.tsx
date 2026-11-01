@@ -221,7 +221,9 @@ export function ComingUp({ moneyOnly, className = "" }: { moneyOnly?: boolean; c
                       <span className={`block text-xs ${urgent ? "text-bad" : "text-ink-2"}`}>{relativeDay(alert.due_on)}</span>
                     )}
                   </span>
-                  {alert.amount !== null && <span className="tabular text-sm">{inr(alert.amount)}</span>}
+                  {alert.amount !== null && (
+                    <span className="tabular text-sm">{alert.amount < 0 ? `${inr(-alert.amount)} over` : inr(alert.amount)}</span>
+                  )}
                 </Link>
               </li>
             );
