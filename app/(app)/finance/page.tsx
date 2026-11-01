@@ -138,7 +138,7 @@ function MonthHeader() {
   const month = formatDay(today(), { month: "long" });
   const difference = spent - spentLastMonthSoFar;
 
-  let subtitle = "Log what you spend and your month takes shape here.";
+  let subtitle = spent > 0 ? "Nothing from last month to compare with yet." : "Log what you spend and your month takes shape here.";
   if (query.isLoading) subtitle = " ";
   else if (spentLastMonthSoFar > 0 && difference < 0) subtitle = `${inr(-difference)} less than this point last month.`;
   else if (spentLastMonthSoFar > 0 && difference > 0) subtitle = `${inr(difference)} more than this point last month.`;
