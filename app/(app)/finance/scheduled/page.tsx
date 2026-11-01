@@ -11,7 +11,7 @@ import { Modal } from "@/components/ui/modal";
 import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader, StatTile } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useRows, useRpc, useRpcAction, useSave } from "@/lib/data";
-import { addDays, daysBetween, inr, inrCompact, monthLabel, relativeDay, shiftMonth, today } from "@/lib/format";
+import { addDays, daysBetween, formatDay, inr, inrCompact, monthLabel, relativeDay, shiftMonth, today } from "@/lib/format";
 
 interface ScheduledItem {
   id: string;
@@ -36,6 +36,14 @@ const FREQUENCY_LABEL: Record<ScheduledItem["frequency"], string> = {
   monthly: "Monthly",
   yearly: "Yearly",
   custom: "Custom",
+};
+
+const PER: Record<ScheduledItem["frequency"], string> = {
+  daily: "/day",
+  weekly: "/wk",
+  monthly: "/mo",
+  yearly: "/yr",
+  custom: "",
 };
 
 const REPEATS: Record<ScheduledItem["frequency"], string> = {
@@ -72,69 +80,117 @@ function dueWithin(item: ScheduledItem, days: number) {
   return total;
 }
 
+const MONOGRAM_COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4", "#ef4444"];
+
+function monogramColor(name: string) {
+  let total = 0;
+  for (const letter of name) total = (total * 31 + letter.charCodeAt(0)) % 9973;
+  return MONOGRAM_COLORS[total % MONOGRAM_COLORS.length]!;
+}
+
+// Subscriptions read best by name, and bills by the date they land.
+function RowLead({ item, lead }: { item: ScheduledItem; lead: "name" | "date" }) {
+  if (lead === "date") {
+    const late = item.next_run < today();
+    return (
+      <span
+        aria-hidden
+        className={`flex size-11 shrink-0 flex-col items-center justify-center rounded-xl leading-none ${
+          late ? "bg-bad-soft text-bad" : "bg-surface-2"
+        }`}
+      >
+        <span className="tabular text-[15px]">{formatDay(item.next_run, { day: "numeric" })}</span>
+        <span className="mt-0.5 text-[10px]">{formatDay(item.next_run, { month: "short" })}</span>
+      </span>
+    );
+  }
+  const color = item.kind === "income" ? "#10b981" : monogramColor(item.name);
+  return (
+    <span
+      aria-hidden
+      className="display flex size-11 shrink-0 items-center justify-center rounded-xl text-[19px]"
+      style={{ background: `color-mix(in srgb, ${color} 18%, transparent)`, color: `color-mix(in srgb, ${color} 75%, var(--ink))` }}
+    >
+      {item.name.trim().charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
+function DueLabel({ item }: { item: ScheduledItem }) {
+  const late = item.next_run < today() ? daysBetween(item.next_run, today()) : 0;
+  if (late > 0) {
+    return <span className="rounded-full bg-bad-soft px-2 py-0.5 text-xs text-bad">{late} day{late === 1 ? "" : "s"} late</span>;
+  }
+  if (item.next_run === today()) return <span className="rounded-full bg-warn-soft px-2 py-0.5 text-xs text-warn">Due today</span>;
+  return <span className="text-xs text-ink-2">{relativeDay(item.next_run)}</span>;
+}
+
 function ItemRow({
   item,
+  lead,
   onEdit,
   onDelete,
   onPost,
   onSkip,
 }: {
   item: ScheduledItem;
+  lead: "name" | "date";
   onEdit: () => void;
   onDelete: () => void;
   onPost: () => void;
   onSkip: () => void;
 }) {
   const due = item.next_run <= today();
-  const late = item.next_run < today() ? daysBetween(item.next_run, today()) : 0;
   return (
-    <li className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
-      <div className="min-w-0 flex-1 basis-48">
-        <p className="flex items-center gap-2 text-sm">
-          {item.name}
-          {!item.active && <Chip>Paused</Chip>}
-        </p>
-        <p className="text-xs text-ink-2">
-          {item.frequency === "custom" ? `Every ${item.interval_days} days` : REPEATS[item.frequency]} ·{" "}
-          {late > 0 ? (
-            <span className="text-bad">
-              Was due {late} day{late === 1 ? "" : "s"} ago
-            </span>
-          ) : (
-            `Next ${relativeDay(item.next_run)}`
-          )}{" "}
-          ·{" "}
-          <span
+    <li className={`group -mx-2 rounded-2xl p-2 transition-colors hover:bg-surface-2/60 ${item.active ? "" : "opacity-60"}`}>
+      <div className="flex items-center gap-3">
+        <RowLead item={item} lead={lead} />
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-2 text-[15px]">
+            <span className="truncate">{item.name}</span>
+            {!item.active && <Chip>Paused</Chip>}
+          </p>
+          <p
+            className="mt-0.5 truncate text-xs text-ink-2"
             title={
               item.auto_post
                 ? "Serein adds this to your transactions by itself on the day."
                 : "Serein asks you to confirm or skip this on the day."
             }
           >
-            {item.auto_post ? "Added automatically" : "You confirm each time"}
-          </span>
-        </p>
+            {item.frequency === "custom" ? `Every ${item.interval_days} days` : REPEATS[item.frequency]} ·{" "}
+            {item.auto_post ? "Adds itself" : "You confirm it"}
+          </p>
+        </div>
+        <div className="shrink-0 text-right">
+          <p className={`tabular text-[15px] ${item.kind === "income" ? "text-good" : ""}`}>
+            {item.kind === "income" ? "+" : ""}
+            {inr(item.amount)}
+            <span className="text-xs text-ink-2">{PER[item.frequency]}</span>
+          </p>
+          <div className="mt-1">
+            <DueLabel item={item} />
+          </div>
+        </div>
+        <span className="opacity-100 transition-opacity focus-within:opacity-100 lg:opacity-0 lg:group-hover:opacity-100">
+          <RowActions
+            onEdit={onEdit}
+            onDelete={onDelete}
+            deleteTitle={`Delete ${item.name}?`}
+            deleteBody="Entries it already created stay in your transactions."
+          />
+        </span>
       </div>
       {due && !item.auto_post && item.active && (
-        <span className="flex gap-1.5">
-          <Button size="sm" onClick={onPost}>
-            Confirm
-          </Button>
+        <div className="mt-2 flex justify-end gap-1.5">
           <Button size="sm" variant="ghost" onClick={onSkip}>
-            Skip
+            Skip this one
           </Button>
-        </span>
+          <Button size="sm" onClick={onPost}>
+            Confirm {inr(item.amount)}
+          </Button>
+        </div>
       )}
-      <span className={`tabular text-sm ${item.kind === "income" ? "text-good" : ""}`}>
-        {item.kind === "income" ? "+" : "−"}
-        {inr(item.amount)}
-      </span>
-      <RowActions
-        onEdit={onEdit}
-        onDelete={onDelete}
-        deleteTitle={`Delete ${item.name}?`}
-        deleteBody="Entries it already created stay in your transactions."
-      />
     </li>
   );
 }
@@ -240,10 +296,11 @@ export default function ScheduledPage() {
   const billRows = items.filter((item) => !item.is_subscription && item.kind === "expense");
   const incomeRows = items.filter((item) => item.kind === "income");
 
-  const renderRow = (item: ScheduledItem) => (
+  const renderRow = (lead: "name" | "date") => (item: ScheduledItem) => (
     <ItemRow
       key={item.id}
       item={item}
+      lead={lead}
       onEdit={() => setEditing(item)}
       onDelete={() => remove.mutate(item.id)}
       onPost={() => post.mutate({ p_id: item.id })}
@@ -287,19 +344,19 @@ export default function ScheduledPage() {
             title="Subscriptions"
             explains="Services you keep paying for and could cancel, like Netflix or Spotify. Costliest first."
             empty="Nothing here yet. When you add one, tick “This is a subscription”."
-            rows={subscriptionRows.map(renderRow)}
+            rows={subscriptionRows.map(renderRow("name"))}
           />
           <Section
             title="Bills and EMIs"
             explains="Regular payments you have to make, like rent, EMIs, insurance and electricity."
             empty="Nothing here yet. Add your rent or an EMI, and leave “This is a subscription” unticked."
-            rows={billRows.map(renderRow)}
+            rows={billRows.map(renderRow("date"))}
           />
           <Section
             title="Regular income"
             explains="Money that arrives on a schedule, like your salary or rent you collect."
             empty="Nothing here yet. Add your salary and choose Income as the type."
-            rows={incomeRows.map(renderRow)}
+            rows={incomeRows.map(renderRow("name"))}
             className="xl:col-span-2"
           />
           <ChartCard
