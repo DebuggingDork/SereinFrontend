@@ -4,11 +4,12 @@ import { ArrowLeftRight, Eye, EyeOff, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { ACCOUNT_FIELDS, ACCOUNT_KIND_LABEL, accountPayload } from "@/components/finance/account-fields";
+import { AccountArt, accountArtFromForm } from "@/components/finance/account-art";
 import { accountOptions, useAccounts, type Account } from "@/components/finance/shared";
 import { Button } from "@/components/ui/button";
 import { EntityForm } from "@/components/ui/entity-form";
 import { Modal } from "@/components/ui/modal";
-import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader, ProgressBar, StatTile } from "@/components/ui/primitives";
+import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader, StatTile } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useSave } from "@/lib/data";
 import { inr, today } from "@/lib/format";
@@ -69,24 +70,27 @@ function AccountsContent() {
           <Empty title="No accounts yet" hint="Add where your money sits, and the balance you see today." />
         </Card>
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2">
+        <ul className="grid gap-x-5 gap-y-6 md:grid-cols-2 xl:grid-cols-3">
           {accounts.map((account) => {
-            const used = Number(account.balance);
-            const limit = Number(account.credit_limit ?? 0);
             return (
               <li key={account.id}>
-                <Card className={account.hidden ? "opacity-60" : ""}>
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="truncate">{account.name}</p>
-                      <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-ink-3">
-                        {ACCOUNT_KIND_LABEL[account.kind]}
-                        {account.bank_name && ` · ${account.bank_name}`}
-                        {account.last_four && <Chip tone="finance" className="font-mono">•••• {account.last_four}</Chip>}
-                        {account.hidden && <Chip>Hidden from totals</Chip>}
-                      </p>
-                    </div>
-                    <span className="flex items-center">
+                <div className={account.hidden ? "opacity-60" : ""}>
+                  <AccountArt
+                    kind={account.kind}
+                    name={account.name}
+                    bank={account.bank_name}
+                    lastFour={account.last_four}
+                    balance={Number(account.balance)}
+                    limit={account.credit_limit}
+                    dueLabel={account.due_day ? nextDue(account.due_day) : null}
+                  />
+                  <div className="mt-2 flex items-center justify-between gap-2 px-1">
+                    <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-2">
+                      <span>{ACCOUNT_KIND_LABEL[account.kind]}</span>
+                      {account.statement_day && <span>Statement {nextDue(account.statement_day)}</span>}
+                      {account.hidden && <Chip>Hidden from totals</Chip>}
+                    </p>
+                    <span className="flex shrink-0 items-center">
                       <button
                         type="button"
                         aria-label={account.hidden ? "Show in totals" : "Hide from totals"}
@@ -104,31 +108,7 @@ function AccountsContent() {
                       />
                     </span>
                   </div>
-
-                  {account.kind === "card" ? (
-                    <div className="mt-3">
-                      <p className="figure text-[28px] leading-tight">{inr(used)}</p>
-                      <p className="text-xs text-ink-3">
-                        used{limit > 0 && ` of ${inr(limit)} · ${Math.round((used / limit) * 100)}%`}
-                      </p>
-                      {limit > 0 && (
-                        <div className="mt-3">
-                          <ProgressBar
-                            value={used / limit}
-                            color={used / limit > 0.8 ? "var(--bad)" : "var(--finance)"}
-                            label="Credit used"
-                          />
-                        </div>
-                      )}
-                      <p className="mt-3 flex gap-4 text-xs text-ink-2">
-                        {account.statement_day && <span>Statement: {nextDue(account.statement_day)}</span>}
-                        {account.due_day && <span>Due: {nextDue(account.due_day)}</span>}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="figure mt-3 text-[28px] leading-tight">{inr(account.balance)}</p>
-                  )}
-                </Card>
+                </div>
               </li>
             );
           })}
