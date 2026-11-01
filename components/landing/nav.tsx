@@ -24,7 +24,11 @@ export function LandingNav() {
   useEffect(() => {
     if (!window.location.hash) return;
     showFeatures();
-    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    // A frame later, since the router writes the original address back as it starts up.
+    const frame = requestAnimationFrame(() => {
+      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   return (
