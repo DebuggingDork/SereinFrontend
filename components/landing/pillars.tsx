@@ -171,12 +171,10 @@ export function Pillars() {
   return (
     <section id="modules" className="mx-auto max-w-[1440px] px-6 pb-24 md:px-16 lg:pb-[143px]">
       <h2 className="display text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.0625]">
-        Four pillars. One quiet room.
-        <br />
-        <em>Zero</em> bank middlemen.
+        All your money, <em>in one place.</em>
       </h2>
       <p className="display mt-[14px] text-base text-ink-2 italic">
-        Each pillar keeps its own sidebar, charts and colour. Home borrows from all four.
+        Spending, budgets, debts, goals and net worth. Planner, diet and diary are there when you want them.
       </p>
       <div className="mt-[39px] grid gap-4 md:grid-cols-12">
         <FinancePillar />
