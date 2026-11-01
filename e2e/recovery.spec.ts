@@ -25,7 +25,7 @@ async function patch(table: string, filter: string, body: object) {
 }
 
 async function freshPage(page: Page) {
-  const context = await page.context().browser()!.newContext({ baseURL: "http://localhost:3000" });
+  const context = await page.context().browser()!.newContext({ baseURL: new URL(page.url()).origin });
   return context.newPage();
 }
 
