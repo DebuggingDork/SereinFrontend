@@ -7,7 +7,7 @@ test("landing page leads with finance and signup", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText("left is yours");
   await expect(page.getByText("Freeze", { exact: false })).toHaveCount(0);
   await expect(page.getByText("glass", { exact: false })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Start saving" }).first()).toHaveAttribute("href", "/signup");
+  await expect(page.getByRole("link", { name: "Get started" }).first()).toHaveAttribute("href", "/signup");
 
   await page.getByRole("button", { name: "Dark mode" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");

@@ -4,7 +4,7 @@ const COLUMNS = [
   {
     title: "Get started",
     links: [
-      { label: "Start saving", href: "/signup" },
+      { label: "Create an account", href: "/signup" },
       { label: "Log in", href: "/login" },
     ],
   },

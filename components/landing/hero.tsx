@@ -23,7 +23,7 @@ export function Hero() {
           style={{ "--delay": "180ms" } as React.CSSProperties}
         >
           <LinkButton href="/signup" size="lg" className="!px-7">
-            Start saving
+            Get started
           </LinkButton>
           <LinkButton href="/login" variant="outline" size="lg">
             Log in
