@@ -2,8 +2,38 @@
 
 import { Circle } from "lucide-react";
 import Link from "next/link";
+import {
+  BalanceTrendChart,
+  BudgetProgressChart,
+  DailySpendingChart,
+  DebtsChart,
+  GoalProgressChart,
+  IncomeVsExpensesChart,
+  MonthCompareChart,
+  NetWorthChart,
+  SpendingByCategoryChart,
+  SpendingBySourceChart,
+  SubscriptionCostChart,
+} from "@/components/charts/catalog/finance";
+import {
+  CaloriesVsTargetChart,
+  MacroSplitChart,
+  MealTimingChart,
+  WaterPerDayChart,
+  WeeklyMacrosChart,
+  WeightTrendChart,
+} from "@/components/charts/catalog/diet";
+import { EntriesPerWeekChart, MoodCountsChart, MoodOverTimeChart } from "@/components/charts/catalog/diary";
+import {
+  CompletionRateChart,
+  CreatedVsCompletedChart,
+  OnTimeVsLateChart,
+  TasksByCategoryChart,
+} from "@/components/charts/catalog/planner";
 import { WaterButtons } from "@/components/diet/water-buttons";
-import { ProgressBar, Ring } from "@/components/ui/primitives";
+import { ComingUp, PanelTitle, SafeToSpendPanel, WhereItWent } from "@/components/finance/panels";
+import { QuickAdd } from "@/components/finance/quick-add";
+import { Card, ProgressBar, Ring } from "@/components/ui/primitives";
 import { useRows } from "@/lib/data";
 import { formatDay, inr, number, relativeDay, today } from "@/lib/format";
 
@@ -219,25 +249,115 @@ function MoodWidget({ summary }: WidgetProps) {
   );
 }
 
-export type WidgetSize = "s" | "m" | "l";
+// Columns out of twelve. "n" and "w" pair up as the narrow and wide halves of a row.
+export type WidgetSize = "s" | "n" | "m" | "w" | "l";
+export const WIDGET_COLUMNS: Record<WidgetSize, number> = { s: 4, n: 5, m: 6, w: 7, l: 12 };
+export const NEXT_WIDGET_SIZE: Record<WidgetSize, WidgetSize> = { s: "m", n: "m", m: "l", w: "l", l: "s" };
+
+const SPAN_CLASS: Record<number, string> = {
+  1: "md:col-span-1",
+  2: "md:col-span-2",
+  3: "md:col-span-3",
+  4: "md:col-span-4",
+  5: "md:col-span-5",
+  6: "md:col-span-6",
+  7: "md:col-span-7",
+  8: "md:col-span-8",
+  9: "md:col-span-9",
+  10: "md:col-span-10",
+  11: "md:col-span-11",
+  12: "md:col-span-12",
+};
+
+// A widget that would leave a hole at the end of its row grows to close it.
+export function widgetSpans(items: { size: WidgetSize }[]) {
+  let used = 0;
+  return items.map((item, index) => {
+    const next = items[index + 1];
+    const width = WIDGET_COLUMNS[item.size];
+    const fits = next && used + width + WIDGET_COLUMNS[next.size] <= 12;
+    const span = fits ? width : 12 - used;
+    used = fits ? used + width : 0;
+    return SPAN_CLASS[span]!;
+  });
+}
 
 export interface WidgetDef {
   id: string;
   label: string;
-  module: string;
+  module: "Finance" | "Planner" | "Diet" | "Diary";
   description: string;
+  size: WidgetSize;
+  chart?: boolean;
   render: (summary: HomeSummary) => React.ReactNode;
 }
 
+const chart = (id: string, label: string, module: WidgetDef["module"], description: string, Chart: (props: { className?: string }) => React.ReactNode): WidgetDef => ({
+  id,
+  label,
+  module,
+  description,
+  size: "m",
+  chart: true,
+  render: () => <Chart className="h-full" />,
+});
+
 export const WIDGETS: WidgetDef[] = [
-  { id: "balance", label: "Net worth", module: "Finance", description: "What you own minus what you owe", render: (s) => <BalanceWidget summary={s} /> },
-  { id: "tasks", label: "Tasks due today", module: "Planner", description: "Including anything carried over", render: (s) => <TasksWidget summary={s} /> },
-  { id: "calories", label: "Calories today", module: "Diet", description: "Against your target", render: (s) => <CaloriesWidget summary={s} /> },
-  { id: "water", label: "Water today", module: "Diet", description: "Against your goal", render: (s) => <WaterWidget summary={s} /> },
-  { id: "mood", label: "Latest mood", module: "Diary", description: "Your last entry", render: (s) => <MoodWidget summary={s} /> },
+  { id: "safe", label: "Safe to spend", module: "Finance", description: "Today's number, until salary", size: "w", render: () => <SafeToSpendPanel /> },
+  {
+    id: "log",
+    label: "Log it now",
+    module: "Finance",
+    description: "Add a transaction in seconds",
+    size: "n",
+    render: () => (
+      <Card className="h-full" title={<PanelTitle>Log it now</PanelTitle>}>
+        <QuickAdd />
+      </Card>
+    ),
+  },
+  { id: "spending", label: "Where it went", module: "Finance", description: "This month, ranked by category", size: "w", render: () => <WhereItWent className="h-full" /> },
+  { id: "alerts", label: "Coming up", module: "Finance", description: "Bills, dues and overdue tasks", size: "n", render: () => <ComingUp className="h-full" /> },
+  { id: "balance", label: "Net worth", module: "Finance", description: "What you own minus what you owe", size: "m", render: (s) => <BalanceWidget summary={s} /> },
+  { id: "tasks", label: "Tasks due today", module: "Planner", description: "Including anything carried over", size: "m", render: (s) => <TasksWidget summary={s} /> },
+  { id: "calories", label: "Calories today", module: "Diet", description: "Against your target", size: "m", render: (s) => <CaloriesWidget summary={s} /> },
+  { id: "water", label: "Water today", module: "Diet", description: "Against your goal", size: "m", render: (s) => <WaterWidget summary={s} /> },
+  { id: "mood", label: "Latest mood", module: "Diary", description: "Your last entry", size: "m", render: (s) => <MoodWidget summary={s} /> },
+
+  chart("chart-category", "Spending by category", "Finance", "Donut chart, this month", SpendingByCategoryChart),
+  chart("chart-income", "Income versus expenses", "Finance", "By month", IncomeVsExpensesChart),
+  chart("chart-daily", "Daily spending", "Finance", "Last 30 days", DailySpendingChart),
+  chart("chart-balance", "Balance trend", "Finance", "Last 30 days", BalanceTrendChart),
+  chart("chart-compare", "This month versus last", "Finance", "Running total by day", MonthCompareChart),
+  chart("chart-source", "Spending by account and app", "Finance", "This month", SpendingBySourceChart),
+  chart("chart-budgets", "Budget progress", "Finance", "Against the month so far", BudgetProgressChart),
+  chart("chart-subscriptions", "Subscription cost", "Finance", "Next 12 months", SubscriptionCostChart),
+  chart("chart-networth", "Net worth over time", "Finance", "Recorded daily", NetWorthChart),
+  chart("chart-debts", "Debts per person", "Finance", "What remains", DebtsChart),
+  chart("chart-goals", "Goal progress", "Finance", "A ring for each goal", GoalProgressChart),
+
+  chart("chart-completion", "Completion rate", "Planner", "Per day, last 30 days", CompletionRateChart),
+  chart("chart-ontime", "On time versus late", "Planner", "By week", OnTimeVsLateChart),
+  chart("chart-flow", "Created versus completed", "Planner", "By week", CreatedVsCompletedChart),
+  chart("chart-tasks", "Tasks by category", "Planner", "All tasks", TasksByCategoryChart),
+
+  chart("chart-calories", "Calories versus target", "Diet", "Last 14 days", CaloriesVsTargetChart),
+  chart("chart-macros", "Macro split", "Diet", "Today, by energy", MacroSplitChart),
+  chart("chart-weekly-macros", "Weekly average macros", "Diet", "Grams per logged day", WeeklyMacrosChart),
+  chart("chart-water", "Water per day", "Diet", "Last 14 days", WaterPerDayChart),
+  chart("chart-weight", "Weight trend", "Diet", "All your entries", WeightTrendChart),
+  chart("chart-timing", "Meal timing", "Diet", "When you ate, last 30 days", MealTimingChart),
+
+  chart("chart-mood", "Mood over time", "Diary", "Last 30 days", MoodOverTimeChart),
+  chart("chart-mood-counts", "Mood counts", "Diary", "Last 30 days", MoodCountsChart),
+  chart("chart-entries", "Entries written per week", "Diary", "Last 12 weeks", EntriesPerWeekChart),
 ];
 
 export const DEFAULT_LAYOUT: { id: string; size: WidgetSize }[] = [
+  { id: "safe", size: "w" },
+  { id: "log", size: "n" },
+  { id: "spending", size: "w" },
+  { id: "alerts", size: "n" },
   { id: "balance", size: "m" },
   { id: "tasks", size: "m" },
   { id: "calories", size: "m" },

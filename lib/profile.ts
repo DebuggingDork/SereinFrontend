@@ -20,7 +20,7 @@ export interface Profile {
   display_name: string;
   role: "user" | "admin";
   preferences: Preferences;
-  home_layout: { id: string; size: "s" | "m" | "l" }[] | null;
+  home_layout: { id: string; size: "s" | "n" | "m" | "w" | "l" }[] | null;
   onboarded_at: string | null;
 }
 
