@@ -9,7 +9,7 @@ import { Modal } from "@/components/ui/modal";
 import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useRpc, useSave } from "@/lib/data";
-import { daysBetween, formatDay, inr, today } from "@/lib/format";
+import { daysBetween, inr, today } from "@/lib/format";
 
 interface BudgetProgress {
   id: string;
