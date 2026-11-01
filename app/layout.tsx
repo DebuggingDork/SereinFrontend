@@ -25,7 +25,7 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: { default: "Serein", template: "%s · Serein" },
-  description: "Track your spending, budgets, debts, goals and net worth without linking a bank.",
+  description: "Your money, plans, meals and thoughts in one private place, without linking a bank.",
 };
 
 export const viewport: Viewport = {
