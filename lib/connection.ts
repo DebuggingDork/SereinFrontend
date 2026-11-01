@@ -14,8 +14,8 @@ export interface ConnectionState {
   limitedUntil: number | null;
 }
 
-const SLOW_AFTER_MS = 5_000;
-const STALLED_AFTER_MS = 15_000;
+const SLOW_AFTER_MS = 10_000;
+const STALLED_AFTER_MS = 45_000;
 const PROBE_TIMEOUT_MS = 15_000;
 const PROBE_EVERY_MS = 10_000;
 const DEFAULT_LIMIT_SECONDS = 60;
