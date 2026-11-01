@@ -31,7 +31,7 @@ const CARD_FINISHES = [
 
 function Chip() {
   return (
-    <svg viewBox="0 0 46 34" aria-hidden className="h-[13%] w-auto min-h-7">
+    <svg viewBox="0 0 46 34" aria-hidden className="h-8 w-11 shrink-0">
       <defs>
         <linearGradient id="card-chip" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#f6dc95" />
