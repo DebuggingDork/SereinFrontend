@@ -99,8 +99,7 @@ test("wrong answers roast, rotate and cool down; lock closes the app", async ({ 
   await answerGate(page);
   await page.waitForURL(/\/home/);
 
-  await page.getByRole("button", { name: "Account menu" }).click();
-  await page.getByRole("menuitem", { name: "Lock now" }).click();
+  await page.getByRole("button", { name: "Lock now" }).click();
   await page.waitForURL(/\/gate/);
   await page.goto("/finance");
   await expect(page).toHaveURL(/\/gate/);

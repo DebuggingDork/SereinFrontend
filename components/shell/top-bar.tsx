@@ -11,10 +11,22 @@ import { useTheme } from "./theme";
 
 const TABS = [{ label: "Home", href: "/home", color: "var(--ink)" }, ...MODULES];
 
+const ICON_BUTTON =
+  "pressable flex size-9 cursor-pointer items-center justify-center rounded-full border border-line bg-surface text-ink-2 hover:border-line-2 hover:text-ink";
+
+function ThemeButton() {
+  const { theme, toggle } = useTheme();
+  const label = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  return (
+    <button type="button" aria-label={label} title={label} onClick={toggle} className={ICON_BUTTON}>
+      {theme === "dark" ? <Sun size={16} aria-hidden /> : <Moon size={16} aria-hidden />}
+    </button>
+  );
+}
+
 function ProfileMenu({ name, isAdmin }: { name: string; isAdmin: boolean }) {
   const [open, setOpen] = useState(false);
   const menu = useRef<HTMLDivElement>(null);
-  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     if (!open) return;
@@ -54,13 +66,6 @@ function ProfileMenu({ name, isAdmin }: { name: string; isAdmin: boolean }) {
               <Shield size={15} aria-hidden /> Admin
             </Link>
           )}
-          <button role="menuitem" type="button" onClick={toggle} className={itemClass}>
-            {theme === "dark" ? <Sun size={15} aria-hidden /> : <Moon size={15} aria-hidden />}
-            {theme === "dark" ? "Light mode" : "Dark mode"}
-          </button>
-          <button role="menuitem" type="button" onClick={lockNow} className={itemClass}>
-            <Lock size={15} aria-hidden /> Lock now
-          </button>
           <button role="menuitem" type="button" onClick={signOut} className={itemClass}>
             <LogOut size={15} aria-hidden /> Sign out
           </button>
@@ -109,6 +114,10 @@ export function TopBar({ name, isAdmin }: { name: string; isAdmin: boolean }) {
             className="kbd pressable hidden h-6 cursor-pointer hover:border-ink-3 sm:inline-flex"
           >
             ⌘K
+          </button>
+          <ThemeButton />
+          <button type="button" aria-label="Lock now" title="Lock now" onClick={lockNow} className={ICON_BUTTON}>
+            <Lock size={16} aria-hidden />
           </button>
           <ProfileMenu name={name} isAdmin={isAdmin} />
         </div>
