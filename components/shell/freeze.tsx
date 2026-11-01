@@ -11,7 +11,7 @@ const FreezeContext = createContext<{ frozen: boolean; freeze: () => void; thaw:
 
 export const useFreeze = () => useContext(FreezeContext);
 
-// Drops a sheet of frosted glass over the whole screen. Nothing is logged out, so
+// Blurs the whole screen. Nothing is logged out, so
 // it suits a colleague walking past; the Lock button is for leaving the room.
 export function FreezeProvider({ children }: { children: React.ReactNode }) {
   const [frozen, setFrozen] = useState(false);
@@ -51,14 +51,12 @@ export function FreezeProvider({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={thaw}
-          aria-label="Close the glass"
+          aria-label="Show the screen"
           className="frost fade-in fixed inset-0 z-[100] flex cursor-pointer flex-col items-center justify-center gap-4"
         >
-          <span className="display text-5xl sm:text-6xl">
-            Behind <em>glass.</em>
-          </span>
+          <span className="display text-5xl sm:text-6xl">Screen hidden</span>
           <span className="flex items-center gap-2 text-sm text-ink-2">
-            Press <span className="kbd">Esc</span> or click to close the glass
+            Press <span className="kbd">Esc</span> or click to come back
           </span>
         </button>
       )}
