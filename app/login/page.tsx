@@ -62,7 +62,7 @@ function LoginForm() {
         />
       </Field>
       <Button type="submit" size="lg" disabled={busy} className="w-full">
-        {busy ? "Checking…" : "Continue to the gate"}
+        {busy ? "Checking…" : "Log in"}
       </Button>
       <p className="text-center text-sm">
         <Link href="/forgot-password" className="text-ink-2 underline underline-offset-2 hover:text-ink">
@@ -81,7 +81,7 @@ export default function LoginPage() {
           Back so <em>soon?</em>
         </>
       }
-      subtitle="Sign in first. The gate will have a question for you after."
+      subtitle="Welcome back. We will ask one security question next."
       footer={
         <>
           New here?{" "}
