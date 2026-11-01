@@ -354,8 +354,8 @@ export function TransactionForm({
       </div>
 
       {/* Stays in view, so saving never means scrolling to the end of the form first. */}
-      <div className="sticky bottom-0 -mx-6 -mb-6 mt-6 flex flex-wrap items-center justify-end gap-2 border-t border-line bg-surface px-6 py-4">
-        <Button type="button" variant="ghost" onClick={onCancel}>
+      <div className="sticky -bottom-6 -mx-6 -mb-6 mt-6 flex flex-wrap items-center justify-end gap-2 border-t border-line bg-surface px-6 py-4">
+        <Button type="button" variant="ghost" className="max-sm:hidden" onClick={onCancel}>
           Cancel
         </Button>
         {!editing && (
