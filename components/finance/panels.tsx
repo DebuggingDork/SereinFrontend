@@ -148,6 +148,14 @@ export function WhereItWent({ className = "" }: { className?: string }) {
       ) : rows.length === 0 ? (
         <p className="py-6 text-sm leading-relaxed text-ink-2">Log your first expense and this month&apos;s picture starts here.</p>
       ) : (
+        <>
+        <p className="figure text-[34px] leading-tight">{inr(total)}</p>
+        <p className="mt-0.5 text-sm text-ink-2">spent so far this month</p>
+        <div aria-hidden className="mt-4 mb-5 flex h-3 gap-0.5 overflow-hidden rounded-full">
+          {rows.map((row) => (
+            <span key={row.category} style={{ width: `${(row.total / total) * 100}%`, background: row.color }} />
+          ))}
+        </div>
         <ul className="space-y-3.5">
           {rows.slice(0, SPENDING_ROWS).map((row) => (
             <li key={row.category}>
@@ -166,6 +174,7 @@ export function WhereItWent({ className = "" }: { className?: string }) {
             </li>
           ))}
         </ul>
+        </>
       )}
     </Card>
   );
