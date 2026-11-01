@@ -24,6 +24,26 @@ export function Card({
   );
 }
 
+// The signature of every heading: the last word in italics, in the module's colour. A single
+// word has nothing to set against, so it ends in a coloured full stop, like the logo.
+export function AccentTitle({ text, period }: { text: string; period?: boolean }) {
+  const split = text.lastIndexOf(" ");
+  if (split === -1) {
+    return (
+      <>
+        {text}
+        {period && <span style={{ color: "var(--accent)" }}>.</span>}
+      </>
+    );
+  }
+  return (
+    <>
+      {text.slice(0, split + 1)}
+      <em>{text.slice(split + 1)}</em>
+    </>
+  );
+}
+
 export function PageHeader({
   title,
   subtitle,
@@ -36,7 +56,9 @@ export function PageHeader({
   return (
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="display text-[34px] leading-tight sm:text-[40px]">{title}</h1>
+        <h1 className="display text-[34px] leading-tight sm:text-[40px]">
+          {typeof title === "string" ? <AccentTitle text={title} period /> : title}
+        </h1>
         {subtitle && <p className="mt-1 text-ink-2">{subtitle}</p>}
       </div>
       {action && <div className="flex flex-wrap items-center gap-2">{action}</div>}
