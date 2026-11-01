@@ -38,7 +38,7 @@ export async function signUp(page: Page, email: string, name = "Mani") {
   await page.goto("/signup");
   await page.getByLabel("Name").fill(name);
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByRole("heading", { name: /Check your inbox/ })).toBeVisible();
 }
@@ -46,7 +46,7 @@ export async function signUp(page: Page, email: string, name = "Mani") {
 export async function logIn(page: Page, email: string) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: "Log in" }).click();
 }
 

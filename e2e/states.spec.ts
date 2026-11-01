@@ -96,3 +96,42 @@ test("too many requests shows a countdown, but the question's own cooldown does 
   await expect(page.getByRole("heading", { name: /slow down/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: /slow down/ })).toHaveCount(0, { timeout: 10_000 });
 });
+
+test("a password can be shown and hidden", async ({ page }) => {
+  for (const path of ["/login", "/signup"]) {
+    await page.goto(path);
+    const field = page.getByLabel("Password", { exact: true });
+    await field.fill("correct-horse-battery");
+    await expect(field).toHaveAttribute("type", "password");
+    await page.getByRole("button", { name: "Show password" }).click();
+    await expect(field).toHaveAttribute("type", "text");
+    await expect(field).toHaveValue("correct-horse-battery");
+    await page.getByRole("button", { name: "Hide password" }).click();
+    await expect(field).toHaveAttribute("type", "password");
+  }
+});
+
+test("signup skips the inbox when the account is signed in straight away", async ({ page }) => {
+  await page.route("**/auth/v1/signup**", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        access_token: "header.e30.signature",
+        token_type: "bearer",
+        expires_in: 3600,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
+        refresh_token: "refresh",
+        user: { id: "00000000-0000-0000-0000-000000000000", aud: "authenticated", email: "a@serein.test", app_metadata: {}, user_metadata: {}, created_at: new Date().toISOString() },
+      }),
+    }),
+  );
+  await page.goto("/signup");
+  await page.getByLabel("Name").fill("Mani");
+  await page.getByLabel("Email").fill("a@serein.test");
+  await page.getByLabel("Password", { exact: true }).fill("correct-horse-battery");
+  await page.getByRole("button", { name: "Create account" }).click();
+  // The made up session has no real signature, so the proxy sends it on to login, asking for the gate.
+  await page.waitForURL(/gate/);
+  expect(page.url()).not.toContain("verify-email");
+});
