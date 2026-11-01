@@ -65,6 +65,11 @@ export function TransactionRow({
           {tx.payment_app && ` · ${tx.payment_app}`}
           {category && tx.payee && ` · ${category.name}`}
         </p>
+        {tx.notes && (
+          <p title={tx.notes} className="display mt-0.5 line-clamp-2 text-[13px] leading-snug text-ink-2 italic">
+            {tx.notes}
+          </p>
+        )}
       </div>
       {tx.is_refund && <Chip tone="good">Refund</Chip>}
       {tx.is_adjustment && <Chip>Adjustment</Chip>}
