@@ -205,6 +205,16 @@ export default function BudgetsPage() {
               </li>
             );
           })}
+          <li>
+            <button
+              type="button"
+              onClick={() => setEditing({})}
+              className="pressable flex h-full min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-3xl border border-dashed border-line-2 text-sm text-ink-2 hover:border-ink-3 hover:text-ink"
+            >
+              <Plus size={18} aria-hidden />
+              Add another budget
+            </button>
+          </li>
         </ul>
         </>
       )}
