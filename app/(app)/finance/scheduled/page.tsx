@@ -38,6 +38,14 @@ const FREQUENCY_LABEL: Record<ScheduledItem["frequency"], string> = {
   custom: "Custom",
 };
 
+const REPEATS: Record<ScheduledItem["frequency"], string> = {
+  daily: "Every day",
+  weekly: "Every week",
+  monthly: "Every month",
+  yearly: "Every year",
+  custom: "",
+};
+
 const MONTHLY_FACTOR: Record<ScheduledItem["frequency"], (item: ScheduledItem) => number> = {
   daily: () => 30.44,
   weekly: () => 4.348,
@@ -78,6 +86,7 @@ function ItemRow({
   onSkip: () => void;
 }) {
   const due = item.next_run <= today();
+  const late = item.next_run < today() ? daysBetween(item.next_run, today()) : 0;
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
       <div className="min-w-0 flex-1 basis-48">
@@ -85,10 +94,25 @@ function ItemRow({
           {item.name}
           {!item.active && <Chip>Paused</Chip>}
         </p>
-        <p className="text-xs text-ink-3">
-          {FREQUENCY_LABEL[item.frequency]}
-          {item.frequency === "custom" && ` · every ${item.interval_days} days`} · Next {relativeDay(item.next_run)} ·{" "}
-          {item.auto_post ? "Adds itself" : "Asks first"}
+        <p className="text-xs text-ink-2">
+          {item.frequency === "custom" ? `Every ${item.interval_days} days` : REPEATS[item.frequency]} ·{" "}
+          {late > 0 ? (
+            <span className="text-bad">
+              Was due {late} day{late === 1 ? "" : "s"} ago
+            </span>
+          ) : (
+            `Next ${relativeDay(item.next_run)}`
+          )}{" "}
+          ·{" "}
+          <span
+            title={
+              item.auto_post
+                ? "Serein adds this to your transactions by itself on the day."
+                : "Serein asks you to confirm or skip this on the day."
+            }
+          >
+            {item.auto_post ? "Added automatically" : "You confirm each time"}
+          </span>
         </p>
       </div>
       {due && !item.auto_post && item.active && (
@@ -196,7 +220,7 @@ export default function ScheduledPage() {
         when: (values) => values.frequency === "custom",
       },
       { name: "next_run", label: "Next date", type: "date", required: true, half: true },
-      { name: "is_subscription", label: "This is a subscription", type: "checkbox" },
+      { name: "is_subscription", label: "This is a subscription, like Netflix or Spotify", type: "checkbox" },
       { name: "auto_post", label: "Add automatically (otherwise I confirm each one)", type: "checkbox" },
       { name: "active", label: "Active", type: "checkbox" },
     ],
@@ -231,7 +255,7 @@ export default function ScheduledPage() {
     <>
       <PageHeader
         title="Scheduled and subscriptions"
-        subtitle="Predictable money should never surprise you."
+        subtitle="Money that moves on a schedule. Add it once, and it's counted before Serein tells you what's safe to spend."
         action={
           <Button onClick={() => setEditing({})} disabled={accounts.length === 0}>
             <Plus size={15} aria-hidden /> Add
@@ -255,7 +279,7 @@ export default function ScheduledPage() {
         <ListSkeleton />
       ) : items.length === 0 ? (
         <Card>
-          <Empty title="Nothing scheduled" hint="Add rent, salary, EMIs and subscriptions. They feed safe-to-spend." />
+          <Empty title="Nothing scheduled" hint="Add your rent, EMIs, salary and subscriptions, and they're counted in what's safe to spend." />
         </Card>
       ) : (
         <div className="grid gap-4 xl:grid-cols-2">
@@ -280,7 +304,7 @@ export default function ScheduledPage() {
           />
           <ChartCard
             title="Subscription cost by month"
-            subtitle="Projected from what is active today"
+            subtitle="What your active subscriptions will cost each month. Yearly ones show up as a spike in the month they renew."
             className="xl:col-span-2"
             loading={loadingProjection}
             error={projectionError}
