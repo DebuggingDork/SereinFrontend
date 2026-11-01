@@ -17,15 +17,3 @@ export function ClosingBand() {
     </section>
   );
 }
-
-export function Colophon() {
-  return (
-    <footer id="colophon" className="mx-auto max-w-[1440px] px-6 pb-16 text-center md:px-16">
-      <p className="display text-[22px]">Serein</p>
-      <p className="mx-auto mt-1 max-w-xl text-sm leading-[25px] text-ink-2">
-        Your money, tracked by you. No bank logins, no card numbers.
-      </p>
-      <p className="mt-3 text-sm text-ink-2">© 2026</p>
-    </footer>
-  );
-}
