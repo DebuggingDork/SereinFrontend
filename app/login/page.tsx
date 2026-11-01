@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { AuthFrame, FormError } from "@/components/auth/auth-frame";
 import { Button } from "@/components/ui/button";
-import { Field, Input } from "@/components/ui/field";
+import { Field, Input, PasswordInput } from "@/components/ui/field";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
 function LoginForm() {
@@ -52,9 +52,8 @@ function LoginForm() {
         />
       </Field>
       <Field label="Password" htmlFor="password">
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           required
           autoComplete="current-password"
           value={password}
