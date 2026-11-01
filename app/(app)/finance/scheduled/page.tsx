@@ -8,7 +8,7 @@ import { accountOptions, categoryOptions, useAccounts, useCategories } from "@/c
 import { Button } from "@/components/ui/button";
 import { EntityForm, type FieldDef } from "@/components/ui/entity-form";
 import { Modal } from "@/components/ui/modal";
-import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader, StatTile } from "@/components/ui/primitives";
+import { AccentTitle, Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader, StatTile } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useRows, useRpc, useRpcAction, useSave } from "@/lib/data";
 import { addDays, daysBetween, formatDay, inr, inrCompact, monthLabel, relativeDay, shiftMonth, today } from "@/lib/format";
@@ -223,7 +223,9 @@ function Section({
           <Icon size={18} strokeWidth={1.7} />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="display text-[22px] leading-tight">{title}</h2>
+          <h2 className="display text-[22px] leading-tight">
+            <AccentTitle text={title} />
+          </h2>
           <p className="mt-0.5 text-[13px] leading-relaxed text-ink-2">{explains}</p>
         </div>
         <button

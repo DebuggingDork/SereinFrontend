@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAccounts } from "@/components/finance/shared";
 import { LinkButton } from "@/components/ui/button";
-import { Card, Skeleton } from "@/components/ui/primitives";
+import { AccentTitle, Card, Skeleton } from "@/components/ui/primitives";
 import { useRpc } from "@/lib/data";
 import { addDays, formatDay, inr, monthBounds, relativeDay, today } from "@/lib/format";
 import { useProfile } from "@/lib/profile";
@@ -28,8 +28,12 @@ interface Alert {
   href: string;
 }
 
-export function PanelTitle({ children }: { children: React.ReactNode }) {
-  return <span className="display text-[22px] leading-tight text-ink">{children}</span>;
+export function PanelTitle({ children }: { children: string }) {
+  return (
+    <span className="display text-[22px] leading-tight text-ink">
+      <AccentTitle text={children} />
+    </span>
+  );
 }
 
 export function PanelLink({ href, children }: { href: string; children: React.ReactNode }) {
