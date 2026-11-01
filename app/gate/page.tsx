@@ -76,11 +76,15 @@ function GateForm() {
         setQuestion(challenge.question);
       }
     } catch (caught) {
-      if (caught instanceof ApiError && caught.status === 401) {
-        router.replace("/login");
-        return;
-      }
-      setError(caught instanceof Error ? caught.message : "Something went wrong.");
+      // Login would send a signed-in person straight back here, so say what happened instead.
+      const rejected = caught instanceof ApiError && caught.status === 401;
+      setError(
+        rejected
+          ? "We couldn't confirm your session. Try again, or sign out and back in."
+          : caught instanceof Error
+            ? caught.message
+            : "Something went wrong.",
+      );
     }
     setLoading(false);
   }, [router]);
@@ -144,6 +148,17 @@ function GateForm() {
         <div className="skeleton h-3 w-24" />
         <div className="skeleton h-8 w-4/5" />
         <div className="skeleton h-11 w-full" />
+      </div>
+    );
+  }
+
+  if (!question && !lockedUntil) {
+    return (
+      <div>
+        <FormError message={error ?? "We couldn't load your question."} />
+        <Button type="button" size="lg" onClick={() => void load()} className="mt-4 !px-5">
+          Try again
+        </Button>
       </div>
     );
   }
