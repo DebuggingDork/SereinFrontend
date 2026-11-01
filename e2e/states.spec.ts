@@ -38,6 +38,8 @@ test("features scroll into view without touching the address", async ({ page }) 
   await expect(page.getByRole("heading", { name: /All your money/ })).toBeInViewport();
   expect(new URL(page.url()).hash).toBe("");
 
+  // From another document, because going from "/" would only change the hash without a load.
+  await page.goto("/login");
   await page.goto("/#modules");
   await expect.poll(() => new URL(page.url()).hash).toBe("");
 });
