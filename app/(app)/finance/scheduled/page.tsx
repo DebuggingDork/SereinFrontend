@@ -375,7 +375,7 @@ export default function ScheduledPage() {
           <Empty title="Nothing scheduled" hint="Add your rent, EMIs, salary and subscriptions, and they're counted in what's safe to spend." />
         </Card>
       ) : (
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-2">
           <Section
             icon={Repeat}
             title="Subscriptions"
