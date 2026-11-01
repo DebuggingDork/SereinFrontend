@@ -49,58 +49,65 @@ function BudgetCard({
   const remaining = Number(budget.remaining);
   const over = remaining < 0;
   const days = daysLeft(budget);
+  const used = usedShare(budget);
   const color = over ? "var(--bad)" : budget.category_color;
 
   return (
-    <div className="relative h-full overflow-hidden rounded-3xl border border-line bg-surface">
-      {/* The card fills like a tank as the money goes. */}
-      <div
-        aria-hidden
-        className="absolute inset-y-0 left-0 transition-[width] duration-700 ease-out"
-        style={{
-          width: `${Math.min(1, usedShare(budget)) * 100}%`,
-          background: `color-mix(in srgb, ${color} 18%, transparent)`,
-        }}
-      />
-      <div
-        aria-hidden
-        title="Today"
-        className="absolute inset-y-0 w-px border-l border-dashed border-ink-3 opacity-50"
-        style={{ left: `${Math.min(1, Number(budget.elapsed)) * 100}%` }}
-      />
-
-      <div className="relative flex h-full flex-col p-5 sm:p-6">
-        <div className="flex items-center justify-between gap-2">
-          <p className="flex min-w-0 items-center gap-2">
-            <span className="size-2.5 shrink-0 rounded-full" style={{ background: budget.category_color }} />
-            <span className="truncate">{budget.category_name}</span>
+    <div className="flex h-full flex-col rounded-3xl border border-line bg-surface p-5 transition-colors hover:border-line-2 sm:p-6">
+      <div className="flex items-start gap-3">
+        <span
+          aria-hidden
+          className="flex size-10 shrink-0 items-center justify-center rounded-xl"
+          style={{ background: `color-mix(in srgb, ${budget.category_color} 16%, transparent)` }}
+        >
+          <span className="size-2.5 rounded-full" style={{ background: budget.category_color }} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate leading-snug">{budget.category_name}</p>
+          <p className="mt-0.5 truncate text-xs text-ink-2">
+            {budget.period === "weekly" ? "This week" : "This month"} · {days} day{days === 1 ? "" : "s"} left
           </p>
-          <span className="flex shrink-0 items-center gap-1">
-            <Chip tone={status.tone}>{status.label}</Chip>
-            <RowActions
-              onEdit={onEdit}
-              onDelete={onDelete}
-              deleteTitle={`Delete the ${budget.category_name} budget?`}
-              deleteBody="Your transactions stay as they are."
-            />
-          </span>
         </div>
+        <RowActions
+          onEdit={onEdit}
+          onDelete={onDelete}
+          deleteTitle={`Delete the ${budget.category_name} budget?`}
+          deleteBody="Your transactions stay as they are."
+        />
+      </div>
 
-        <p className={`figure mt-4 text-[36px] leading-none ${over ? "text-bad" : ""}`}>
-          {inr(Math.abs(remaining))}
-          <span className="ml-2 font-sans text-sm tracking-normal text-ink-2">{over ? "over" : "left"}</span>
-        </p>
-        <p className="mt-2 text-sm text-ink-2">
-          {over
-            ? "Time to ease off for a while."
-            : remaining === 0
-              ? "Nothing left until this resets."
-              : `About ${inr(remaining / days)} a day for ${dayCount(days)}.`}
-        </p>
+      <div className="mt-5 flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className={`figure truncate text-[34px] leading-none ${over ? "text-bad" : ""}`}>{inr(Math.abs(remaining))}</p>
+          <p className="mt-1.5 text-[13px] text-ink-2">
+            {over ? "over" : "left"} of {inr(budget.limit_amount)}
+          </p>
+        </div>
+        <Chip tone={status.tone}>{status.label}</Chip>
+      </div>
 
-        <p className="tabular mt-auto pt-5 text-xs text-ink-2">
-          {inr(budget.spent)} of {inr(budget.limit_amount)} · {budget.period === "weekly" ? "This week" : "This month"}, {formatDay(budget.period_start)} to {formatDay(budget.period_end)}
-        </p>
+      <div
+        role="progressbar"
+        aria-label={`${budget.category_name} budget used`}
+        aria-valuenow={Math.round(Math.min(1, used) * 100)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        className="relative mt-5 h-2 rounded-full bg-surface-2"
+      >
+        <div
+          className="h-full rounded-full transition-[width] duration-700 ease-out"
+          style={{ width: `${Math.min(1, used) * 100}%`, background: color }}
+        />
+        <span
+          title="Today"
+          className="absolute -top-1 h-4 w-0.5 rounded-full bg-ink"
+          style={{ left: `${Math.min(1, Number(budget.elapsed)) * 100}%` }}
+        />
+      </div>
+
+      <div className="tabular mt-3 flex items-center justify-between gap-3 text-[13px] text-ink-2">
+        <span>{inr(budget.spent)} spent</span>
+        <span>{over || remaining === 0 ? "Nothing left to spend" : `About ${inr(remaining / days)} a day`}</span>
       </div>
     </div>
   );
@@ -179,7 +186,7 @@ export default function BudgetsPage() {
     <>
       <PageHeader
         title="Budgets"
-        subtitle="Each card fills as you spend. Stay behind the dashed line, which marks today, and you're on pace."
+        subtitle="Each bar fills as you spend. Stay behind the small marker, which shows today, and you're on pace."
         action={
           <Button onClick={() => setEditing({})}>
             <Plus size={15} aria-hidden /> Add
