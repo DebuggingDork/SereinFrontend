@@ -22,25 +22,14 @@ export function LandingNav() {
 
       <nav className="hidden items-center gap-8 text-[15px] text-ink-2 md:flex">
         <a href="#modules" className="transition-colors hover:text-ink">
-          Modules
-        </a>
-        <a href="#gate" className="transition-colors hover:text-ink">
-          The gate
-        </a>
-        <a href="#colophon" className="transition-colors hover:text-ink">
-          Colophon
+          Features
         </a>
       </nav>
 
       <div className="flex items-center justify-end gap-3">
-        <button
-          type="button"
-          aria-label="Open search"
-          onClick={() => window.dispatchEvent(new Event("serein:search"))}
-          className="kbd pressable hidden h-5 cursor-pointer hover:border-ink-3 sm:inline-flex"
-        >
-          ⌘K
-        </button>
+        <Link href="/login" className="text-[15px] text-ink-2 transition-colors hover:text-ink">
+          Log in
+        </Link>
         <button
           type="button"
           onClick={toggle}
