@@ -106,6 +106,66 @@ function BudgetCard({
   );
 }
 
+function BudgetSummary({ budgets }: { budgets: BudgetProgress[] }) {
+  // Weekly and monthly limits can't be added up honestly, so this speaks for whichever has more.
+  const monthly = budgets.filter((b) => b.period === "monthly");
+  const group = monthly.length >= budgets.length - monthly.length ? monthly : budgets.filter((b) => b.period === "weekly");
+  const first = group[0];
+  if (!first) return null;
+
+  const limit = group.reduce((sum, b) => sum + Number(b.limit_amount), 0);
+  const spent = group.reduce((sum, b) => sum + Number(b.spent), 0);
+  const left = limit - spent;
+  const used = limit > 0 ? spent / limit : 0;
+  const elapsed = Math.min(1, Number(first.elapsed));
+  const days = daysLeft(first);
+  const period = first.period === "weekly" ? "week" : "month";
+  const counts = group.reduce(
+    (tally, budget) => {
+      tally[pace(budget).tone] += 1;
+      return tally;
+    },
+    { good: 0, warn: 0, bad: 0 },
+  );
+
+  return (
+    <section data-theme="dark" className="mb-4 rounded-3xl p-6 text-ink sm:p-8" style={{ background: "#0e3b2e" }}>
+      <div className="flex flex-wrap items-start justify-between gap-x-8 gap-y-5">
+        <div>
+          <p className="text-[15px] text-[#c5dcd2]">Left to spend this {period}</p>
+          <p className={`figure mt-2 text-[clamp(2.75rem,6vw,3.75rem)] leading-none ${left < 0 ? "text-[#ffb4a8]" : ""}`}>
+            {left < 0 ? `${inr(-left)} over` : inr(left)}
+          </p>
+          <p className="mt-3 text-[#c5dcd2]">
+            {Math.round(used * 100)}% of your budgets used, with {Math.round(elapsed * 100)}% of the {period} gone
+            {left > 0 ? `. About ${inr(left / days)} a day for ${dayCount(days)}.` : "."}
+          </p>
+        </div>
+        <dl className="flex gap-6 text-sm">
+          {[
+            ["On pace", counts.good],
+            ["Ahead", counts.warn],
+            ["Over", counts.bad],
+          ].map(([label, count]) => (
+            <div key={label}>
+              <dd className="figure text-[28px] leading-none">{count}</dd>
+              <dt className="mt-1.5 text-[#c5dcd2]">{label}</dt>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <div aria-hidden className="relative mt-6 h-2.5 rounded-full bg-white/12">
+        <div
+          className="h-full rounded-full transition-[width] duration-700 ease-out"
+          style={{ width: `${Math.min(1, used) * 100}%`, background: used > elapsed + 0.1 ? "#fbbf24" : "#4ade9f" }}
+        />
+        <span className="absolute -top-1 h-[18px] w-0.5 rounded-full bg-white" style={{ left: `${elapsed * 100}%` }} />
+      </div>
+    </section>
+  );
+}
+
 export default function BudgetsPage() {
   const { data = [], isLoading, error } = useRpc<BudgetProgress[]>("budget_progress");
   const { data: categories = [] } = useCategories();
@@ -135,6 +195,8 @@ export default function BudgetsPage() {
           <Empty title="No budgets yet" hint="Pick a category and a weekly or monthly limit." />
         </Card>
       ) : (
+        <>
+        <BudgetSummary budgets={data} />
         <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {sorted.map((budget) => {
             return (
@@ -144,6 +206,7 @@ export default function BudgetsPage() {
             );
           })}
         </ul>
+        </>
       )}
 
       {editing && (
