@@ -16,7 +16,9 @@ export function Modal({
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
-    const first = panel.current?.querySelector<HTMLElement>("input, select, textarea, button");
+    const first =
+      panel.current?.querySelector<HTMLElement>("[data-autofocus]") ??
+      panel.current?.querySelector<HTMLElement>("input, select, textarea, button");
     first?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
