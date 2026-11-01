@@ -119,6 +119,11 @@ function AccountsContent() {
         <Modal title={editing.id ? `Edit ${editing.name}` : "New account"} onClose={close}>
           <EntityForm
             fields={ACCOUNT_FIELDS}
+            preview={(values) => (
+              <div className="mx-auto max-w-[340px]">
+                <AccountArt {...accountArtFromForm(values)} />
+              </div>
+            )}
             initial={{ kind: "bank", balance: 0, ...editing, card_used: editing.kind === "card" ? editing.balance : 0 }}
             onCancel={close}
             onSubmit={async (values) => {
