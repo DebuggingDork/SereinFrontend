@@ -15,8 +15,8 @@ export function Hero() {
           className="rise mt-5 max-w-[29rem] text-[17px] leading-[28px] text-ink-2"
           style={{ "--delay": "120ms" } as React.CSSProperties}
         >
-          Your salary comes in, rent and EMIs go out, and the rest quietly disappears. Serein tells you what&apos;s safe to
-          spend today, every day until your next payday.
+          See what&apos;s safe to spend today, stay on top of what&apos;s due, track what you eat and write down how the day
+          went. Your money, plans, meals and thoughts, all in one private place.
         </p>
         <div
           className="rise mt-7 flex flex-wrap gap-3"
