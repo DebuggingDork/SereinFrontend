@@ -309,13 +309,16 @@ export function ShaderBackground({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const element = canvasRef.current
+    if (!element) return
+    // Typed as non-null so the checks hold inside the hoisted functions below.
+    const canvas: HTMLCanvasElement = element
     const pendingRelease = pendingContextReleases.get(canvas)
     if (pendingRelease !== undefined) window.clearTimeout(pendingRelease)
     pendingContextReleases.delete(canvas)
-    const gl = canvas.getContext("webgl", { antialias: false })
-    if (!gl) return
+    const context = canvas.getContext("webgl", { antialias: false })
+    if (!context) return
+    const gl: WebGLRenderingContext = context
 
     const compile = (type: number, src: string) => {
       const s = gl.createShader(type)!
