@@ -34,12 +34,15 @@ function greeting(name: string) {
 }
 
 function brief(summary: HomeSummary) {
-  const parts = [`${inr(Math.max(0, Number(summary.safe_to_spend?.per_day ?? 0)))} safe to spend`];
+  const parts: string[] = [];
+  const safe = Number(summary.safe_to_spend?.per_day ?? 0);
+  if (safe > 0) parts.push(`${inr(safe)} safe to spend`);
   const due = Number(summary.tasks.due);
   if (due > 0) parts.push(`${due} task${due === 1 ? "" : "s"} due`);
   const calories = Number(summary.nutrition.calories);
   if (calories > 0) parts.push(`${number(calories)} kcal logged`);
-  const last = parts.pop()!;
+  const last = parts.pop();
+  if (!last) return "Let's get your money set up.";
   return parts.length ? `${parts.join(", ")} and ${last}.` : `${last}.`;
 }
 
