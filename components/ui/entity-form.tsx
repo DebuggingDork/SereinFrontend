@@ -86,6 +86,7 @@ export function EntityForm({
   secondaryLabel,
   onCancel,
   transform,
+  preview,
 }: {
   fields: FieldDef[];
   initial?: Record<string, unknown>;
@@ -94,6 +95,8 @@ export function EntityForm({
   secondaryLabel?: string;
   onCancel?: () => void;
   transform?: (values: Record<string, unknown>) => Record<string, unknown>;
+  // Shown above the fields and redrawn as they change.
+  preview?: (values: FormValues) => React.ReactNode;
 }) {
   const [values, setValues] = useState<FormValues>(() => initialValues(fields, initial));
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -149,6 +152,7 @@ export function EntityForm({
       }}
       className="grid grid-cols-2 gap-x-3 gap-y-4"
     >
+      {preview && <div className="col-span-2">{preview(values)}</div>}
       {fields.map((field) => {
         if (field.when && !field.when(values)) return null;
         const id = `field-${field.name}`;
