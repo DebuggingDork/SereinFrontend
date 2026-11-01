@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Landmark, Plus, ReceiptText, Repeat } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ChartCard } from "@/components/charts/chart-card";
 import { BarsChart } from "@/components/charts/marks";
@@ -196,28 +196,64 @@ function ItemRow({
 }
 
 function Section({
+  icon: Icon,
   title,
   explains,
+  total,
+  addLabel,
+  onAdd,
   empty,
   rows,
-  className,
+  className = "",
 }: {
+  icon: typeof Plus;
   title: string;
   explains: string;
+  total: number;
+  addLabel: string;
+  onAdd: () => void;
   empty: string;
   rows: React.ReactNode[];
   className?: string;
 }) {
   return (
-    <Card className={className}>
-      <h2 className="display text-[22px] leading-tight">{title}</h2>
-      <p className="mt-1 text-sm leading-relaxed text-ink-2">{explains}</p>
+    <section className={`flex flex-col rounded-3xl border border-line bg-surface p-5 sm:p-6 ${className}`}>
+      <header className="flex items-start gap-3">
+        <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-ink-2">
+          <Icon size={18} strokeWidth={1.7} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h2 className="display text-[22px] leading-tight">{title}</h2>
+          <p className="mt-0.5 text-[13px] leading-relaxed text-ink-2">{explains}</p>
+        </div>
+        <button
+          type="button"
+          aria-label={addLabel}
+          title={addLabel}
+          onClick={onAdd}
+          className="pressable flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-line text-ink-2 hover:border-line-2 hover:text-ink"
+        >
+          <Plus size={15} aria-hidden />
+        </button>
+      </header>
+
       {rows.length ? (
-        <ul className="mt-2 divide-y divide-line">{rows}</ul>
+        <>
+          <ul className="mt-4 flex-1 space-y-1">{rows}</ul>
+          <p className="tabular mt-4 flex items-baseline justify-between border-t border-line pt-3 text-[13px] text-ink-2">
+            About a month
+            <span className="figure text-lg text-ink">{inr(total)}</span>
+          </p>
+        </>
       ) : (
-        <p className="mt-4 rounded-2xl bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink-2">{empty}</p>
+        <div className="mt-4 flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line-2 px-4 py-7 text-center">
+          <p className="max-w-xs text-sm leading-relaxed text-ink-2">{empty}</p>
+          <Button size="sm" variant="soft" onClick={onAdd}>
+            <Plus size={13} aria-hidden /> {addLabel}
+          </Button>
+        </div>
       )}
-    </Card>
+    </section>
   );
 }
 
@@ -341,21 +377,33 @@ export default function ScheduledPage() {
       ) : (
         <div className="grid gap-4 xl:grid-cols-2">
           <Section
+            icon={Repeat}
             title="Subscriptions"
             explains="Services you keep paying for and could cancel, like Netflix or Spotify. Costliest first."
-            empty="Nothing here yet. When you add one, tick “This is a subscription”."
+            total={monthly}
+            addLabel="Add a subscription"
+            onAdd={() => setEditing({ is_subscription: true })}
+            empty="Add what you pay for every month, and see what it really costs you."
             rows={subscriptionRows.map(renderRow("name"))}
           />
           <Section
+            icon={ReceiptText}
             title="Bills and EMIs"
             explains="Regular payments you have to make, like rent, EMIs, insurance and electricity."
-            empty="Nothing here yet. Add your rent or an EMI, and leave “This is a subscription” unticked."
+            total={running.filter((item) => !item.is_subscription && item.kind === "expense").reduce((sum, item) => sum + monthlyCost(item), 0)}
+            addLabel="Add a bill"
+            onAdd={() => setEditing({})}
+            empty="Add your rent or an EMI, and it's set aside before Serein tells you what's safe to spend."
             rows={billRows.map(renderRow("date"))}
           />
           <Section
+            icon={Landmark}
             title="Regular income"
             explains="Money that arrives on a schedule, like your salary or rent you collect."
-            empty="Nothing here yet. Add your salary and choose Income as the type."
+            total={running.filter((item) => item.kind === "income").reduce((sum, item) => sum + monthlyCost(item), 0)}
+            addLabel="Add your salary"
+            onAdd={() => setEditing({ kind: "income" })}
+            empty="Add your salary, and it lands in your account by itself on the day."
             rows={incomeRows.map(renderRow("name"))}
             className="xl:col-span-2"
           />
