@@ -79,7 +79,7 @@ test("a forgotten answer takes email proof, approval and the wait, and keeps all
 
   // The owner approves from the panel, and only the owner can see it.
   await visitor.goto("/admin");
-  await expect(visitor.getByText("Nothing here", { exact: false })).toBeVisible({ timeout: 5000 }).catch(() => {});
+  await expect(visitor.getByText("Aha, buddy.")).toBeVisible({ timeout: 5000 }).catch(() => {});
   await visitor.goto("/gate/recovery");
 
   await page.goto("/admin");
@@ -116,6 +116,6 @@ test("a forgotten answer takes email proof, approval and the wait, and keeps all
 test("someone else cannot reach the admin panel", async ({ page }) => {
   await createReadyUser(page);
   await page.goto("/admin");
-  await expect(page.getByText("Nothing", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Aha, buddy.")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Admin" })).toHaveCount(0);
 });
