@@ -65,7 +65,7 @@ function BudgetCard({
       <div
         aria-hidden
         title="Today"
-        className="absolute inset-y-0 w-px border-l border-dashed border-ink-3"
+        className="absolute inset-y-0 w-px border-l border-dashed border-ink-3 opacity-50"
         style={{ left: `${Math.min(1, Number(budget.elapsed)) * 100}%` }}
       />
 
