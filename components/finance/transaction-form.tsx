@@ -227,7 +227,7 @@ export function TransactionForm({
               setErrors((current) => ({ ...current, amount: "" }));
             }}
             style={{ width: `${Math.max(amount.length, 1) + 0.6}ch` }}
-            className="figure max-w-[80%] min-w-[1.6ch] bg-transparent text-[56px] leading-none outline-none placeholder:text-line-2"
+            className="figure max-w-[80%] min-w-[1.6ch] bg-transparent text-[56px] leading-none !outline-none placeholder:text-line-2"
           />
         </div>
         {errors.amount && (
