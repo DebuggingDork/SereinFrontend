@@ -106,7 +106,7 @@ test("finance: an expense moves the balance and reaches the chart", async ({ pag
   await dialog.getByLabel("Account").selectOption({ index: 1 });
   await dialog.getByLabel("This is a subscription").check();
   await dialog.getByRole("button", { name: "Save" }).click();
-  await expect(page.getByText("Netflix")).toBeVisible();
+  await expect(page.getByText("Netflix", { exact: true })).toBeVisible();
   await expect(page.getByText("₹649").first()).toBeVisible();
 
   await page.goto("/finance/net-worth");
