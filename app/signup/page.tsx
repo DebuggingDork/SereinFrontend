@@ -6,7 +6,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { AuthFrame, FormError } from "@/components/auth/auth-frame";
 import { Button } from "@/components/ui/button";
-import { Field, Input } from "@/components/ui/field";
+import { Field, Input, PasswordInput } from "@/components/ui/field";
 import { supabaseBrowser } from "@/lib/supabase/client";
 
 const schema = z.object({
@@ -75,9 +75,8 @@ export default function SignupPage() {
           <Input id="email" type="email" autoComplete="email" value={form.email} onChange={update("email")} />
         </Field>
         <Field label="Password" htmlFor="password" hint="At least 8 characters.">
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="new-password"
             value={form.password}
             onChange={update("password")}
