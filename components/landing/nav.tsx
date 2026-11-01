@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useTheme } from "@/components/shell/theme";
 
 export function Logo({ size = "text-[28px]" }: { size?: string }) {
@@ -11,8 +12,20 @@ export function Logo({ size = "text-[28px]" }: { size?: string }) {
   );
 }
 
+function showFeatures() {
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("modules")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+}
+
 export function LandingNav() {
   const { theme, toggle } = useTheme();
+
+  // Old links may still carry the section in the address. Land there, then tidy it away.
+  useEffect(() => {
+    if (!window.location.hash) return;
+    showFeatures();
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+  }, []);
 
   return (
     <header className="mx-auto grid max-w-[1440px] grid-cols-[1fr_auto] items-center px-6 py-7 md:grid-cols-[1fr_auto_1.14fr] md:px-16">
@@ -21,9 +34,9 @@ export function LandingNav() {
       </Link>
 
       <nav className="hidden items-center gap-8 text-[15px] text-ink-2 md:flex">
-        <a href="#modules" className="transition-colors hover:text-ink">
+        <button type="button" onClick={showFeatures} className="cursor-pointer transition-colors hover:text-ink">
           Features
-        </a>
+        </button>
       </nav>
 
       <div className="flex items-center justify-end gap-3">

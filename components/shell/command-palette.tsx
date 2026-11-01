@@ -50,7 +50,6 @@ const APP_ROUTES: [string, string, string][] = [
 ];
 
 const LANDING_ROUTES: [string, string][] = [
-  ["Features", "/#modules"],
   ["Sign in", "/login"],
   ["Create an account", "/signup"],
 ];
