@@ -1,3 +1,4 @@
+import { HeroFacts } from "./live-preview";
 "use client";
 
 import { useState } from "react";
@@ -258,12 +259,7 @@ export function Hero() {
             Log in
           </LinkButton>
         </div>
-        <p
-          className="display rise mt-8 max-w-[24rem] text-base leading-5 text-ink-2 italic"
-          style={{ "--delay": "240ms" } as React.CSSProperties}
-        >
-          Your numbers, typed by you. Nothing to link and nothing to break.
-        </p>
+        <HeroFacts />
       </div>
 
       <ProductPreview />
