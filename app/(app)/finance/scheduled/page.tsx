@@ -142,7 +142,7 @@ function ItemRow({
 }) {
   const due = item.next_run <= today();
   return (
-    <li className={`group -mx-2 rounded-2xl p-2 transition-colors hover:bg-surface-2/60 ${item.active ? "" : "opacity-60"}`}>
+    <li className={`group relative -mx-2 rounded-2xl p-2 transition-colors hover:bg-surface-2/60 ${item.active ? "" : "opacity-60"}`}>
       <div className="flex items-center gap-3">
         <RowLead item={item} lead={lead} />
         <div className="min-w-0 flex-1">
@@ -162,7 +162,7 @@ function ItemRow({
             {item.auto_post ? "Adds itself" : "You confirm it"}
           </p>
         </div>
-        <div className="shrink-0 text-right">
+        <div className="shrink-0 text-right transition-transform duration-200 ease-out lg:group-focus-within:-translate-x-[68px] lg:group-hover:-translate-x-[68px]">
           <p className={`tabular text-[15px] ${item.kind === "income" ? "text-good" : ""}`}>
             {item.kind === "income" ? "+" : ""}
             {inr(item.amount)}
@@ -172,7 +172,7 @@ function ItemRow({
             <DueLabel item={item} />
           </div>
         </div>
-        <span className="opacity-100 transition-opacity focus-within:opacity-100 lg:opacity-0 lg:group-hover:opacity-100">
+        <span className="transition-opacity duration-200 lg:absolute lg:top-2 lg:right-2 lg:flex lg:h-11 lg:items-center lg:opacity-0 lg:group-focus-within:opacity-100 lg:group-hover:opacity-100">
           <RowActions
             onEdit={onEdit}
             onDelete={onDelete}
@@ -241,7 +241,7 @@ function Section({
         <>
           <ul className="mt-4 flex-1 space-y-1">{rows}</ul>
           <p className="tabular mt-4 flex items-baseline justify-between border-t border-line pt-3 text-[13px] text-ink-2">
-            About a month
+            Monthly total
             <span className="figure text-lg text-ink">{inr(total)}</span>
           </p>
         </>
