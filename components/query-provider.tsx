@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const makeClient = () =>
   new QueryClient({
@@ -21,5 +22,14 @@ function getClient() {
 
 // Only signed-in screens fetch data, so the landing and sign-in pages skip this.
 export function QueryProvider({ children }: { children: React.ReactNode }) {
-  return <QueryClientProvider client={getClient()}>{children}</QueryClientProvider>;
+  const client = getClient();
+
+  // Whatever failed during an outage loads again once the connection returns.
+  useEffect(() => {
+    const refresh = () => void client.invalidateQueries();
+    window.addEventListener("serein:reconnected", refresh);
+    return () => window.removeEventListener("serein:reconnected", refresh);
+  }, [client]);
+
+  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }
