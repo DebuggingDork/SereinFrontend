@@ -61,11 +61,11 @@ type Kind = "expense" | "income";
 
 const CATEGORY_CHIPS = 6;
 
-function byUse<T extends { id: string }>(items: T[], uses: Map<string, number>) {
+export function byUse<T extends { id: string }>(items: T[], uses: Map<string, number>) {
   return [...items].sort((a, b) => (uses.get(b.id) ?? 0) - (uses.get(a.id) ?? 0));
 }
 
-function Segmented<T extends string>({
+export function Segmented<T extends string>({
   label,
   value,
   options,
@@ -95,7 +95,7 @@ function Segmented<T extends string>({
   );
 }
 
-function PickChip({
+export function PickChip({
   on,
   dot,
   onClick,
