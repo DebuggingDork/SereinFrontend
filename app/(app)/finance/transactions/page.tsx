@@ -7,16 +7,14 @@ import { QuickAdd } from "@/components/finance/quick-add";
 import {
   accountOptions,
   categoryOptions,
-  transactionFormInitial,
-  transactionPayload,
   useAccounts,
   useCategories,
-  useTransactionFields,
   type Transaction,
 } from "@/components/finance/shared";
 import { TransactionRow } from "@/components/finance/transaction-row";
 import { Button } from "@/components/ui/button";
 import { MonthNav, todayMonth } from "@/components/ui/calendar";
+import { TransactionForm } from "@/components/finance/transaction-form";
 import { EntityForm, type FieldDef } from "@/components/ui/entity-form";
 import { Select, Input } from "@/components/ui/field";
 import { Modal } from "@/components/ui/modal";
@@ -128,7 +126,6 @@ function TransactionsContent() {
   });
   const { data: accounts = [] } = useAccounts();
   const { data: categories = [] } = useCategories();
-  const fields = useTransactionFields();
   const save = useSave("transactions", { alsoInvalidate: ["accounts"] });
   const remove = useRemove("transactions", { alsoInvalidate: ["accounts"] });
 
@@ -165,8 +162,7 @@ function TransactionsContent() {
   }
 
   async function submit(values: Record<string, unknown>, mode: "primary" | "secondary") {
-    const payload = transactionPayload(values);
-    await save.mutateAsync(editing?.id ? { ...payload, id: editing.id } : payload);
+    await save.mutateAsync(editing?.id ? { ...values, id: editing.id } : values);
     toast("Saved");
     if (mode === "primary") closeForm();
   }
@@ -265,14 +261,7 @@ function TransactionsContent() {
 
       {editing && (
         <Modal title={editing.id ? "Edit entry" : "New entry"} onClose={closeForm}>
-          <EntityForm
-            key={editing.id ?? "new"}
-            fields={fields}
-            initial={transactionFormInitial(editing)}
-            onCancel={closeForm}
-            onSubmit={submit}
-            secondaryLabel={editing.id ? undefined : "Save and add another"}
-          />
+          <TransactionForm key={editing.id ?? "new"} initial={editing} onCancel={closeForm} onSubmit={submit} />
         </Modal>
       )}
       {templateOpen && <TemplateForm onClose={() => setTemplateOpen(false)} />}
