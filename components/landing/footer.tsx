@@ -35,7 +35,8 @@ export function LandingFooter() {
       columns={COLUMNS}
       palette={{ warm: "#10b981" }}
       monoFamily="var(--font-jetbrains), ui-monospace, monospace"
-      height="clamp(440px, 44vw, 620px)"
+      // The links take a fixed height and the word grows with the width, so the two stay close.
+      className="!h-[calc(300px+18vw)] min-[721px]:!h-[calc(195px+18vw)]"
     />
   );
 }
