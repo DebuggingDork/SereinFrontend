@@ -84,7 +84,6 @@ function ItemRow({
         <p className="flex items-center gap-2 text-sm">
           {item.name}
           {!item.active && <Chip>Paused</Chip>}
-          {item.is_subscription && <Chip tone="diary">Subscription</Chip>}
         </p>
         <p className="text-xs text-ink-3">
           {FREQUENCY_LABEL[item.frequency]}
@@ -113,6 +112,32 @@ function ItemRow({
         deleteBody="Entries it already created stay in your transactions."
       />
     </li>
+  );
+}
+
+function Section({
+  title,
+  explains,
+  empty,
+  rows,
+  className,
+}: {
+  title: string;
+  explains: string;
+  empty: string;
+  rows: React.ReactNode[];
+  className?: string;
+}) {
+  return (
+    <Card className={className}>
+      <h2 className="display text-[22px] leading-tight">{title}</h2>
+      <p className="mt-1 text-sm leading-relaxed text-ink-2">{explains}</p>
+      {rows.length ? (
+        <ul className="mt-2 divide-y divide-line">{rows}</ul>
+      ) : (
+        <p className="mt-4 rounded-2xl bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink-2">{empty}</p>
+      )}
+    </Card>
   );
 }
 
@@ -234,20 +259,25 @@ export default function ScheduledPage() {
         </Card>
       ) : (
         <div className="grid gap-4 xl:grid-cols-2">
-          <Card title="Subscriptions, costliest first">
-            {sortedByCost.length ? (
-              <ul className="divide-y divide-line">{sortedByCost.map(renderRow)}</ul>
-            ) : (
-              <p className="py-3 text-sm text-ink-3">Tick “This is a subscription” on an item to see it here.</p>
-            )}
-          </Card>
-          <Card title="Everything else">
-            {others.length ? (
-              <ul className="divide-y divide-line">{others.map(renderRow)}</ul>
-            ) : (
-              <p className="py-3 text-sm text-ink-3">Salary, rent and EMIs go here.</p>
-            )}
-          </Card>
+          <Section
+            title="Subscriptions"
+            explains="Services you keep paying for and could cancel, like Netflix or Spotify. Costliest first."
+            empty="Nothing here yet. When you add one, tick “This is a subscription”."
+            rows={subscriptionRows.map(renderRow)}
+          />
+          <Section
+            title="Bills and EMIs"
+            explains="Regular payments you have to make, like rent, EMIs, insurance and electricity."
+            empty="Nothing here yet. Add your rent or an EMI, and leave “This is a subscription” unticked."
+            rows={billRows.map(renderRow)}
+          />
+          <Section
+            title="Regular income"
+            explains="Money that arrives on a schedule, like your salary or rent you collect."
+            empty="Nothing here yet. Add your salary and choose Income as the type."
+            rows={incomeRows.map(renderRow)}
+            className="xl:col-span-2"
+          />
           <ChartCard
             title="Subscription cost by month"
             subtitle="Projected from what is active today"
