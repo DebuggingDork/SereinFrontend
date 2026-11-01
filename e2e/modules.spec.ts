@@ -116,7 +116,7 @@ test("finance: an expense moves the balance and reaches the chart", async ({ pag
   await expect(page.getByText("Adjustment added")).toBeVisible();
 
   await page.goto("/finance");
-  await expect(page.getByText("You can spend about")).toBeVisible();
+  await expect(page.getByText("Safe to spend today").first()).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -235,6 +235,6 @@ test("home: widgets can be removed and the layout persists", async ({ page }) =>
   await page.waitForTimeout(500);
 
   await page.reload();
-  await expect(page.getByText("Safe to spend today")).toBeVisible();
+  await expect(page.getByText("Water today")).toBeVisible();
   await expect(page.getByText("Calories today")).toHaveCount(0);
 });
