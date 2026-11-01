@@ -332,7 +332,7 @@ export default function ScheduledPage() {
   const billRows = items.filter((item) => !item.is_subscription && item.kind === "expense");
   const incomeRows = items.filter((item) => item.kind === "income");
 
-  const renderRow = (lead: "name" | "date") => (item: ScheduledItem) => (
+  const renderRow = (item: ScheduledItem, lead: "name" | "date") => (
     <ItemRow
       key={item.id}
       item={item}
@@ -384,7 +384,7 @@ export default function ScheduledPage() {
             addLabel="Add a subscription"
             onAdd={() => setEditing({ is_subscription: true })}
             empty="Add what you pay for every month, and see what it really costs you."
-            rows={subscriptionRows.map(renderRow("name"))}
+            rows={subscriptionRows.map((item) => renderRow(item, "name"))}
           />
           <Section
             icon={ReceiptText}
@@ -394,7 +394,7 @@ export default function ScheduledPage() {
             addLabel="Add a bill"
             onAdd={() => setEditing({})}
             empty="Add your rent or an EMI, and it's set aside before Serein tells you what's safe to spend."
-            rows={billRows.map(renderRow("date"))}
+            rows={billRows.map((item) => renderRow(item, "date"))}
           />
           <Section
             icon={Landmark}
@@ -404,7 +404,7 @@ export default function ScheduledPage() {
             addLabel="Add your salary"
             onAdd={() => setEditing({ kind: "income" })}
             empty="Add your salary, and it lands in your account by itself on the day."
-            rows={incomeRows.map(renderRow("name"))}
+            rows={incomeRows.map((item) => renderRow(item, "name"))}
             className="xl:col-span-2"
           />
           <ChartCard
