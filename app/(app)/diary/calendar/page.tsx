@@ -27,6 +27,7 @@ export default function DiaryCalendarPage() {
       <div className="grid gap-4 xl:grid-cols-[1fr_24rem]">
         <Card>
           <MonthGrid
+          glow="var(--diary)"
             month={month}
             selected={selected}
             onSelect={setSelected}

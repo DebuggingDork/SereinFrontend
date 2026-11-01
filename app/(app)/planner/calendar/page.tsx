@@ -28,6 +28,7 @@ export default function PlannerCalendarPage() {
       <div className="grid gap-4 xl:grid-cols-[1fr_22rem]">
         <Card>
           <MonthGrid
+          glow="var(--planner)"
             month={month}
             selected={selected}
             onSelect={setSelected}
