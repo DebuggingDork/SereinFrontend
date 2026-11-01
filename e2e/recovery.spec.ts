@@ -79,7 +79,7 @@ test("a forgotten answer takes email proof, approval and the wait, and keeps all
 
   // The owner approves from the panel, and only the owner can see it.
   await visitor.goto("/admin");
-  await expect(visitor.getByText("Nothing behind this door", { exact: false })).toBeVisible({ timeout: 5000 }).catch(() => {});
+  await expect(visitor.getByText("Nothing here", { exact: false })).toBeVisible({ timeout: 5000 }).catch(() => {});
   await visitor.goto("/gate/recovery");
 
   await page.goto("/admin");

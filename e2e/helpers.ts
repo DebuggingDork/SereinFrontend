@@ -47,7 +47,7 @@ export async function logIn(page: Page, email: string) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByRole("button", { name: "Continue to the gate" }).click();
+  await page.getByRole("button", { name: "Log in" }).click();
 }
 
 export async function fillQuestions(page: Page) {
@@ -62,7 +62,7 @@ export async function answerGate(page: Page) {
   await expect(heading).toBeVisible();
   const question = (await heading.textContent())!.trim();
   await page.getByLabel("Your answer").fill(ANSWERS[question]!);
-  await page.getByRole("button", { name: /Open the door/ }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
 }
 
 // Signup through to the home page, for tests that are about something else.

@@ -1,27 +1,16 @@
 import { expect, test } from "@playwright/test";
 import { answerGate, createReadyUser, emailLink, fillQuestions, logIn, newEmail, signUp, watchErrors } from "./helpers";
 
-test("landing page plays the freeze and gate demos", async ({ page }) => {
+test("landing page leads with finance and signup", async ({ page }) => {
   const errors = watchErrors(page);
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("behind frosted glass");
-
-  await page.getByRole("button", { name: /Trigger Freeze Demo/ }).click();
-  await expect(page.getByRole("button", { name: "Close the glass" })).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Close the glass" })).toBeHidden();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Keep more of it");
+  await expect(page.getByText("Freeze", { exact: false })).toHaveCount(0);
+  await expect(page.getByText("glass", { exact: false })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Start saving" }).first()).toHaveAttribute("href", "/signup");
 
   await page.getByRole("button", { name: "Dark mode" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-
-  await page.getByRole("button", { name: "Try a wrong answer" }).click();
-  await expect(page.getByText("Nope. Nice try, detective.")).toBeVisible();
-  await page.getByLabel("Your answer").fill("  SEREIN ");
-  await page.getByRole("button", { name: /Open the door/ }).click();
-  await expect(page.getByText("The door opens")).toBeVisible();
-
-  await page.getByLabel("Try pasting a card number").fill("4111 1111 1111 4829");
-  await expect(page.getByRole("alert").filter({ hasText: "card or account number" })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -68,7 +57,7 @@ test("signup needs a confirmed email, then forces setup, then opens on the right
   await expect(page.getByText("Good", { exact: false }).first()).toBeVisible();
   await expect(page.getByText("₹50,000").first()).toBeVisible();
 
-  // A fresh session meets the gate again.
+  // A fresh session answers a question again.
   await context.clearCookies();
   await logIn(page, email);
   await page.waitForURL(/\/gate/);
@@ -88,24 +77,24 @@ test("wrong answers roast, rotate and cool down; lock closes the app", async ({ 
   const first = await heading.textContent();
 
   await page.getByLabel("Your answer").fill("definitely wrong");
-  await page.getByRole("button", { name: /Open the door/ }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByText("Nope. Nice try, detective.")).toBeVisible();
   await expect(heading).not.toHaveText(first!);
 
   await page.getByLabel("Your answer").fill("wrong again");
-  await page.getByRole("button", { name: /Open the door/ }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByText(/Still wrong/)).toBeVisible();
 
   await page.getByLabel("Your answer").fill("still wrong");
-  await page.getByRole("button", { name: /Open the door/ }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByText(/Use your brain/)).toBeVisible();
 
   await page.getByLabel("Your answer").fill("nope");
-  await page.getByRole("button", { name: /Open the door/ }).click();
-  await expect(page.getByText(/The door reopens in/)).toBeVisible();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText(/You can try again in/)).toBeVisible();
   await expect(page.getByLabel("Your answer")).toBeHidden();
 
-  // The door reopens on its own once the 30 seconds are up.
+  // The form returns on its own once the 30 seconds are up.
   await expect(page.getByLabel("Your answer")).toBeVisible({ timeout: 40_000 });
   await answerGate(page);
   await page.waitForURL(/\/home/);
@@ -120,9 +109,9 @@ test("wrong answers roast, rotate and cool down; lock closes the app", async ({ 
 test("freeze screen covers the app and keys work", async ({ page }) => {
   await createReadyUser(page);
   await page.keyboard.press("f");
-  await expect(page.getByRole("button", { name: "Close the glass" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Show the screen" })).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Close the glass" })).toBeHidden();
+  await expect(page.getByRole("button", { name: "Show the screen" })).toBeHidden();
   await page.keyboard.press("Control+k");
   await page.getByPlaceholder("Search pages and actions").fill("budgets");
   await page.keyboard.press("Enter");
