@@ -152,7 +152,7 @@ export default function FinanceOverviewPage() {
     <>
       <MonthHeader />
 
-      <div className="grid gap-4 lg:grid-cols-12">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <SafeToSpendPanel />
         </div>

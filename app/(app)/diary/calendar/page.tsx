@@ -24,7 +24,7 @@ export default function DiaryCalendarPage() {
   return (
     <>
       <PageHeader title="Calendar" action={<MonthNav month={month} onChange={setMonth} />} />
-      <div className="grid gap-4 xl:grid-cols-[1fr_24rem]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[1fr_24rem]">
         <Card>
           <MonthGrid
           glow="var(--diary)"

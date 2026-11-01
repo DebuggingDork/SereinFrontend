@@ -25,7 +25,7 @@ export default function PlannerCalendarPage() {
   return (
     <>
       <PageHeader title="Calendar" action={<MonthNav month={month} onChange={setMonth} />} />
-      <div className="grid gap-4 xl:grid-cols-[1fr_22rem]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[1fr_22rem]">
         <Card>
           <MonthGrid
           glow="var(--planner)"
