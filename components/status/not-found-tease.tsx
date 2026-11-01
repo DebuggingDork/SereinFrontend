@@ -31,11 +31,11 @@ export function NotFoundTease() {
   const moving = useRef(false);
 
   useEffect(() => {
-    void supabaseBrowser()
-      .auth.getSession()
-      .then(({ data }) => {
-        if (data.session) setHome("/home");
-      });
+    async function findHome() {
+      const { data } = await supabaseBrowser().auth.getSession();
+      if (data.session) setHome("/home");
+    }
+    void findHome();
   }, []);
 
   function pickSpot(pointerX: number, pointerY: number) {
