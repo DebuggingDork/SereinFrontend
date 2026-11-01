@@ -1,3 +1,4 @@
+import { reportLimited, trackedFetch } from "./connection";
 import { supabaseBrowser } from "./supabase/client";
 
 export class ApiError extends Error {
@@ -13,6 +14,8 @@ export class ApiError extends Error {
   }
 }
 
+const backendFetch = trackedFetch("backend");
+
 // Calls the Express backend through this origin, so the gate pass cookie is first-party.
 export async function api<T = unknown>(path: string, options: { method?: string; body?: unknown } = {}): Promise<T> {
   const {
@@ -21,7 +24,7 @@ export async function api<T = unknown>(path: string, options: { method?: string;
 
   let response: Response;
   try {
-    response = await fetch(`/api/backend${path}`, {
+    response = await backendFetch(`/api/backend${path}`, {
       method: options.method ?? (options.body ? "POST" : "GET"),
       credentials: "same-origin",
       headers: {
@@ -36,6 +39,8 @@ export async function api<T = unknown>(path: string, options: { method?: string;
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
+    // A code means the screen handles it, such as the security question's own cooldown.
+    if (response.status === 429 && !data.code) reportLimited(response.headers.get("retry-after"));
     // A sleeping free-tier backend answers the proxy with a gateway error while it wakes.
     const message = response.status >= 502 ? "The server is waking up. Try again in a moment." : data.error;
     throw new ApiError(response.status, message ?? "Something went wrong.", data);
