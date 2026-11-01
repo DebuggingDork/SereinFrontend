@@ -11,7 +11,7 @@ import { Modal } from "@/components/ui/modal";
 import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader, StatTile } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useRows, useRpc, useRpcAction, useSave } from "@/lib/data";
-import { inr, inrCompact, monthLabel, relativeDay, today } from "@/lib/format";
+import { addDays, daysBetween, inr, inrCompact, monthLabel, relativeDay, shiftMonth, today } from "@/lib/format";
 
 interface ScheduledItem {
   id: string;
@@ -47,6 +47,22 @@ const MONTHLY_FACTOR: Record<ScheduledItem["frequency"], (item: ScheduledItem) =
 };
 
 const monthlyCost = (item: ScheduledItem) => Number(item.amount) * MONTHLY_FACTOR[item.frequency](item);
+
+function nextOccurrence(item: ScheduledItem, day: string) {
+  if (item.frequency === "daily") return addDays(day, 1);
+  if (item.frequency === "weekly") return addDays(day, 7);
+  if (item.frequency === "monthly") return shiftMonth(day, 1);
+  if (item.frequency === "yearly") return shiftMonth(day, 12);
+  return addDays(day, item.interval_days || 30);
+}
+
+// What really lands in the next N days: an overdue item once, then each repeat in the window.
+function dueWithin(item: ScheduledItem, days: number) {
+  const end = addDays(today(), days - 1);
+  let total = 0;
+  for (let day = item.next_run; day <= end; day = nextOccurrence(item, day)) total += Number(item.amount);
+  return total;
+}
 
 function ItemRow({
   item,
@@ -162,10 +178,18 @@ export default function ScheduledPage() {
     [accounts, categories],
   );
 
-  const subscriptions = items.filter((item) => item.is_subscription && item.active && item.kind === "expense");
+  const running = items.filter((item) => item.active);
+  const subscriptions = running.filter((item) => item.is_subscription && item.kind === "expense");
   const monthly = subscriptions.reduce((sum, item) => sum + monthlyCost(item), 0);
-  const sortedByCost = [...subscriptions].sort((a, b) => monthlyCost(b) - monthlyCost(a));
-  const others = items.filter((item) => !item.is_subscription);
+  const goingOut = running.filter((item) => item.kind === "expense").reduce((sum, item) => sum + dueWithin(item, 30), 0);
+  const comingIn = running.filter((item) => item.kind === "income").reduce((sum, item) => sum + dueWithin(item, 30), 0);
+
+  // Paused items stay listed, so they can be switched back on. They just don't count above.
+  const subscriptionRows = items
+    .filter((item) => item.is_subscription && item.kind === "expense")
+    .sort((a, b) => monthlyCost(b) - monthlyCost(a));
+  const billRows = items.filter((item) => !item.is_subscription && item.kind === "expense");
+  const incomeRows = items.filter((item) => item.kind === "income");
 
   const renderRow = (item: ScheduledItem) => (
     <ItemRow
@@ -191,9 +215,14 @@ export default function ScheduledPage() {
       />
 
       <div className="mb-4 grid grid-cols-2 gap-4 xl:grid-cols-3">
-        <StatTile label="Subscriptions, monthly" value={inr(monthly)} note={`${subscriptions.length} active`} />
-        <StatTile label="Next 30 days" value={inr(monthly)} note="If nothing changes" />
-        <StatTile label="Next 365 days" value={inr(monthly * 12)} note="Worth a second look" className="col-span-2 xl:col-span-1" />
+        <StatTile label="Going out, next 30 days" value={inr(goingOut)} note="Bills, EMIs and subscriptions" />
+        <StatTile label="Coming in, next 30 days" value={inr(comingIn)} note="Salary and other regular income" />
+        <StatTile
+          label="Subscriptions cost you"
+          value={`${inr(monthly)} a month`}
+          note={`${inr(monthly * 12)} a year, across ${subscriptions.length} active`}
+          className="col-span-2 xl:col-span-1"
+        />
       </div>
 
       <ErrorNote error={error} />
