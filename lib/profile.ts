@@ -10,6 +10,8 @@ export interface Preferences {
   weekStart: number;
   monthStart: number;
   salaryDay: number;
+  salaryRule?: "date" | "last_working_day" | "last_day" | "first_working_day";
+  salaryAccountId?: string | null;
   timezone: string;
 }
 
