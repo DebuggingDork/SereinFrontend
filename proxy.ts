@@ -6,6 +6,9 @@ const GATE_COOKIE = "serein_gate";
 const PUBLIC_PATHS = ["/", "/login", "/signup", "/verify-email", "/forgot-password", "/auth"];
 const GATE_PATHS = ["/gate"];
 const PRE_GATE_ONLY = ["/login", "/signup"];
+// Everything behind the gate. Other addresses fall through, so a mistyped one reaches the
+// not-found page instead of a login form. A new signed-in section must be listed here.
+const APP_PATHS = ["/home", "/finance", "/planner", "/diet", "/diary", "/profile", "/admin", "/onboarding"];
 
 const matches = (pathname: string, paths: string[]) =>
   paths.some((path) => (path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`)));
@@ -66,7 +69,7 @@ export async function proxy(request: NextRequest) {
   };
 
   if (!claims) {
-    if (matches(pathname, PUBLIC_PATHS)) return response;
+    if (!matches(pathname, APP_PATHS) && !matches(pathname, GATE_PATHS)) return response;
     return redirect(`/login?next=${encodeURIComponent(pathname + search)}`);
   }
 
@@ -77,6 +80,7 @@ export async function proxy(request: NextRequest) {
   if (matches(pathname, GATE_PATHS)) {
     return passed && pathname === "/gate" ? redirect("/home") : response;
   }
+  if (!matches(pathname, APP_PATHS)) return response;
   if (!passed) return redirect(`/gate?next=${encodeURIComponent(pathname + search)}`);
 
   return response;
