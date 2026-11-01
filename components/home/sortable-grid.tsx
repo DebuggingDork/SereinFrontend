@@ -12,24 +12,20 @@ import {
 import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Maximize2, Minimize2, X } from "lucide-react";
-import { WIDGETS, type HomeSummary, type WidgetSize } from "./widgets";
+import { NEXT_WIDGET_SIZE, WIDGETS, widgetSpans, type HomeSummary, type WidgetSize } from "./widgets";
 
 type LayoutItem = { id: string; size: WidgetSize };
 
-const SPAN: Record<WidgetSize, string> = {
-  s: "md:col-span-2",
-  m: "md:col-span-3",
-  l: "md:col-span-6",
-};
-const NEXT_SIZE: Record<WidgetSize, WidgetSize> = { s: "m", m: "l", l: "s" };
 
 function SortableWidget({
   item,
+  span,
   summary,
   onResize,
   onRemove,
 }: {
   item: LayoutItem;
+  span: string;
   summary: HomeSummary;
   onResize: () => void;
   onRemove: () => void;
@@ -42,16 +38,18 @@ function SortableWidget({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform), transition }}
-      className={`relative col-span-1 ${SPAN[item.size]} ${isDragging ? "z-10 opacity-80" : ""}`}
+      onPointerDown={listeners?.onPointerDown}
+      className={`relative col-span-1 cursor-grab rounded-3xl outline-2 outline-offset-2 outline-line-2 outline-dashed active:cursor-grabbing ${span} ${isDragging ? "z-10 opacity-80" : ""}`}
     >
-      {widget.render(summary)}
+      {/* While arranging, the card is something to move rather than something to use. */}
+      <div className="pointer-events-none h-full select-none">{widget.render(summary)}</div>
       <div className="fade-in absolute top-3 right-3 flex items-center gap-0.5 rounded-full border border-line bg-surface p-0.5 shadow-card">
         <button
           type="button"
           aria-label={`Move ${widget.label}`}
-          className="cursor-grab rounded-full p-1.5 text-ink-2 hover:bg-surface-2 active:cursor-grabbing"
+          className="cursor-grab touch-none rounded-full p-1.5 text-ink-2 hover:bg-surface-2 active:cursor-grabbing"
           {...attributes}
-          {...listeners}
+          onKeyDown={listeners?.onKeyDown}
         >
           <GripVertical size={13} aria-hidden />
         </button>
@@ -90,6 +88,8 @@ export function SortableGrid({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
+  const spans = widgetSpans(layout);
+
   function onDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -101,14 +101,15 @@ export function SortableGrid({
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <SortableContext items={layout.map((item) => item.id)} strategy={rectSortingStrategy}>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
-          {layout.map((item) => (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+          {layout.map((item, index) => (
             <SortableWidget
               key={item.id}
               item={item}
+              span={spans[index]!}
               summary={summary}
               onResize={() =>
-                onChange(layout.map((other) => (other.id === item.id ? { ...other, size: NEXT_SIZE[other.size] } : other)))
+                onChange(layout.map((other) => (other.id === item.id ? { ...other, size: NEXT_WIDGET_SIZE[other.size] } : other)))
               }
               onRemove={() => onChange(layout.filter((other) => other.id !== item.id))}
             />
