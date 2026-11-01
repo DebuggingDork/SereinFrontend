@@ -70,7 +70,7 @@ export default function WeightPage() {
             xFormat={shortDay}
             series={[{ key: "weight", label: "Weight", color: "var(--diet)" }]}
             format={(v) => `${number(v, 1)} kg`}
-            axisFormat={(v) => number(v)}
+            axisFormat={(v) => number(v, 1)}
             height={260}
           />
         </ChartCard>

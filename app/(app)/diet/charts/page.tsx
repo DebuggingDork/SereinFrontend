@@ -130,7 +130,7 @@ export default function DietChartsPage() {
             xFormat={shortDay}
             series={[{ key: "weight", label: "Weight", color: "var(--diet)" }]}
             format={(v) => `${number(v, 1)} kg`}
-            axisFormat={(v) => number(v)}
+            axisFormat={(v) => number(v, 1)}
           />
         </ChartCard>
 
