@@ -9,7 +9,7 @@ export function Hero() {
           className="display rise max-w-[30rem] text-[clamp(2.5rem,4.2vw,3.75rem)] leading-[1.06]"
           style={{ "--delay": "60ms" } as React.CSSProperties}
         >
-          Salary in. Bills out. <em>What&apos;s left is yours.</em>
+          Your money, your day. <em>All in one place.</em>
         </h1>
         <p
           className="rise mt-5 max-w-[29rem] text-[17px] leading-[28px] text-ink-2"

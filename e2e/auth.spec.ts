@@ -4,7 +4,7 @@ import { answerGate, createReadyUser, emailLink, fillQuestions, logIn, newEmail,
 test("landing page leads with finance and signup", async ({ page }) => {
   const errors = watchErrors(page);
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("left is yours");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("All in one place");
   await expect(page.getByText("Freeze", { exact: false })).toHaveCount(0);
   await expect(page.getByText("glass", { exact: false })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Get started" }).first()).toHaveAttribute("href", "/signup");
