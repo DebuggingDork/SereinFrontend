@@ -304,6 +304,9 @@ const UNIFORMS = {
   timeScale: -0.727,
 }
 
+// Soft waves lose nothing at low resolution, and the browser scales them up smoothly.
+const MAX_PIXELS = 230_000
+
 const pendingContextReleases = new WeakMap<HTMLCanvasElement, number>()
 
 export function ShaderBackground({ className }: { className?: string }) {
@@ -416,12 +419,11 @@ export function ShaderBackground({ className }: { className?: string }) {
     const timeAnimated = Math.abs(timeScale) > 0.0001
 
     const resizeCanvas = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      const rawWidth = Math.max(1, Math.round(bounds.width * dpr))
-      const rawHeight = Math.max(1, Math.round(bounds.height * dpr))
+      const rawWidth = Math.max(1, Math.round(bounds.width))
+      const rawHeight = Math.max(1, Math.round(bounds.height))
       const pixelScale = Math.min(
         1,
-        Math.sqrt(2_000_000 / Math.max(1, rawWidth * rawHeight)),
+        Math.sqrt(MAX_PIXELS / Math.max(1, rawWidth * rawHeight)),
       )
       const width = Math.max(1, Math.round(rawWidth * pixelScale))
       const height = Math.max(1, Math.round(rawHeight * pixelScale))
