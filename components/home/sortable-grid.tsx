@@ -38,7 +38,7 @@ function SortableWidget({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform), transition }}
-      onPointerDown={listeners?.onPointerDown}
+      onPointerDown={listeners?.onPointerDown as React.PointerEventHandler<HTMLDivElement>}
       className={`relative col-span-1 cursor-grab rounded-3xl outline-2 outline-offset-2 outline-line-2 outline-dashed active:cursor-grabbing ${span} ${isDragging ? "z-10 opacity-80" : ""}`}
     >
       {/* While arranging, the card is something to move rather than something to use. */}
@@ -49,7 +49,7 @@ function SortableWidget({
           aria-label={`Move ${widget.label}`}
           className="cursor-grab touch-none rounded-full p-1.5 text-ink-2 hover:bg-surface-2 active:cursor-grabbing"
           {...attributes}
-          onKeyDown={listeners?.onKeyDown}
+          onKeyDown={listeners?.onKeyDown as React.KeyboardEventHandler<HTMLButtonElement>}
         >
           <GripVertical size={13} aria-hidden />
         </button>
