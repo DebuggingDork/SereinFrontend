@@ -42,6 +42,11 @@ test("features scroll into view without touching the address", async ({ page }) 
   await expect.poll(() => new URL(page.url()).hash).toBe("");
 });
 
+test("a sign in code on the bare address still reaches the callback", async ({ page }) => {
+  await page.goto("/?code=not-a-real-code");
+  await page.waitForURL(//login?error=link/);
+});
+
 test("every status screen has a preview", async ({ page }) => {
   for (const [state, heading] of [
     ["offline", /offline/],

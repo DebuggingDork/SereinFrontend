@@ -68,6 +68,13 @@ export async function proxy(request: NextRequest) {
     return target;
   };
 
+  // Supabase falls back to the bare site address when a redirect is not on its allowed list.
+  // The link is still good, so finish signing in rather than dropping it.
+  const code = request.nextUrl.searchParams.get("code");
+  if (pathname === "/" && code) {
+    return redirect(`/auth/callback?code=${encodeURIComponent(code)}&next=/gate`);
+  }
+
   if (!claims) {
     if (!matches(pathname, APP_PATHS) && !matches(pathname, GATE_PATHS)) return response;
     return redirect(`/login?next=${encodeURIComponent(pathname + search)}`);
