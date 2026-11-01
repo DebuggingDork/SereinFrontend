@@ -229,12 +229,13 @@ test("home: widgets can be removed and the layout persists", async ({ page }) =>
   await page.getByRole("button", { name: "Remove Calories today" }).click();
   await expect(page.getByText("Calories today")).toHaveCount(0);
   await page.getByRole("button", { name: "Add or remove" }).click();
-  await page.getByRole("button", { name: /Water today/ }).click();
+  await page.getByPlaceholder("Search, like water or budget").fill("water");
+  await page.getByRole("button", { name: /Water per day/ }).click();
   await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Done" }).click();
   await page.waitForTimeout(500);
 
   await page.reload();
-  await expect(page.getByText("Water today")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Water per day" })).toBeVisible();
   await expect(page.getByText("Calories today")).toHaveCount(0);
 });
