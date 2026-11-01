@@ -73,9 +73,21 @@ test("the app covers itself while offline, keeps the page, and recovers", async 
 test("a server outage shows the waking screen, then recovers by itself", async ({ page }) => {
   await createReadyUser(page);
   await page.route("**/api/backend/**", (route) => route.fulfill({ status: 503, body: "{}" }));
-  await page.getByRole("button", { name: "Lock now" }).click();
+  // Recovery asks the backend for its state as soon as it opens.
+  await page.goto("/gate/recovery");
   await expect(page.getByRole("heading", { name: /waking up/ })).toBeVisible({ timeout: 30_000 });
 
   await page.unroute("**/api/backend/**");
+  await page.getByRole("button", { name: "Check now" }).click();
   await expect(page.getByRole("heading", { name: /waking up/ })).toHaveCount(0, { timeout: 30_000 });
+});
+
+test("too many requests shows a countdown, but the question's own cooldown does not", async ({ page }) => {
+  await createReadyUser(page);
+  await page.route("**/api/backend/recovery/**", (route) =>
+    route.fulfill({ status: 429, headers: { "retry-after": "3" }, contentType: "application/json", body: '{"error":"Too many requests. Give it a minute."}' }),
+  );
+  await page.goto("/gate/recovery");
+  await expect(page.getByRole("heading", { name: /slow down/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /slow down/ })).toHaveCount(0, { timeout: 10_000 });
 });
