@@ -58,7 +58,7 @@ export function SafeToSpendPanel() {
   if (isLoading || accountsLoading || !safe) return <Skeleton className="h-full min-h-80 rounded-3xl" />;
 
   const shell = "fade-in flex h-full flex-col rounded-3xl p-6 text-ink sm:p-8";
-  const panelStyle = { background: "var(--money-deep)" };
+  const panelStyle = { background: "#0e3b2e" };
 
   if (accounts?.length === 0) {
     return (
