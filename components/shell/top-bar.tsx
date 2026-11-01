@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, LogOut, Moon, Shield, Sun, User } from "lucide-react";
+import { Apple, BookOpen, House, ListChecks, Lock, LogOut, type LucideIcon, Moon, Shield, Sun, User, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -126,35 +126,59 @@ export function TopBar({ name, isAdmin }: { name: string; isAdmin: boolean }) {
   );
 }
 
-// The primary navigation on small screens, always within thumb reach.
+const DOCK: { label: string; href: string; color: string; icon: LucideIcon }[] = [
+  { label: "Home", href: "/home", color: "#ecebe6", icon: House },
+  { label: "Finance", href: "/finance", color: "#34d399", icon: Wallet },
+  { label: "Planner", href: "/planner", color: "#7aa9ff", icon: ListChecks },
+  { label: "Diet", href: "/diet", color: "#fbbf24", icon: Apple },
+  { label: "Diary", href: "/diary", color: "#b69cff", icon: BookOpen },
+];
+
+// The primary navigation on small screens: a dock that floats within thumb reach. It stays dark
+// in both themes, so the module colours glow against it. The current one opens to show its name.
 export function BottomBar() {
   const pathname = usePathname();
   return (
     <nav
       aria-label="Modules"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      data-theme="dark"
+      style={{ bottom: "calc(env(safe-area-inset-bottom) + 12px)" }}
+      className="fixed inset-x-3 z-40 mx-auto flex max-w-md items-center gap-0.5 rounded-[26px] border border-white/10 bg-[#14171c] p-1.5 shadow-[0_12px_32px_-8px_rgb(0_0_0/0.45)] lg:hidden"
     >
-      <div className="grid grid-cols-5">
-        {TABS.map((tab) => {
-          const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              aria-current={active ? "page" : undefined}
-              className={`pressable flex h-14 flex-col items-center justify-center gap-1 text-xs ${
-                active ? "text-ink" : "text-ink-3"
+      {DOCK.map(({ label, href, color, icon: Icon }) => {
+        const active = pathname === href || pathname.startsWith(`${href}/`);
+        return (
+          <Link
+            key={href}
+            href={href}
+            aria-current={active ? "page" : undefined}
+            style={
+              active
+                ? {
+                    color,
+                    background: `color-mix(in srgb, ${color} 16%, transparent)`,
+                    boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${color} 22%, transparent), 0 0 18px -6px ${color}`,
+                  }
+                : undefined
+            }
+            className={`pressable flex h-12 min-w-0 items-center justify-center rounded-[20px] transition-[flex-grow,background-color,box-shadow,color] duration-300 ease-out ${
+              active ? "grow-[2.4]" : "grow text-[#a5a7a9]"
+            }`}
+          >
+            <Icon size={20} strokeWidth={active ? 2 : 1.7} aria-hidden className="shrink-0" />
+            {/* Always in the page, so screen readers hear the name of every tab. */}
+            <span
+              className={`grid transition-[grid-template-columns,opacity] duration-300 ease-out ${
+                active ? "grid-cols-[1fr] opacity-100" : "grid-cols-[0fr] opacity-0"
               }`}
             >
-              <span
-                className="size-1.5 rounded-full transition-opacity"
-                style={{ background: tab.color, opacity: active ? 1 : 0.35 }}
-              />
-              {tab.label}
-            </Link>
-          );
-        })}
-      </div>
+              <span className="overflow-hidden text-[13px] font-medium whitespace-nowrap">
+                <span className="pl-2">{label}</span>
+              </span>
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
