@@ -234,12 +234,11 @@ export function Hero() {
   return (
     <section className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-12 px-6 pt-8 pb-20 md:px-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] xl:grid-cols-[minmax(0,1fr)_776px] lg:gap-16 lg:pt-12 lg:pb-36">
       <div>
-        <p className="eyebrow rise">Serein · Personal finance tracker</p>
-        <h1
-          className="display rise mt-6 max-w-[31rem] text-[clamp(2.75rem,5vw,4.5rem)] leading-[1.02]"
+                <h1
+          className="display rise max-w-[30rem] text-[clamp(2.5rem,4.2vw,3.75rem)] leading-[1.06]"
           style={{ "--delay": "60ms" } as React.CSSProperties}
         >
-          Know where your money goes. <em>Keep more of it.</em>
+          Salary in. Bills out. <em>What&apos;s left is yours.</em>
         </h1>
         <p
           className="rise mt-[29px] max-w-[30rem] text-lg leading-[29px] text-ink-2"
