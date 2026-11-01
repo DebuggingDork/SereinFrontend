@@ -18,7 +18,7 @@ export function friendlyError(error: { message?: string; code?: string } | null 
         : "One of those values is not allowed.",
     );
   }
-  if (error?.code === "42501") return new Error("Your session has locked. Pass the gate again.");
+  if (error?.code === "42501") return new Error("Your session has locked. Answer your security question again.");
   return new Error(message || "Something went wrong.");
 }
 

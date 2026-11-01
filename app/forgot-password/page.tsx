@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
           It happens. <em>Let&apos;s reset it.</em>
         </>
       }
-      subtitle="You will still meet the question gate afterwards. A new password does not open the door by itself."
+      subtitle="You will still answer a security question after resetting it."
       footer={
         <Link href="/login" className="underline underline-offset-2">
           Back to sign in

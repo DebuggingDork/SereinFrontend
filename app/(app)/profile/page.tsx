@@ -60,7 +60,7 @@ function SecurityQuestions() {
         // Changing questions wants a fresh answer, not just a live pass.
         const fresh = await api<{ state: string; question?: string; lockedUntil?: string }>("/gate/challenge");
         if (fresh.question) setChallenge(fresh.question);
-        else setError("The door is shut for a while. Try again shortly.");
+        else setError("Too many attempts. Try again shortly.");
       } else {
         setError(caught instanceof Error ? caught.message : "Something went wrong.");
       }
