@@ -241,14 +241,14 @@ export function Hero() {
           Salary in. Bills out. <em>What&apos;s left is yours.</em>
         </h1>
         <p
-          className="rise mt-[29px] max-w-[30rem] text-lg leading-[29px] text-ink-2"
+          className="rise mt-5 max-w-[29rem] text-[17px] leading-[28px] text-ink-2"
           style={{ "--delay": "120ms" } as React.CSSProperties}
         >
-          Log spending in seconds, see what is safe to spend today, and watch your savings and net worth grow. No bank
-          logins and no card numbers.
+          Your salary comes in, rent and EMIs go out, and the rest quietly disappears. Serein tells you what&apos;s safe to
+          spend today, every day until your next payday.
         </p>
         <div
-          className="rise mt-[34px] flex flex-wrap gap-3"
+          className="rise mt-7 flex flex-wrap gap-3"
           style={{ "--delay": "180ms" } as React.CSSProperties}
         >
           <LinkButton href="/signup" size="lg" className="!px-7">
