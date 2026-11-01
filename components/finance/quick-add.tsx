@@ -41,7 +41,13 @@ export function parseQuickEntry(text: string, accounts: Account[], categories: C
   const app = PAYMENT_APPS.find((name) => rest.toLowerCase().includes(name.toLowerCase()));
   if (app) rest = rest.replace(new RegExp(app, "i"), " ");
 
-  rest = rest.replace(/\b(from|via|using|on|with|paid|for|at)\b/gi, " ").replace(/\s+/g, " ").trim();
+  // Connecting words only go when removing an account or app left them dangling at an end.
+  const dangling = "(?:from|via|using|on|with|paid|for|at)";
+  rest = rest
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(new RegExp(`^(?:${dangling}\\s+)+|(?:\\s+${dangling})+$`, "gi"), "")
+    .trim();
 
   const words = rest.toLowerCase();
   const category = categories
