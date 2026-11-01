@@ -80,7 +80,7 @@ function BudgetCard({
         <div className="min-w-0">
           <p className={`figure truncate text-[34px] leading-none ${over ? "text-bad" : ""}`}>{inr(Math.abs(remaining))}</p>
           <p className="mt-1.5 text-[13px] text-ink-2">
-            {over ? "over" : "left"} of {inr(budget.limit_amount)}
+            {over ? "over your" : "left of"} {inr(budget.limit_amount)} {over ? "limit" : ""}
           </p>
         </div>
         <Chip tone={status.tone}>{status.label}</Chip>
