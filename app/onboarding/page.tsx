@@ -150,7 +150,7 @@ function WidgetsStep({ onBack, onFinish, busy }: { onBack: () => void; onFinish:
       </h1>
       <p className="mt-3 leading-relaxed text-ink-2">Choose what you want at a glance. You can rearrange it any time.</p>
       <ul className="mt-6 grid gap-2 sm:grid-cols-2">
-        {WIDGETS.map((widget) => {
+        {WIDGETS.filter((widget) => !widget.chart).map((widget) => {
           const on = picked.includes(widget.id);
           return (
             <li key={widget.id}>
@@ -202,7 +202,7 @@ export default function OnboardingPage() {
 
   async function finish(ids: string[]) {
     await update.mutateAsync({
-      home_layout: ids.map((id) => ({ id, size: "m" as const })),
+      home_layout: ids.map((id) => ({ id, size: WIDGETS.find((widget) => widget.id === id)?.size ?? "m" })),
       onboarded_at: new Date().toISOString(),
     });
     window.location.assign("/home");
