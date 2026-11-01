@@ -24,7 +24,13 @@ const MODULES: WidgetDef["module"][] = ["Finance", "Planner", "Diet", "Diary"];
 function greeting(name: string) {
   const hour = new Date().getHours();
   const part = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  return name ? `${part}, ${name.split(" ")[0]}` : part;
+  const first = name.split(" ")[0];
+  if (!first) return part;
+  return (
+    <>
+      {part}, <em className="text-good">{first}</em>
+    </>
+  );
 }
 
 function brief(summary: HomeSummary) {
