@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { inr } from "@/lib/format";
-import { LONG_NUMBER_WARNING, looksLikeLongNumber } from "@/lib/guards";
 import { Donut, HeatStrip, MoodLine, WeekBars } from "./charts";
 
 function PillarCard({
@@ -43,38 +42,6 @@ function Ledger({ label, paid, total, tone }: { label: string; paid: number; tot
   );
 }
 
-function CardNumberTrap() {
-  const [value, setValue] = useState("");
-  const tripped = looksLikeLongNumber(value);
-
-  return (
-    <div className="mt-4">
-      <label htmlFor="card-trap" className="block text-[13px] leading-5 text-ink-2">
-        Try pasting a card number
-      </label>
-      <input
-        id="card-trap"
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
-        placeholder="4111 1111 1111 4829"
-        className={`mt-1.5 h-[46px] w-full rounded-xl border bg-field px-[15px] font-mono text-base outline-none transition-colors placeholder:text-ink-3 focus:border-ink-3 ${
-          tripped ? "shake border-bad" : "border-line"
-        }`}
-        aria-invalid={tripped}
-        aria-describedby={tripped ? "card-trap-warning" : undefined}
-      />
-      {/* The slot is reserved so the warning never shifts the page. */}
-      <div className="min-h-[30px] pt-2">
-        {tripped && (
-          <p id="card-trap-warning" role="alert" className="pop-in text-[13px] text-bad">
-            {LONG_NUMBER_WARNING}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function FinancePillar() {
   return (
     <PillarCard name="Finance" color="var(--finance)" className="md:col-span-7">
@@ -98,7 +65,6 @@ function FinancePillar() {
           <Ledger label="You owe Asha" paid={800} total={2000} tone="#059669" />
         </div>
       </div>
-      <CardNumberTrap />
     </PillarCard>
   );
 }
