@@ -44,8 +44,8 @@ function Ledger({ label, paid, total, tone }: { label: string; paid: number; tot
 
 function FinancePillar() {
   return (
-    <PillarCard name="Finance" color="var(--finance)" className="md:col-span-7">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+    <PillarCard name="Finance" color="var(--finance)" className="md:col-span-12">
+      <div className="flex flex-col gap-8 sm:flex-row sm:items-center">
         <Donut
           size={120}
           thickness={22}
@@ -59,7 +59,13 @@ function FinancePillar() {
           <span className="tabular text-[13px]">₹38,200</span>
         </Donut>
         <div className="flex-1">
-          <p className="mb-[5px] text-sm leading-5 text-ink-2">People ledger</p>
+          <p className="mb-[5px] text-sm leading-5 text-ink-2">Budgets</p>
+          <Ledger label="Food" paid={6200} total={9000} tone="#10b981" />
+          <div className="h-[10px]" />
+          <Ledger label="Transport" paid={1400} total={3500} tone="#059669" />
+        </div>
+        <div className="flex-1">
+          <p className="mb-[5px] text-sm leading-5 text-ink-2">Debts and credits</p>
           <Ledger label="Ravi owes you" paid={3000} total={5000} tone="#10b981" />
           <div className="h-[10px]" />
           <Ledger label="You owe Asha" paid={800} total={2000} tone="#059669" />
@@ -77,7 +83,7 @@ function DietPillar() {
     setPicked((current) => (current.includes(food) ? current.filter((f) => f !== food) : [...current, food]));
 
   return (
-    <PillarCard name="Diet" color="var(--diet)" className="md:col-span-5">
+    <PillarCard name="Diet" color="var(--diet)" className="md:col-span-4">
       <p className="-mt-0.5 mb-1 text-[13px] text-ink-2">Meal timing</p>
       <HeatStrip />
       <div className="mt-5 flex items-center gap-4">
@@ -113,7 +119,7 @@ function DietPillar() {
 
 function PlannerPillar() {
   return (
-    <PillarCard name="Planner" color="var(--planner)" className="md:col-span-5 md:min-h-[360px]">
+    <PillarCard name="Planner" color="var(--planner)" className="md:col-span-4">
       <p className="-mt-px mb-[5px] text-[13px] text-ink-2">On time vs late, by week</p>
       <WeekBars />
       <div className="mt-5 flex flex-wrap gap-2 text-[13px]">
@@ -137,7 +143,7 @@ function DiaryPillar() {
   const [mood, setMood] = useState<Mood>("Settled");
 
   return (
-    <PillarCard name="Diary" color="var(--diary)" className="md:col-span-7 md:min-h-[360px]">
+    <PillarCard name="Diary" color="var(--diary)" className="md:col-span-4">
       <p className="display -mt-0.5 text-xl italic">Prompt of the day</p>
       <p className="display mt-0.5 max-w-md text-2xl leading-[31px]">What did you notice today that you almost missed?</p>
       <div className="mt-5 flex flex-wrap gap-2">
@@ -174,8 +180,8 @@ export function Pillars() {
       </p>
       <div className="mt-[39px] grid gap-4 md:grid-cols-12">
         <FinancePillar />
-        <DietPillar />
         <PlannerPillar />
+        <DietPillar />
         <DiaryPillar />
       </div>
     </section>
