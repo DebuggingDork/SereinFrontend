@@ -62,7 +62,7 @@ export function TransactionRow({
           {formatDay(tx.occurred_on)}
           {tx.occurred_time && ` · ${formatTime(tx.occurred_time)}`}
           {tx.kind !== "transfer" && account && ` · ${account.name}`}
-          {tx.payment_app && ` · ${tx.payment_app}`}
+          {tx.payment_app && tx.payment_app !== account?.name && ` · ${tx.payment_app}`}
           {category && tx.payee && ` · ${category.name}`}
         </p>
         {tx.notes && (
