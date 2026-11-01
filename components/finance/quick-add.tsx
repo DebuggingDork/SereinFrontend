@@ -256,7 +256,8 @@ export function QuickAdd({ autoFocus }: { autoFocus?: boolean }) {
       )}
 
       {ranked.length > 0 && (
-        <div role="group" aria-label="Category" className="mt-3 flex flex-wrap gap-1.5">
+        <div role="group" aria-label="Category" className="mt-3 flex flex-wrap items-center gap-1.5">
+          <span className="w-full text-xs text-ink-2">Category</span>
           {chips.map((category) => (
             <PickChip
               key={category.id}
@@ -271,7 +272,8 @@ export function QuickAdd({ autoFocus }: { autoFocus?: boolean }) {
       )}
 
       {visibleAccounts.length > 1 && (
-        <div role="group" aria-label="Account" className="mt-2 flex flex-wrap gap-1.5">
+        <div role="group" aria-label="Account" className="mt-3 flex flex-wrap items-center gap-1.5">
+          <span className="w-full text-xs text-ink-2">{kind === "expense" ? "Paid from" : "Received in"}</span>
           {byUse(visibleAccounts, uses).map((account) => (
             <PickChip key={account.id} on={account.id === accountId} onClick={() => setPickedAccount(account.id)}>
               {account.name}
