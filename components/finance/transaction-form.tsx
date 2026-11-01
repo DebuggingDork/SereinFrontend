@@ -224,7 +224,7 @@ export function TransactionForm({
             aria-invalid={Boolean(errors.amount)}
             onChange={(event) => {
               setAmount(event.target.value.replace(/[^0-9.]/g, ""));
-              setErrors(({ amount: _cleared, ...rest }) => rest);
+              setErrors((current) => ({ ...current, amount: "" }));
             }}
             style={{ width: `${Math.max(amount.length, 1) + 0.6}ch` }}
             className="figure max-w-[80%] min-w-[1.6ch] bg-transparent text-[56px] leading-none outline-none placeholder:text-line-2"
