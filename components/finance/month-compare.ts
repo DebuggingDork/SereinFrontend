@@ -4,11 +4,11 @@ import { useMemo } from "react";
 import { useRpc } from "@/lib/data";
 import { monthBounds, shiftMonth, today } from "@/lib/format";
 
-export interface MonthPoint {
+export type MonthPoint = {
   day: number;
   thisMonth: number | null;
   lastMonth: number | null;
-}
+};
 
 // Running spend by day of the month, for this month and the one before.
 export function useMonthCompare() {

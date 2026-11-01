@@ -93,7 +93,7 @@ function ThisMonthChart() {
       ]}
     >
       <TrendChart
-        data={points as unknown as Record<string, unknown>[]}
+        data={points}
         x="day"
         series={[
           { key: "thisMonth", label: "This month", color: "var(--finance)" },
