@@ -2,10 +2,10 @@
 
 import { Archive, GitMerge, Plus } from "lucide-react";
 import { useState } from "react";
-import { categoryOptions, useCategories, type Category } from "@/components/finance/shared";
+import { accountOptions, categoryOptions, useAccounts, useCategories, type Category } from "@/components/finance/shared";
 import { PREFERENCE_FIELDS, PreferencesForm } from "@/components/shell/preferences-form";
 import { Button } from "@/components/ui/button";
-import { EntityForm } from "@/components/ui/entity-form";
+import { EntityForm, type FieldDef } from "@/components/ui/entity-form";
 import { Modal } from "@/components/ui/modal";
 import { Card, ListSkeleton, PageHeader } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
@@ -15,7 +15,7 @@ import { supabaseBrowser } from "@/lib/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
 const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444", "#ec4899", "#06b6d4", "#6b7280"];
-const FINANCE_PREFERENCES = PREFERENCE_FIELDS.filter((f) => ["currency", "monthStart", "salaryDay", "weekStart"].includes(f.name));
+const FINANCE_PREFERENCES = PREFERENCE_FIELDS.filter((f) => ["currency", "monthStart", "salaryRule", "salaryDay", "weekStart"].includes(f.name));
 
 function MergeForm({ source, onClose }: { source: Category; onClose: () => void }) {
   const { data: categories = [] } = useCategories();
@@ -54,6 +54,11 @@ function MergeForm({ source, onClose }: { source: Category; onClose: () => void 
 
 export default function FinanceSettingsPage() {
   const { data: categories = [], isLoading } = useCategories();
+  const { data: accounts } = useAccounts();
+  const preferenceFields: FieldDef[] = [
+    ...FINANCE_PREFERENCES,
+    { name: "salaryAccountId", label: "Salary goes to", type: "select", half: true, options: accountOptions(accounts) },
+  ];
   const [editing, setEditing] = useState<Partial<Category> | null>(null);
   const [merging, setMerging] = useState<Category | null>(null);
   const save = useSave("categories", { successMessage: "Saved" });
@@ -115,7 +120,7 @@ export default function FinanceSettingsPage() {
           )}
         </Card>
         <Card title="Money preferences" className="self-start">
-          <PreferencesForm fields={FINANCE_PREFERENCES} />
+          <PreferencesForm key={accounts?.length ?? 0} fields={preferenceFields} />
         </Card>
       </div>
 
