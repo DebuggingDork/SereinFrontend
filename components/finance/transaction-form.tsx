@@ -267,7 +267,7 @@ export function TransactionForm({
                   aria-label="All categories"
                   value=""
                   onChange={(event) => setCategoryId(event.target.value)}
-                  className="!h-8 !w-auto !rounded-full !py-0 !pr-7 !pl-3 !text-[13px]"
+                  className="!h-8 !w-24 !rounded-full !py-0 !pr-7 !pl-3 !text-[13px]"
                 >
                   <option value="">More</option>
                   {categoryOptions(categories, kind === "income" ? "income" : "expense").map((option) => (
