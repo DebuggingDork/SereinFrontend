@@ -25,7 +25,7 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: { default: "Serein", template: "%s · Serein" },
-  description: "Your money, body, time and mind, behind frosted glass. A private personal life ledger.",
+  description: "Track your spending, budgets, debts, goals and net worth without linking a bank.",
 };
 
 export const viewport: Viewport = {
