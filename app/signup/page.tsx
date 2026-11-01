@@ -33,7 +33,7 @@ export default function SignupPage() {
     }
     setBusy(true);
     setError(null);
-    const { error: signUpError } = await supabaseBrowser().auth.signUp({
+    const { data, error: signUpError } = await supabaseBrowser().auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
@@ -46,6 +46,12 @@ export default function SignupPage() {
       setError(signUpError.message);
       return;
     }
+    // With email confirmation switched off the account is already signed in, so there is no
+    // inbox to wait for. A full navigation lets the proxy see the new session.
+    if (data.session) {
+      window.location.assign("/gate");
+      return;
+    }
     router.push(`/verify-email?email=${encodeURIComponent(parsed.data.email)}`);
   }
 
@@ -56,7 +62,7 @@ export default function SignupPage() {
           Pull up <em>a chair.</em>
         </>
       }
-      subtitle="An account, a confirmation email, then a few questions only you can answer."
+      subtitle="An account, then a few questions only you can answer."
       footer={
         <>
           Already have an account?{" "}
