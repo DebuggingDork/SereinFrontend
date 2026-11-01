@@ -116,7 +116,9 @@ export function TransactionForm({
 
   // A hidden account stays selectable only when this entry already belongs to it.
   const accounts = byUse(allAccounts.filter((a) => !a.hidden || a.id === initial.account_id || a.id === initial.to_account_id), uses);
-  const accountId = pickedAccount || accounts[0]?.id || "";
+  // Money doesn't arrive on a credit card, except as a refund already on this entry.
+  const available = accounts.filter((a) => kind !== "income" || a.kind !== "card" || a.id === initial.account_id);
+  const accountId = available.some((a) => a.id === pickedAccount) ? pickedAccount : available[0]?.id || "";
 
   const ranked = byUse(categories.filter((c) => c.kind === kind), uses);
   const chips = ranked.slice(0, CATEGORY_CHIPS);
@@ -237,7 +239,7 @@ export function TransactionForm({
 
       <div className="mt-6 space-y-5">
         <FormRow label={ACCOUNT_LABEL[kind]} error={errors.account}>
-          <AccountChips accounts={accounts} value={accountId} onChange={setPickedAccount} />
+          <AccountChips accounts={available} value={accountId} onChange={setPickedAccount} />
         </FormRow>
 
         {kind === "transfer" ? (
@@ -246,7 +248,7 @@ export function TransactionForm({
               <ArrowDown size={16} />
             </div>
             <FormRow label="To" error={errors.to}>
-              <AccountChips accounts={accounts.filter((a) => a.id !== accountId)} value={toAccount} onChange={setToAccount} />
+              <AccountChips accounts={available.filter((a) => a.id !== accountId)} value={toAccount} onChange={setToAccount} />
             </FormRow>
           </>
         ) : (
