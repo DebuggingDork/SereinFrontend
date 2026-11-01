@@ -174,7 +174,7 @@ function GateForm() {
         <div role="status" className="mt-3">
           <h2 className="display text-[26px] leading-tight">{roast ?? "Take a break. Think harder."}</h2>
           <p className="mt-3 text-ink-2">
-            The door reopens in <span className="tabular text-ink">{formatWait(remaining)}</span>.
+            You can try again in <span className="tabular text-ink">{formatWait(remaining)}</span>.
           </p>
         </div>
       ) : (
@@ -196,7 +196,7 @@ function GateForm() {
             {roast}
           </p>
           <Button type="submit" size="lg" disabled={busy || !answer.trim()} className="!px-5">
-            {busy ? "Checking…" : "Open the door"}
+            {busy ? "Checking…" : "Continue"}
             <span className="flex size-5 items-center justify-center rounded border border-current/40">
               <CornerDownLeft size={11} aria-hidden />
             </span>
