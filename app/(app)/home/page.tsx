@@ -15,12 +15,6 @@ import { useProfile, useUpdateProfile } from "@/lib/profile";
 
 type LayoutItem = { id: string; size: WidgetSize };
 
-const SPAN: Record<WidgetSize, string> = {
-  s: "md:col-span-2",
-  m: "md:col-span-3",
-  l: "md:col-span-6",
-};
-
 // Dragging is only possible while customizing, so its library loads when that starts.
 const SortableGrid = dynamic(() => import("@/components/home/sortable-grid").then((m) => m.SortableGrid), {
   ssr: false,
@@ -31,6 +25,28 @@ function greeting(name: string) {
   const hour = new Date().getHours();
   const part = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   return name ? `${part}, ${name.split(" ")[0]}` : part;
+}
+
+const COLUMNS: Record<WidgetSize, number> = { s: 2, m: 3, l: 6 };
+const FILL: Record<number, string> = {
+  2: "md:col-span-2",
+  3: "md:col-span-3",
+  4: "md:col-span-4",
+  5: "md:col-span-5",
+  6: "md:col-span-6",
+};
+
+// A widget that would leave a hole at the end of its row grows to close it.
+function rowSpans(items: LayoutItem[]) {
+  let used = 0;
+  return items.map((item, index) => {
+    const next = items[index + 1];
+    const width = COLUMNS[item.size];
+    const fits = next && used + width + COLUMNS[next.size] <= 6;
+    const span = fits ? width : 6 - used;
+    used = fits ? used + width : 0;
+    return FILL[span]!;
+  });
 }
 
 function brief(summary: HomeSummary) {
@@ -59,6 +75,8 @@ export default function HomePage() {
   const layout: LayoutItem[] = (draft ?? profile?.home_layout ?? DEFAULT_LAYOUT).filter((item) =>
     WIDGETS.some((widget) => widget.id === item.id),
   );
+
+  const spans = rowSpans(layout);
 
   function change(next: LayoutItem[]) {
     setDraft(next);
@@ -127,8 +145,8 @@ export default function HomePage() {
           <SortableGrid layout={layout} summary={summary} onChange={change} />
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
-            {layout.map((item) => (
-              <div key={item.id} className={`col-span-1 ${SPAN[item.size]}`}>
+            {layout.map((item, index) => (
+              <div key={item.id} className={`col-span-1 ${spans[index]}`}>
                 {WIDGETS.find((widget) => widget.id === item.id)?.render(summary)}
               </div>
             ))}
