@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { AuthFrame, FormError } from "@/components/auth/auth-frame";
 import { Button } from "@/components/ui/button";
+import { ShaderBackground } from "@/components/ui/adisyon-shader";
 import { Input } from "@/components/ui/field";
 import { api, ApiError, signOut } from "@/lib/api";
 
@@ -210,6 +211,7 @@ function GateForm() {
 export default function GatePage() {
   return (
     <AuthFrame
+      backdrop={<ShaderBackground className="absolute inset-0" />}
       title={
         <>
           Is this <em>really you?</em>
