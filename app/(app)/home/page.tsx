@@ -1,14 +1,12 @@
 "use client";
 
-import { Check, Settings2 } from "lucide-react";
+import { Check, RotateCcw, Search, Settings2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { DEFAULT_LAYOUT, WIDGETS, type HomeSummary, type WidgetSize } from "@/components/home/widgets";
+import { DEFAULT_LAYOUT, WIDGETS, widgetSpans, type HomeSummary, type WidgetDef, type WidgetSize } from "@/components/home/widgets";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
-import { Card, ErrorNote, PageHeader, Skeleton } from "@/components/ui/primitives";
-import { ComingUp, PanelTitle, SafeToSpendPanel, WhereItWent } from "@/components/finance/panels";
-import { QuickAdd } from "@/components/finance/quick-add";
+import { ErrorNote, PageHeader, Skeleton } from "@/components/ui/primitives";
 import { useRpc } from "@/lib/data";
 import { formatDayLong, inr, number, today } from "@/lib/format";
 import { useProfile, useUpdateProfile } from "@/lib/profile";
@@ -21,32 +19,12 @@ const SortableGrid = dynamic(() => import("@/components/home/sortable-grid").the
   loading: () => <Skeleton className="h-64 rounded-3xl" />,
 });
 
+const MODULES: WidgetDef["module"][] = ["Finance", "Planner", "Diet", "Diary"];
+
 function greeting(name: string) {
   const hour = new Date().getHours();
   const part = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   return name ? `${part}, ${name.split(" ")[0]}` : part;
-}
-
-const COLUMNS: Record<WidgetSize, number> = { s: 2, m: 3, l: 6 };
-const FILL: Record<number, string> = {
-  2: "md:col-span-2",
-  3: "md:col-span-3",
-  4: "md:col-span-4",
-  5: "md:col-span-5",
-  6: "md:col-span-6",
-};
-
-// A widget that would leave a hole at the end of its row grows to close it.
-function rowSpans(items: LayoutItem[]) {
-  let used = 0;
-  return items.map((item, index) => {
-    const next = items[index + 1];
-    const width = COLUMNS[item.size];
-    const fits = next && used + width + COLUMNS[next.size] <= 6;
-    const span = fits ? width : 6 - used;
-    used = fits ? used + width : 0;
-    return FILL[span]!;
-  });
 }
 
 function brief(summary: HomeSummary) {
@@ -62,6 +40,75 @@ function brief(summary: HomeSummary) {
   return parts.length ? `${parts.join(", ")} and ${last}.` : `${last}.`;
 }
 
+function WidgetPicker({
+  layout,
+  onToggle,
+  onClose,
+}: {
+  layout: LayoutItem[];
+  onToggle: (widget: WidgetDef) => void;
+  onClose: () => void;
+}) {
+  const [query, setQuery] = useState("");
+  const needle = query.trim().toLowerCase();
+  const matches = WIDGETS.filter((widget) => `${widget.label} ${widget.description} ${widget.module}`.toLowerCase().includes(needle));
+
+  return (
+    <Modal title="Choose what's on your home" onClose={onClose}>
+      <label className="mb-4 flex h-11 items-center gap-2.5 rounded-xl border border-line bg-field px-3 focus-within:border-ink-3">
+        <Search size={15} className="shrink-0 text-ink-2" aria-hidden />
+        <span className="sr-only">Search sections and charts</span>
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search, like water or budget"
+          className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-ink-2"
+        />
+      </label>
+      {matches.length === 0 && <p className="py-6 text-center text-sm text-ink-2">Nothing matches that.</p>}
+      {MODULES.map((module) => {
+        const widgets = matches.filter((widget) => widget.module === module);
+        if (widgets.length === 0) return null;
+        return (
+          <section key={module} className="mb-5 last:mb-0">
+            <h3 className="mb-2 text-sm font-medium">{module}</h3>
+            <ul className="space-y-1.5">
+              {widgets.map((widget) => {
+                const on = layout.some((item) => item.id === widget.id);
+                return (
+                  <li key={widget.id}>
+                    <button
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => onToggle(widget)}
+                      className={`pressable flex w-full cursor-pointer items-center gap-3 rounded-xl border p-3 text-left ${
+                        on ? "border-ink" : "border-line hover:border-line-2"
+                      }`}
+                    >
+                      <span
+                        className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
+                          on ? "border-ink bg-inverse text-on-inverse" : "border-line-2"
+                        }`}
+                      >
+                        {on && <Check size={10} aria-hidden />}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm">{widget.label}</span>
+                        <span className="block text-xs text-ink-2">{widget.description}</span>
+                      </span>
+                      {widget.chart && <span className="text-xs text-ink-2">Chart</span>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
+    </Modal>
+  );
+}
+
 export default function HomePage() {
   const { data: profile } = useProfile();
   const { data: summary, isLoading, error } = useRpc<HomeSummary>("home_summary");
@@ -71,20 +118,22 @@ export default function HomePage() {
 
   // Local edits apply instantly; the saved layout takes over once they are stored.
   const [draft, setDraft] = useState<LayoutItem[] | null>(null);
-  // Older layouts may name money widgets that are now always at the top of the page.
   const layout: LayoutItem[] = (draft ?? profile?.home_layout ?? DEFAULT_LAYOUT).filter((item) =>
     WIDGETS.some((widget) => widget.id === item.id),
   );
-
-  const spans = rowSpans(layout);
+  const spans = widgetSpans(layout);
 
   function change(next: LayoutItem[]) {
     setDraft(next);
     update.mutate({ home_layout: next });
   }
 
-  function toggleWidget(id: string) {
-    change(layout.some((item) => item.id === id) ? layout.filter((item) => item.id !== id) : [...layout, { id, size: "m" }]);
+  function toggleWidget(widget: WidgetDef) {
+    change(
+      layout.some((item) => item.id === widget.id)
+        ? layout.filter((item) => item.id !== widget.id)
+        : [...layout, { id: widget.id, size: widget.size }],
+    );
   }
 
   return (
@@ -92,26 +141,12 @@ export default function HomePage() {
       <PageHeader
         title={greeting(profile?.display_name ?? "")}
         subtitle={`${formatDayLong(today())}.${summary ? ` ${brief(summary)}` : ""}`}
-      />
-
-      <ErrorNote error={error} />
-
-      <div className="grid gap-4 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <SafeToSpendPanel />
-        </div>
-        <Card className="lg:col-span-5" title={<PanelTitle>Log it now</PanelTitle>}>
-          <QuickAdd />
-        </Card>
-        <WhereItWent className="lg:col-span-7" />
-        <ComingUp className="lg:col-span-5" />
-      </div>
-
-      <div className="mt-10 mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="display text-[28px] leading-tight">Your day</h2>
-        <div className="flex flex-wrap items-center gap-2">
-          {editing ? (
+        action={
+          editing ? (
             <>
+              <Button variant="ghost" onClick={() => change(DEFAULT_LAYOUT)}>
+                <RotateCcw size={14} aria-hidden /> Reset
+              </Button>
               <Button variant="soft" onClick={() => setPicking(true)}>
                 Add or remove
               </Button>
@@ -123,71 +158,44 @@ export default function HomePage() {
             <Button variant="soft" onClick={() => setEditing(true)}>
               <Settings2 size={14} aria-hidden /> Customize
             </Button>
-          )}
-        </div>
-      </div>
+          )
+        }
+      />
+
+      <ErrorNote error={error} />
+
+      {editing && (
+        <p className="fade-in mb-4 text-sm text-ink-2">
+          Drag any card to move it. Use the buttons on a card to resize or remove it, or add any chart from Add or remove.
+        </p>
+      )}
 
       {isLoading || !summary ? (
         <div className="grid gap-4 md:grid-cols-2">
-          {DEFAULT_LAYOUT.map((item) => (
+          {DEFAULT_LAYOUT.slice(0, 4).map((item) => (
             <Skeleton key={item.id} className="h-40 rounded-3xl" />
           ))}
         </div>
       ) : layout.length === 0 ? (
         <div className="py-20 text-center">
-          <p className="display text-2xl">An empty room.</p>
+          <p className="display text-2xl">Your home is empty.</p>
           <Button className="mt-4" onClick={() => setPicking(true)}>
-            Add widgets
+            Add sections and charts
           </Button>
         </div>
+      ) : editing ? (
+        <SortableGrid layout={layout} summary={summary} onChange={change} />
       ) : (
-        editing ? (
-          <SortableGrid layout={layout} summary={summary} onChange={change} />
-        ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
-            {layout.map((item, index) => (
-              <div key={item.id} className={`col-span-1 ${spans[index]}`}>
-                {WIDGETS.find((widget) => widget.id === item.id)?.render(summary)}
-              </div>
-            ))}
-          </div>
-        )
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+          {layout.map((item, index) => (
+            <div key={item.id} className={`col-span-1 min-w-0 ${spans[index]}`}>
+              {WIDGETS.find((widget) => widget.id === item.id)?.render(summary)}
+            </div>
+          ))}
+        </div>
       )}
 
-      {picking && (
-        <Modal title="Your widgets" onClose={() => setPicking(false)}>
-          <ul className="space-y-1.5">
-            {WIDGETS.map((widget) => {
-              const on = layout.some((item) => item.id === widget.id);
-              return (
-                <li key={widget.id}>
-                  <button
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => toggleWidget(widget.id)}
-                    className={`pressable flex w-full cursor-pointer items-center gap-3 rounded-xl border p-3 text-left ${
-                      on ? "border-ink" : "border-line hover:border-line-2"
-                    }`}
-                  >
-                    <span
-                      className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
-                        on ? "border-ink bg-inverse text-on-inverse" : "border-line-2"
-                      }`}
-                    >
-                      {on && <Check size={10} aria-hidden />}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-sm">{widget.label}</span>
-                      <span className="block text-xs text-ink-3">{widget.description}</span>
-                    </span>
-                    <span className="text-xs text-ink-3">{widget.module}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </Modal>
-      )}
+      {picking && <WidgetPicker layout={layout} onToggle={toggleWidget} onClose={() => setPicking(false)} />}
     </main>
   );
 }
