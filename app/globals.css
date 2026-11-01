@@ -140,6 +140,7 @@ body {
 }
 
 .display em {
+  color: var(--accent, inherit);
   font-style: italic;
   font-variation-settings: "SOFT" 0, "WONK" 1;
 }

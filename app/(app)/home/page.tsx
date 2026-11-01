@@ -28,7 +28,7 @@ function greeting(name: string) {
   if (!first) return part;
   return (
     <>
-      {part}, <em className="text-good">{first}</em>
+      {part}, <em>{first}</em>
     </>
   );
 }
@@ -143,7 +143,10 @@ export default function HomePage() {
   }
 
   return (
-    <main className="mx-auto max-w-[1200px] px-4 py-6 pb-28 md:px-6 lg:py-8 lg:pb-12">
+    <main
+      style={{ "--accent": "var(--good)" } as React.CSSProperties}
+      className="mx-auto max-w-[1200px] px-4 py-6 pb-28 md:px-6 lg:py-8 lg:pb-12"
+    >
       <PageHeader
         title={greeting(profile?.display_name ?? "")}
         subtitle={`${formatDayLong(today())}.${summary ? ` ${brief(summary)}` : ""}`}
