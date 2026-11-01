@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ChartCard } from "@/components/charts/chart-card";
 import { BarsChart, DonutChart, TrendChart } from "@/components/charts/marks";
 import { PageHeader, ProgressBar, Ring, SegmentedControl } from "@/components/ui/primitives";
+import { useMonthCompare } from "@/components/finance/month-compare";
 import { useRows, useRpc } from "@/lib/data";
 import { addDays, inr, inrCompact, monthBounds, monthLabel, shiftMonth, shortDay, today } from "@/lib/format";
 
@@ -48,29 +49,7 @@ export default function FinanceChartsPage() {
     };
   }, [source.data]);
 
-  const compare = useRpc<{ day: string; total: number }[]>("daily_spending", { p_days: 62 });
-  const monthCompare = useMemo(() => {
-    const rows = compare.data ?? [];
-    const thisMonth = monthBounds();
-    const lastMonth = monthBounds(shiftMonth(today(), -1));
-    // Days that have not happened yet stay empty, so the line stops at today.
-    const days = new Map<number, { day: number; thisMonth: number | null; lastMonth: number | null }>();
-    let thisRun = 0;
-    let lastRun = 0;
-    for (const row of rows) {
-      const dayNumber = Number(row.day.slice(8, 10));
-      const entry = days.get(dayNumber) ?? { day: dayNumber, thisMonth: null, lastMonth: null };
-      if (row.day >= thisMonth.from && row.day <= thisMonth.to) {
-        thisRun += Number(row.total);
-        entry.thisMonth = thisRun;
-      } else if (row.day >= lastMonth.from && row.day <= lastMonth.to) {
-        lastRun += Number(row.total);
-        entry.lastMonth = lastRun;
-      }
-      days.set(dayNumber, entry);
-    }
-    return [...days.values()].sort((a, b) => a.day - b.day);
-  }, [compare.data]);
+  const { query: compare, points: monthCompare } = useMonthCompare();
 
   const hasSpend = (rows: { total: number }[] | undefined) => rows?.some((r) => Number(r.total) > 0);
 
