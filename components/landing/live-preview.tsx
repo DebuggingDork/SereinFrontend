@@ -227,7 +227,7 @@ export function LivePreview() {
 export function HeroFacts() {
   return (
     <ul className="rise mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-2" style={{ "--delay": "240ms" } as React.CSSProperties}>
-      {["No bank login", "No card numbers", "Log an expense in seconds"].map((fact) => (
+      {["No bank login", "No card numbers", "Log anything in seconds"].map((fact) => (
         <li key={fact} className="flex items-center gap-1.5">
           <Check size={14} className="text-good" aria-hidden />
           {fact}
