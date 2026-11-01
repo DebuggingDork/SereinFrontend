@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useTheme } from "@/components/shell/theme";
 
@@ -19,17 +20,15 @@ function showFeatures() {
 
 export function LandingNav() {
   const { theme, toggle } = useTheme();
+  const router = useRouter();
 
   // Old links may still carry the section in the address. Land there, then tidy it away.
   useEffect(() => {
     if (!window.location.hash) return;
     showFeatures();
-    // A frame later, since the router writes the original address back as it starts up.
-    const frame = requestAnimationFrame(() => {
-      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, []);
+    // Through the router, which otherwise writes the original address back as it starts up.
+    router.replace("/", { scroll: false });
+  }, [router]);
 
   return (
     <header className="mx-auto grid max-w-[1440px] grid-cols-[1fr_auto] items-center px-6 py-7 md:grid-cols-[1fr_auto_1.14fr] md:px-16">
