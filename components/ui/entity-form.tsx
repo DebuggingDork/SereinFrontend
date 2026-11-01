@@ -4,7 +4,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { LONG_NUMBER_WARNING, looksLikeLongNumber } from "@/lib/guards";
 import { Button } from "./button";
-import { Field, Input, Select, Textarea } from "./field";
+import { PasswordInput, Field, Input, Select, Textarea } from "./field";
 
 export interface FieldOption {
   value: string;
@@ -14,7 +14,7 @@ export interface FieldOption {
 export interface FieldDef {
   name: string;
   label: string;
-  type?: "text" | "number" | "date" | "time" | "select" | "textarea" | "checkbox";
+  type?: "text" | "number" | "date" | "time" | "select" | "textarea" | "checkbox" | "password";
   options?: FieldOption[];
   placeholder?: string;
   hint?: string;
@@ -191,6 +191,8 @@ export function EntityForm({
               </Select>
             ) : field.type === "textarea" ? (
               <Textarea {...common} value={value} onChange={onChange} placeholder={field.placeholder} />
+            ) : field.type === "password" ? (
+              <PasswordInput {...common} autoComplete="new-password" value={value} onChange={onChange} />
             ) : (
               <Input
                 {...common}

@@ -166,7 +166,7 @@ function AccountDetails() {
       />
       <EntityForm
         submitLabel="Change password"
-        fields={[{ name: "password", label: "New password", required: true, hint: "At least 8 characters." }]}
+        fields={[{ name: "password", label: "New password", type: "password", required: true, hint: "At least 8 characters." }]}
         onSubmit={async (values) => {
           const password = String(values.password);
           if (password.length < 8) {
