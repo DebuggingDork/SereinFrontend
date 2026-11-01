@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { addDays, monthBounds, monthYear, parseDay, shiftMonth, toDay, today } from "@/lib/format";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -35,11 +35,13 @@ export function MonthGrid({
   selected,
   onSelect,
   renderDay,
+  glow = "var(--finance)",
 }: {
   month: string;
   selected?: string | null;
   onSelect?: (day: string) => void;
   renderDay: (day: string) => React.ReactNode;
+  glow?: string;
 }) {
   const days = useMemo(() => {
     const { from, to } = monthBounds(month);
@@ -52,6 +54,22 @@ export function MonthGrid({
 
   const currentMonth = parseDay(month).getMonth();
   const now = today();
+  const grid = useRef<HTMLDivElement>(null);
+  const frame = useRef(0);
+
+  // Each day needs the pointer in its own coordinates. A frame at a time keeps this cheap.
+  function moveGlow(event: React.PointerEvent) {
+    if (event.pointerType === "touch" || frame.current) return;
+    const { clientX, clientY } = event;
+    frame.current = requestAnimationFrame(() => {
+      frame.current = 0;
+      for (const cell of grid.current?.children ?? []) {
+        const box = cell.getBoundingClientRect();
+        (cell as HTMLElement).style.setProperty("--glow-x", `${clientX - box.left}px`);
+        (cell as HTMLElement).style.setProperty("--glow-y", `${clientY - box.top}px`);
+      }
+    });
+  }
 
   return (
     <div>
@@ -60,7 +78,12 @@ export function MonthGrid({
           <span key={day}>{day}</span>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-1">
+      <div
+        ref={grid}
+        onPointerMove={moveGlow}
+        style={{ "--glow": glow } as React.CSSProperties}
+        className="glow-grid grid grid-cols-7 gap-1"
+      >
         {days.map((day) => {
           const inMonth = parseDay(day).getMonth() === currentMonth;
           const isToday = day === now;
@@ -72,20 +95,20 @@ export function MonthGrid({
               onClick={() => onSelect?.(day)}
               aria-pressed={isSelected}
               aria-label={parseDay(day).toLocaleDateString("en-IN", { dateStyle: "long" })}
-              className={`pressable flex min-h-14 cursor-pointer flex-col rounded-xl border p-1.5 text-left sm:min-h-20 sm:p-2 ${
+              className={`glow-cell pressable flex min-h-14 cursor-pointer flex-col rounded-xl border p-1.5 text-left sm:min-h-20 sm:p-2 ${
                 isSelected
                   ? "border-ink bg-surface"
-                  : "border-transparent bg-surface-2/50 hover:border-line-2"
+                  : "border-transparent bg-surface-2/50"
               } ${inMonth ? "" : "opacity-35"}`}
             >
               <span
-                className={`tabular flex size-5 items-center justify-center rounded-full text-[11px] ${
+                className={`tabular relative z-10 flex size-5 items-center justify-center rounded-full text-[11px] ${
                   isToday ? "bg-inverse text-on-inverse" : "text-ink-2"
                 }`}
               >
                 {parseDay(day).getDate()}
               </span>
-              <span className="mt-auto block min-w-0 text-[10px] leading-tight sm:text-[11px]">{renderDay(day)}</span>
+              <span className="relative z-10 mt-auto block min-w-0 text-[10px] leading-tight sm:text-[11px]">{renderDay(day)}</span>
             </button>
           );
         })}

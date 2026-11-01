@@ -281,3 +281,37 @@ body {
     stroke-dashoffset: 0;
   }
 }
+
+/* A soft light that follows the pointer across a grid: edges nearby catch it, faces barely do. */
+.glow-cell {
+  position: relative;
+  transition: box-shadow 300ms ease;
+}
+.glow-cell::before,
+.glow-cell::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.glow-cell::before {
+  inset: -1px;
+  padding: 1px;
+  background: radial-gradient(190px circle at var(--glow-x, -999px) var(--glow-y, -999px), var(--glow), transparent 72%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.glow-cell::after {
+  inset: 0;
+  background: radial-gradient(150px circle at var(--glow-x, -999px) var(--glow-y, -999px), color-mix(in srgb, var(--glow) 11%, transparent), transparent 72%);
+}
+.glow-grid:hover .glow-cell::before,
+.glow-grid:hover .glow-cell::after {
+  opacity: 1;
+}
+.glow-cell:hover {
+  box-shadow: 0 0 22px -8px color-mix(in srgb, var(--glow) 65%, transparent);
+}
