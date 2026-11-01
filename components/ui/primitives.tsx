@@ -79,7 +79,9 @@ export function Empty({
 }) {
   return (
     <div className={`flex flex-col items-center gap-2 text-center ${compact ? "py-6" : "py-14"}`}>
-      <p className="display text-xl">{title}</p>
+      <p className="display text-xl">
+        <AccentTitle text={title} />
+      </p>
       {hint && <p className="max-w-sm text-sm leading-relaxed text-ink-2">{hint}</p>}
       {action && <div className="mt-2">{action}</div>}
     </div>

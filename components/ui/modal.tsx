@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { AccentTitle } from "./primitives";
 
 export function Modal({
   title,
@@ -46,7 +47,9 @@ export function Modal({
         className="pop-in max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-line bg-surface p-6 shadow-card sm:rounded-3xl"
       >
         <header className="mb-5 flex items-center justify-between">
-          <h2 className="display text-2xl">{title}</h2>
+          <h2 className="display text-2xl">
+            <AccentTitle text={title} />
+          </h2>
           <button
             type="button"
             aria-label="Close"
