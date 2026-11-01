@@ -231,41 +231,39 @@ function ProductPreview() {
 }
 
 export function Hero() {
-  const { freeze } = useFreeze();
-
   return (
     <section className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-12 px-6 pt-8 pb-20 md:px-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] xl:grid-cols-[minmax(0,1fr)_776px] lg:gap-16 lg:pt-12 lg:pb-36">
       <div>
-        <p className="eyebrow rise">Serein · Personal life ledger</p>
+        <p className="eyebrow rise">Serein · Personal finance tracker</p>
         <h1
           className="display rise mt-6 max-w-[31rem] text-[clamp(2.75rem,5vw,4.5rem)] leading-[1.02]"
           style={{ "--delay": "60ms" } as React.CSSProperties}
         >
-          Your money, body, time, and mind—<em>behind frosted glass.</em>
+          Know where your money goes. <em>Keep more of it.</em>
         </h1>
         <p
           className="rise mt-[29px] max-w-[30rem] text-lg leading-[29px] text-ink-2"
           style={{ "--delay": "120ms" } as React.CSSProperties}
         >
-          Four deeply focused modules and one customizable home. No bank-sync middlemen, no bloated AI noise, and a
-          rotating security gate that roasts trespassers.
+          Log spending in seconds, see what is safe to spend today, and watch your savings and net worth grow. No bank
+          logins and no card numbers.
         </p>
         <div
           className="rise mt-[34px] flex flex-wrap gap-3"
           style={{ "--delay": "180ms" } as React.CSSProperties}
         >
-          <LinkButton href="/login" size="lg" className="!px-7">
-            Enter the Gate
+          <LinkButton href="/signup" size="lg" className="!px-7">
+            Start saving
           </LinkButton>
-          <Button variant="outline" size="lg" onClick={freeze}>
-            Trigger Freeze Demo (Press F)
-          </Button>
+          <LinkButton href="/login" variant="outline" size="lg">
+            Log in
+          </LinkButton>
         </div>
         <p
           className="display rise mt-8 max-w-[24rem] text-base leading-5 text-ink-2 italic"
           style={{ "--delay": "240ms" } as React.CSSProperties}
         >
-          — Typed balances never break. Bank syncs do, quietly, on the day you need them.
+          Your numbers, typed by you. Nothing to link and nothing to break.
         </p>
       </div>
 
