@@ -84,7 +84,7 @@ function RecentTransactions() {
       {isLoading ? (
         <Skeleton className="h-32" />
       ) : data.length === 0 ? (
-        <Empty compact title="No entries yet" hint="Type one in the box above. It takes five seconds." />
+        <Empty compact title="No entries yet" hint="Add your first one. It takes five seconds." />
       ) : (
         <ul className="divide-y divide-line">
           {data.map((tx) => (
@@ -156,7 +156,7 @@ export default function FinanceOverviewPage() {
         <div className="lg:col-span-7">
           <SafeToSpendPanel />
         </div>
-        <Card className="lg:col-span-5" title={<PanelTitle>Log it now</PanelTitle>}>
+        <Card className="hidden lg:col-span-5 lg:block" title={<PanelTitle>Log it now</PanelTitle>}>
           <QuickAdd />
         </Card>
 
