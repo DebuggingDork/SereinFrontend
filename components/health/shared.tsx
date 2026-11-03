@@ -23,6 +23,10 @@ export interface Food {
   protein: number;
   carbs: number;
   fat: number;
+  category: "protein" | "carb" | "combo" | "other";
+  diet_type: "veg" | "nonveg" | null;
+  meal_type: MealType | null;
+  position: number;
 }
 
 export interface MealLog {
@@ -48,7 +52,7 @@ export interface DietTargets {
   water_ml: number;
 }
 
-export const useFoods = () => useRows<Food>("foods", { order: [["name"]] });
+export const useFoods = () => useRows<Food>("foods", { order: [["position"], ["name"]] });
 export const useTargets = () => useRows<DietTargets>("diet_targets", { limit: 1 });
 
 // Suggests the meal from the clock, so logging lunch at lunchtime takes one less tap.
