@@ -2,8 +2,8 @@
 
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { MEAL_LABEL, MEAL_TYPES, MealForm, mealTime, useFoods, useTargets, type MealLog } from "@/components/diet/shared";
-import { WaterButtons } from "@/components/diet/water-buttons";
+import { MEAL_LABEL, MEAL_TYPES, MealForm, mealTime, useFoods, useTargets, type MealLog } from "@/components/health/shared";
+import { WaterButtons } from "@/components/health/water-buttons";
 import { Button } from "@/components/ui/button";
 import { Card, Empty, PageHeader, ProgressBar, Ring, Skeleton } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";

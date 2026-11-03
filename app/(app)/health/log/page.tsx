@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { MEAL_LABEL, MealForm, mealTime, type MealLog } from "@/components/diet/shared";
+import { MEAL_LABEL, MealForm, mealTime, type MealLog } from "@/components/health/shared";
 import { Button } from "@/components/ui/button";
 import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
@@ -24,7 +24,7 @@ function MealLogContent() {
 
   function close() {
     setEditing(null);
-    if (params.get("new")) router.replace("/diet/log");
+    if (params.get("new")) router.replace("/health/log");
   }
 
   return (

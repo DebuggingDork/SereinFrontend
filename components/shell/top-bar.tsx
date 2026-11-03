@@ -130,7 +130,7 @@ const DOCK: { label: string; href: string; color: string; icon: LucideIcon }[] =
   { label: "Home", href: "/home", color: "#ecebe6", icon: House },
   { label: "Finance", href: "/finance", color: "#34d399", icon: Wallet },
   { label: "Planner", href: "/planner", color: "#7aa9ff", icon: ListChecks },
-  { label: "Diet", href: "/diet", color: "#fbbf24", icon: Apple },
+  { label: "Diet", href: "/health", color: "#fbbf24", icon: Apple },
   { label: "Diary", href: "/diary", color: "#b69cff", icon: BookOpen },
 ];
 

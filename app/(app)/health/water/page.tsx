@@ -2,8 +2,8 @@
 
 import { ChartCard } from "@/components/charts/chart-card";
 import { BarsChart } from "@/components/charts/marks";
-import { useTargets } from "@/components/diet/shared";
-import { WaterButtons } from "@/components/diet/water-buttons";
+import { useTargets } from "@/components/health/shared";
+import { WaterButtons } from "@/components/health/water-buttons";
 import { Card, PageHeader, ProgressBar } from "@/components/ui/primitives";
 import { useRows, useRpc } from "@/lib/data";
 import { number, shortDay, today } from "@/lib/format";

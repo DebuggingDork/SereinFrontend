@@ -20,7 +20,7 @@ const COLUMNS = [
     title: "Also inside",
     links: [
       { label: "Planner", href: "/planner" },
-      { label: "Diet", href: "/diet" },
+      { label: "Diet", href: "/health" },
       { label: "Diary", href: "/diary" },
     ],
   },

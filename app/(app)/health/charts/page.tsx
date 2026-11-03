@@ -7,7 +7,7 @@ import {
   WaterPerDayChart,
   WeeklyMacrosChart,
   WeightTrendChart,
-} from "@/components/charts/catalog/diet";
+} from "@/components/charts/catalog/health";
 import { PageHeader } from "@/components/ui/primitives";
 
 export default function DietChartsPage() {

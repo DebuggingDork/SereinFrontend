@@ -22,7 +22,7 @@ import {
   WaterPerDayChart,
   WeeklyMacrosChart,
   WeightTrendChart,
-} from "@/components/charts/catalog/diet";
+} from "@/components/charts/catalog/health";
 import { EntriesPerWeekChart, MoodCountsChart, MoodOverTimeChart } from "@/components/charts/catalog/diary";
 import {
   CompletionRateChart,
@@ -30,7 +30,7 @@ import {
   OnTimeVsLateChart,
   TasksByCategoryChart,
 } from "@/components/charts/catalog/planner";
-import { WaterButtons } from "@/components/diet/water-buttons";
+import { WaterButtons } from "@/components/health/water-buttons";
 import { ComingUp, PanelTitle, SafeToSpendPanel, WhereItWent } from "@/components/finance/panels";
 import { QuickAdd } from "@/components/finance/quick-add";
 import { Card, ProgressBar, Ring } from "@/components/ui/primitives";
@@ -178,7 +178,7 @@ function CaloriesWidget({ summary }: WidgetProps) {
   const eaten = Number(summary.nutrition.calories);
   const target = Number(summary.targets?.calories ?? 2000);
   return (
-    <Tile title="Calories today" href="/diet" color="var(--diet)">
+    <Tile title="Calories today" href="/health" color="var(--diet)">
       <div className="flex items-center gap-4">
         <Ring value={eaten / target} color="var(--diet)" size={84} thickness={9}>
           <span className="tabular text-sm">{Math.round((eaten / target) * 100)}%</span>
@@ -198,7 +198,7 @@ function CaloriesWidget({ summary }: WidgetProps) {
 function WaterWidget({ summary }: WidgetProps) {
   const goal = Number(summary.targets?.water_ml ?? 2500);
   return (
-    <Tile title="Water today" href="/diet/water" color="var(--diet)">
+    <Tile title="Water today" href="/health/water" color="var(--diet)">
       <p className="figure text-[30px] leading-tight">
         {number(summary.water_ml)} <span className="text-base text-ink-2">of {number(goal)} ml</span>
       </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTargets } from "@/components/diet/shared";
+import { useTargets } from "@/components/health/shared";
 import { EntityForm } from "@/components/ui/entity-form";
 import { Card, PageHeader, Skeleton } from "@/components/ui/primitives";
 import { useSave } from "@/lib/data";

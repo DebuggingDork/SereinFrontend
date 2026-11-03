@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MEAL_LABEL, MEAL_TYPES, type MealType } from "@/components/diet/shared";
+import { MEAL_LABEL, MEAL_TYPES, type MealType } from "@/components/health/shared";
 import { Card, PageHeader, Skeleton } from "@/components/ui/primitives";
 import { useRemove, useRows, useSave } from "@/lib/data";
 

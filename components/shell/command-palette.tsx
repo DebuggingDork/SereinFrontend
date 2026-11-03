@@ -32,15 +32,15 @@ const APP_ROUTES: [string, string, string][] = [
   ["Planner calendar", "/planner/calendar", "Planner"],
   ["Completed tasks", "/planner/completed", "Planner"],
   ["Planner charts", "/planner/charts", "Planner"],
-  ["Diet today", "/diet", "Diet"],
-  ["Log a meal", "/diet/log?new=1", "Diet"],
-  ["Meal log", "/diet/log", "Diet"],
-  ["Meal plans", "/diet/plans", "Diet"],
-  ["Targets", "/diet/targets", "Diet"],
-  ["Water", "/diet/water", "Diet"],
-  ["Weight", "/diet/weight", "Diet"],
-  ["Foods", "/diet/foods", "Diet"],
-  ["Diet charts", "/diet/charts", "Diet"],
+  ["Diet today", "/health", "Diet"],
+  ["Log a meal", "/health/log?new=1", "Diet"],
+  ["Meal log", "/health/log", "Diet"],
+  ["Meal plans", "/health/plans", "Diet"],
+  ["Targets", "/health/targets", "Diet"],
+  ["Water", "/health/water", "Diet"],
+  ["Weight", "/health/weight", "Diet"],
+  ["Foods", "/health/foods", "Diet"],
+  ["Diet charts", "/health/charts", "Diet"],
   ["Write in the diary", "/diary", "Diary"],
   ["Diary entries", "/diary/entries", "Diary"],
   ["Diary calendar", "/diary/calendar", "Diary"],
@@ -54,7 +54,7 @@ const LANDING_ROUTES: [string, string][] = [
   ["Create an account", "/signup"],
 ];
 
-const APP_PREFIXES = ["/home", "/finance", "/planner", "/diet", "/diary", "/profile", "/admin"];
+const APP_PREFIXES = ["/home", "/finance", "/planner", "/health", "/diary", "/profile", "/admin"];
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);

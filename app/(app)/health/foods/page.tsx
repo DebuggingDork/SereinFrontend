@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { useFoods, type Food } from "@/components/diet/shared";
+import { useFoods, type Food } from "@/components/health/shared";
 import { Button } from "@/components/ui/button";
 import { EntityForm } from "@/components/ui/entity-form";
 import { Modal } from "@/components/ui/modal";
