@@ -159,7 +159,7 @@ test("health: a meal counts against the target, water and weight log", async ({ 
   await createReadyUser(page);
 
   await page.goto("/health/foods");
-  await page.getByRole("button", { name: "Add", exact: true }).click();
+  await page.getByRole("button", { name: "New food" }).click();
   let dialog = await modal(page, "New food");
   await dialog.getByLabel("Name").fill("Poha");
   await dialog.getByLabel("Calories").fill("320");
