@@ -32,7 +32,7 @@ function MacroBar({ protein, carbs, fat }: { protein: number; carbs: number; fat
           className="flex min-w-0 items-center justify-center overflow-hidden px-1 whitespace-nowrap"
           style={{ flexGrow: part.share, flexBasis: 0, background: part.background, color: part.color }}
         >
-          {number(part.grams)} g <span className="ml-1 hidden sm:inline">{part.label}</span>
+          {number(part.grams)} g {part.label}
         </div>
       ))}
     </div>
@@ -256,7 +256,7 @@ export default function PlanPage() {
       <SectionTitle>Checkpoints</SectionTitle>
       <CheckpointList />
       {reviewNotes.filter((item) => item.grp === "checkpoints").map((item) => (
-        <p key={item.id} className="mt-3 flex max-w-[70ch] items-start gap-2 px-1 text-sm leading-relaxed text-pretty text-ink-2">
+        <p key={item.id} className="mt-3 flex max-w-[70ch] items-start gap-2 text-sm leading-relaxed text-pretty text-ink-2">
           <span className="flex-1">{item.label}</span>
           <ItemActions item={item} />
         </p>
