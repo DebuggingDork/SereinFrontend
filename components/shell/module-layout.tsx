@@ -65,7 +65,7 @@ export function ModuleLayout({ moduleKey, children }: { moduleKey: ModuleDef["ke
             );
           })}
         </nav>
-        <main className="px-4 py-6 pb-28 md:px-6 lg:px-2 lg:py-8 lg:pb-12">{children}</main>
+        <main className="px-4 py-6 pb-40 md:px-6 lg:px-2 lg:py-8 lg:pb-12">{children}</main>
       </div>
     </div>
   );
