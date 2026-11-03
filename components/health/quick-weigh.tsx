@@ -45,7 +45,7 @@ export function QuickWeigh({ logged }: { logged?: number | null }) {
       <Input
         aria-label="Weight in kilograms"
         inputMode="decimal"
-        placeholder={logged ? `${number(logged, 1)} kg logged today` : "This morning, in kg"}
+        placeholder={logged ? `${number(logged, 1)} kg` : "kg"}
         value={value}
         onChange={(event) => setValue(event.target.value)}
       />
