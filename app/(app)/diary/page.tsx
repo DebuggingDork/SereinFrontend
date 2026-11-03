@@ -13,7 +13,7 @@ type SaveState = "idle" | "saving" | "saved" | "error";
 
 const AUTOSAVE_DELAY_MS = 900;
 
-function Editor({ entry, day }: { entry: DiaryEntry | null; day: string }) {
+function Editor({ entry, day, focus }: { entry: DiaryEntry | null; day: string; focus: boolean }) {
   const [id, setId] = useState(entry?.id ?? null);
   const [title, setTitle] = useState(entry?.title ?? "");
   const [body, setBody] = useState(entry?.body ?? "");
@@ -150,6 +150,7 @@ function Editor({ entry, day }: { entry: DiaryEntry | null; day: string }) {
       <textarea
         ref={textarea}
         aria-label="Entry"
+        autoFocus={focus}
         value={body}
         onChange={(event) => {
           setBody(event.target.value);
@@ -176,7 +177,9 @@ function WriteContent() {
   const router = useRouter();
   const params = useSearchParams();
   const entryId = params.get("entry");
-  const startNew = params.get("new") === "1";
+  // The value changes on every request for a new entry, so each one gets a fresh editor.
+  const newKey = params.get("new");
+  const startNew = Boolean(newKey);
   const day = today();
 
   const { data: rows = [], isLoading } = useRows<DiaryEntry>("diary_entries", {
@@ -192,7 +195,7 @@ function WriteContent() {
       <PageHeader
         title={formatDayLong(shownDay)}
         action={
-          <Button variant="soft" onClick={() => router.push("/diary?new=1")}>
+          <Button variant="soft" onClick={() => router.push(`/diary?new=${Number(newKey ?? 0) + 1}`)}>
             <Plus size={15} aria-hidden /> Another entry
           </Button>
         }
@@ -207,7 +210,7 @@ function WriteContent() {
         <Skeleton className="h-96 rounded-3xl" />
       ) : (
         // The key ignores the entry's id: a first save must not remount the editor mid-sentence.
-        <Editor key={entryId ?? (startNew ? "new" : "today")} entry={entry} day={shownDay} />
+        <Editor key={entryId ?? (newKey ? `new-${newKey}` : "today")} entry={entry} day={shownDay} focus={startNew} />
       )}
     </div>
   );
