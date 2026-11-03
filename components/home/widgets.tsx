@@ -22,6 +22,8 @@ import {
   WaterPerDayChart,
   WeeklyMacrosChart,
   WeightTrendChart,
+  LiftProgressChart,
+  SessionsPerWeekChart,
 } from "@/components/charts/catalog/health";
 import { EntriesPerWeekChart, MoodCountsChart, MoodOverTimeChart } from "@/components/charts/catalog/diary";
 import {
@@ -30,6 +32,7 @@ import {
   OnTimeVsLateChart,
   TasksByCategoryChart,
 } from "@/components/charts/catalog/planner";
+import { SessionCard } from "@/components/health/session-card";
 import { WaterButtons } from "@/components/health/water-buttons";
 import { ComingUp, PanelTitle, SafeToSpendPanel, WhereItWent } from "@/components/finance/panels";
 import { QuickAdd } from "@/components/finance/quick-add";
@@ -321,6 +324,7 @@ export const WIDGETS: WidgetDef[] = [
   { id: "balance", label: "Net worth", module: "Finance", description: "What you own minus what you owe", size: "m", render: (s) => <BalanceWidget summary={s} /> },
   { id: "tasks", label: "Tasks due today", module: "Planner", description: "Including anything carried over", size: "m", render: (s) => <TasksWidget summary={s} /> },
   { id: "calories", label: "Calories today", module: "Health", description: "Against your target", size: "m", render: (s) => <CaloriesWidget summary={s} /> },
+  { id: "session", label: "Today's session", module: "Health", description: "Your workout for today", size: "m", render: () => <SessionCard /> },
   { id: "water", label: "Water today", module: "Health", description: "Against your goal", size: "m", render: (s) => <WaterWidget summary={s} /> },
   { id: "mood", label: "Latest mood", module: "Diary", description: "Your last entry", size: "m", render: (s) => <MoodWidget summary={s} /> },
 
@@ -346,6 +350,8 @@ export const WIDGETS: WidgetDef[] = [
   chart("chart-weekly-macros", "Weekly average macros", "Health", "Grams per logged day", WeeklyMacrosChart),
   chart("chart-water", "Water per day", "Health", "Last 14 days", WaterPerDayChart),
   chart("chart-weight", "Weight trend", "Health", "All your entries", WeightTrendChart),
+  chart("chart-lifts", "Heaviest set by lift", "Health", "Per session", LiftProgressChart),
+  chart("chart-sessions", "Sessions per week", "Health", "Lifting, cardio and games", SessionsPerWeekChart),
   chart("chart-timing", "Meal timing", "Health", "When you ate, last 30 days", MealTimingChart),
 
   chart("chart-mood", "Mood over time", "Diary", "Last 30 days", MoodOverTimeChart),
