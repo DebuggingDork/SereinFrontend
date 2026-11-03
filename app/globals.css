@@ -321,6 +321,7 @@ body {
 .glass-fab {
   --glass-edge: rgb(255 255 255 / 0.65);
   --glass-rim: rgb(20 23 26 / 0.07);
+  --glass-glint: rgb(255 255 255 / 0.28);
   isolation: isolate;
   background: linear-gradient(
     150deg,
@@ -340,6 +341,7 @@ body {
 [data-theme="dark"] .glass-fab {
   --glass-edge: rgb(255 255 255 / 0.16);
   --glass-rim: rgb(255 255 255 / 0.07);
+  --glass-glint: rgb(255 255 255 / 0.07);
 }
 /* Light caught on the upper edge of the glass. */
 .glass-fab::before {
@@ -348,7 +350,7 @@ body {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: radial-gradient(120% 80% at 22% 0%, rgb(255 255 255 / 0.28), transparent 62%);
+  background: radial-gradient(120% 80% at 22% 0%, var(--glass-glint), transparent 62%);
   pointer-events: none;
 }
 .glass-fab:active {
