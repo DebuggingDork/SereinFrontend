@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/landing/nav";
 import { lockNow, signOut } from "@/lib/api";
-import { MODULES } from "./modules";
+import { MODULE_ACCENT, MODULES } from "./modules";
 import { useTheme } from "./theme";
 
 const TABS = [{ label: "Home", href: "/home", color: "var(--ink)" }, ...MODULES];
@@ -127,23 +127,22 @@ export function TopBar({ name, isAdmin }: { name: string; isAdmin: boolean }) {
 }
 
 const DOCK: { label: string; href: string; color: string; icon: LucideIcon }[] = [
-  { label: "Home", href: "/home", color: "#ecebe6", icon: House },
-  { label: "Finance", href: "/finance", color: "#34d399", icon: Wallet },
-  { label: "Planner", href: "/planner", color: "#7aa9ff", icon: ListChecks },
-  { label: "Health", href: "/health", color: "#fbbf24", icon: HeartPulse },
-  { label: "Diary", href: "/diary", color: "#b69cff", icon: BookOpen },
+  { label: "Home", href: "/home", color: "var(--ink)", icon: House },
+  { label: "Finance", href: "/finance", color: MODULE_ACCENT.finance, icon: Wallet },
+  { label: "Planner", href: "/planner", color: MODULE_ACCENT.planner, icon: ListChecks },
+  { label: "Health", href: "/health", color: MODULE_ACCENT.health, icon: HeartPulse },
+  { label: "Diary", href: "/diary", color: MODULE_ACCENT.diary, icon: BookOpen },
 ];
 
-// The primary navigation on small screens: a dock that floats within thumb reach. It stays dark
-// in both themes, so the module colours glow against it. The current one opens to show its name.
+// The primary navigation on small screens: a glass dock that floats within thumb reach and follows
+// the theme. The current one sits in a quiet capsule, in its module's colour, and shows its name.
 export function BottomBar() {
   const pathname = usePathname();
   return (
     <nav
       aria-label="Modules"
-      data-theme="dark"
       style={{ bottom: "calc(env(safe-area-inset-bottom) + 12px)" }}
-      className="fixed inset-x-3 z-40 mx-auto flex max-w-md items-center gap-0.5 rounded-[26px] border border-white/10 bg-[#14171c] p-1.5 shadow-[0_12px_32px_-8px_rgb(0_0_0/0.45)] lg:hidden"
+      className="glass fixed inset-x-3 z-40 mx-auto flex max-w-md items-center gap-0.5 rounded-[26px] p-1.5 lg:hidden"
     >
       {DOCK.map(({ label, href, color, icon: Icon }) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -152,17 +151,9 @@ export function BottomBar() {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            style={
-              active
-                ? {
-                    color,
-                    background: `color-mix(in srgb, ${color} 16%, transparent)`,
-                    boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${color} 22%, transparent), 0 0 18px -6px ${color}`,
-                  }
-                : undefined
-            }
-            className={`pressable flex h-12 min-w-0 items-center justify-center rounded-[20px] transition-[flex-grow,background-color,box-shadow,color] duration-300 ease-out ${
-              active ? "grow-[2.4]" : "grow text-[#a5a7a9]"
+            style={active ? { color, background: "color-mix(in srgb, var(--ink) 8%, transparent)" } : undefined}
+            className={`pressable flex h-12 min-w-0 items-center justify-center rounded-[20px] transition-[flex-grow,background-color,color] duration-300 ease-out ${
+              active ? "grow-[2.4]" : "grow text-ink-2"
             }`}
           >
             <Icon size={20} strokeWidth={active ? 2 : 1.7} aria-hidden className="shrink-0" />
