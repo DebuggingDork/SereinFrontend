@@ -7,6 +7,7 @@ import { TaskForm, TaskRow, useTasks, useTaskTree, type Task } from "@/component
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/field";
 import { Card, Empty, ErrorNote, ListSkeleton, PageHeader } from "@/components/ui/primitives";
+import { useOnNewParam } from "@/lib/use-new-param";
 
 function AllTasksContent() {
   const router = useRouter();
@@ -16,6 +17,7 @@ function AllTasksContent() {
     order: [["due_on", { nullsFirst: false }], ["created_at"]],
   });
   const [editing, setEditing] = useState<Partial<Task> | null>(params.get("new") ? {} : null);
+  useOnNewParam(() => setEditing({}));
   const [search, setSearch] = useState("");
   const [priority, setPriority] = useState("");
   const [category, setCategory] = useState("");

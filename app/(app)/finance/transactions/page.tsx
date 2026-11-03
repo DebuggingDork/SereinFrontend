@@ -23,6 +23,7 @@ import { RowActions } from "@/components/ui/row-actions";
 import { useToast } from "@/components/ui/toast";
 import { useRemove, useRows, useSave } from "@/lib/data";
 import { inr, monthBounds, today } from "@/lib/format";
+import { useOnNewParam } from "@/lib/use-new-param";
 
 interface Template {
   id: string;
@@ -113,6 +114,7 @@ function TransactionsContent() {
   const [categoryId, setCategoryId] = useState("");
   const [checked, setChecked] = useState("");
   const [editing, setEditing] = useState<Partial<Transaction> | null>(params.get("new") ? {} : null);
+  useOnNewParam(() => setEditing({}));
   const [templateOpen, setTemplateOpen] = useState(false);
   const { toast } = useToast();
 

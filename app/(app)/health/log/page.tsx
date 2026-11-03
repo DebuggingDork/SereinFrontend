@@ -9,12 +9,14 @@ import { Card, Chip, Empty, ErrorNote, ListSkeleton, PageHeader } from "@/compon
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useRows } from "@/lib/data";
 import { addDays, formatDayLong, number, today } from "@/lib/format";
+import { useOnNewParam } from "@/lib/use-new-param";
 
 function MealLogContent() {
   const router = useRouter();
   const params = useSearchParams();
   const [day, setDay] = useState(today());
   const [editing, setEditing] = useState<Partial<MealLog> | null>(params.get("new") ? {} : null);
+  useOnNewParam(() => setEditing({}));
   const { data: meals = [], isLoading, error } = useRows<MealLog>("meal_logs", {
     filters: [["logged_on", "eq", day]],
     order: [["logged_time"]],
