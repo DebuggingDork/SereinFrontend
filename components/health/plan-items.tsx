@@ -36,6 +36,9 @@ const LABELS: Record<ItemSection, FieldLabels> = {
   review: { title: "note", label: "Text", detail: "More detail" },
 };
 
+// In these lists the label is the whole note, so it gets room to be read while editing.
+const LONG_LABEL: ItemSection[] = ["routine", "food_note", "supplement_note", "review"];
+
 export function ItemForm({
   section,
   item,
@@ -52,7 +55,7 @@ export function ItemForm({
   const save = useSave("health_plan_items", { successMessage: "Saved" });
   const labels = LABELS[section];
   const fields: FieldDef[] = [
-    { name: "label", label: labels.label, required: true, maxLength: 120 },
+    { name: "label", label: labels.label, required: true, maxLength: 600, ...(LONG_LABEL.includes(section) ? { type: "textarea" as const } : {}) },
     ...(labels.detail ? [{ name: "detail", label: labels.detail, type: "textarea" as const, maxLength: 600 }] : []),
     ...(labels.value ? [{ name: "value", label: labels.value, maxLength: 40, half: true }] : []),
     ...(labels.grp
