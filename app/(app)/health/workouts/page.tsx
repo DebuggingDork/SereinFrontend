@@ -289,7 +289,7 @@ export default function WorkoutsPage() {
             </ul>
             {activityNotes.map((item) => (
               <p key={item.id} className="mt-3 flex max-w-[70ch] items-start gap-2 text-sm leading-relaxed text-pretty text-ink-2">
-                <span className="flex-1">{item.detail ?? item.label}</span>
+                <span className="flex-1">{item.label}</span>
                 <ItemActions item={item} />
               </p>
             ))}
@@ -309,7 +309,7 @@ export default function WorkoutsPage() {
       {gameForm && (
         <GameForm
           activities={playable}
-          note={activityNotes[0]?.detail ?? activityNotes[0]?.label}
+          note={activityNotes.at(-1)?.label}
           onSubmit={(input) => actions.logGame.mutateAsync(input)}
           onClose={() => setGameForm(false)}
         />

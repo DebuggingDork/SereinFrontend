@@ -24,7 +24,9 @@ export default function ProgressPage() {
   const change = latest && first ? Number(latest.weight_kg) - Number(first.weight_kg) : 0;
   const weeks = useMemo(() => weeklyAverages(logs), [logs]);
   const review = mondayVerdict(weeks);
-  const reviewNotes = inSection(items, "review");
+  const allNotes = inSection(items, "review");
+  const reviewNotes = allNotes.filter((item) => item.grp !== "checkpoints");
+  const checkpointNotes = allNotes.filter((item) => item.grp === "checkpoints");
   const target = plan?.target_weight_kg === null || plan?.target_weight_kg === undefined ? null : Number(plan.target_weight_kg);
 
   // The daily number jumps around, so a seven-entry average runs alongside it.
@@ -149,6 +151,11 @@ export default function ProgressPage() {
 
           <SectionTitle>Checkpoints</SectionTitle>
           <CheckpointList />
+          {checkpointNotes.map((item) => (
+            <p key={item.id} className="mt-3 max-w-[70ch] px-1 text-sm leading-relaxed text-pretty text-ink-2">
+              {item.label}
+            </p>
+          ))}
         </>
       )}
 

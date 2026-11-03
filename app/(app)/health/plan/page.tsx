@@ -8,7 +8,7 @@ import { PlanHero } from "@/components/health/plan-hero";
 import { inSection, usePlan, usePlanItems, type PlanItem } from "@/components/health/plan-data";
 import { AddItem, Callout, EditingContext, ItemActions, SectionTitle } from "@/components/health/plan-items";
 import { useTargets } from "@/components/health/shared";
-import { Button } from "@/components/ui/button";
+import { Button, LinkButton } from "@/components/ui/button";
 import { Card, Empty, ErrorNote, PageHeader, SegmentedControl, Skeleton } from "@/components/ui/primitives";
 import { useSave } from "@/lib/data";
 import { number } from "@/lib/format";
@@ -105,6 +105,8 @@ export default function PlanPage() {
   const meals = inSection(items, "meal");
   const supplements = inSection(items, "supplement");
   const supplementNotes = inSection(items, "supplement_note");
+  const reviewNotes = inSection(items, "review");
+  const mondayNotes = reviewNotes.filter((item) => item.grp !== "checkpoints");
   const targetNotes = inSection(items, "food_note").filter((item) => item.grp === "targets");
 
   if (isLoading) return <Skeleton className="h-96 rounded-3xl" />;
@@ -253,6 +255,33 @@ export default function PlanPage() {
 
       <SectionTitle>Checkpoints</SectionTitle>
       <CheckpointList />
+      {reviewNotes.filter((item) => item.grp === "checkpoints").map((item) => (
+        <p key={item.id} className="mt-3 flex max-w-[70ch] items-start gap-2 px-1 text-sm leading-relaxed text-pretty text-ink-2">
+          <span className="flex-1">{item.label}</span>
+          <ItemActions item={item} />
+        </p>
+      ))}
+
+      {(mondayNotes.length > 0 || editing) && (
+        <>
+          <SectionTitle action={<AddItem section="review" items={reviewNotes} label="Add note" />}>Every Monday</SectionTitle>
+          <Card>
+            <ul className="space-y-3 text-sm leading-relaxed text-pretty">
+              {mondayNotes.map((item) => (
+                <li key={item.id} className="flex max-w-[70ch] items-start gap-2">
+                  <span className="flex-1">{item.label}</span>
+                  <ItemActions item={item} />
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4">
+              <LinkButton href="/health/weight" variant="soft" size="sm">
+                See this week&apos;s review
+              </LinkButton>
+            </div>
+          </Card>
+        </>
+      )}
 
       {formOpen && <PlanForm plan={plan} onClose={() => setFormOpen(false)} />}
     </EditingContext.Provider>
