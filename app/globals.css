@@ -317,41 +317,37 @@ body {
   box-shadow: 0 0 22px -8px color-mix(in srgb, var(--glow) 65%, transparent);
 }
 
-/* The quick add button: a small lens of glass over the page, tinted by the module it serves. */
-.glass-fab {
-  --glass-edge: rgb(255 255 255 / 0.65);
-  --glass-rim: rgb(20 23 26 / 0.07);
-  --glass-glint: rgb(255 255 255 / 0.28);
-  isolation: isolate;
-  background: linear-gradient(
-    150deg,
-    color-mix(in srgb, var(--surface) 72%, transparent),
-    color-mix(in srgb, color-mix(in srgb, var(--tint) 20%, var(--surface)) 58%, transparent)
-  );
-  backdrop-filter: blur(18px) saturate(1.7);
-  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+/* Frosted glass for controls that float over the page: mostly solid, so nothing behind it stays
+   readable, with a thin lit edge and a neutral shadow in place of any coloured glow. */
+.glass {
+  --glass-fill: rgb(252 251 249 / 0.78);
+  --glass-edge: rgb(255 255 255 / 0.85);
+  --glass-rim: rgb(20 23 26 / 0.08);
+  --glass-shadow: rgb(20 23 26 / 0.16);
+  background: var(--glass-fill);
+  backdrop-filter: blur(28px) saturate(1.8);
+  -webkit-backdrop-filter: blur(28px) saturate(1.8);
   box-shadow:
     inset 0 1px 0 var(--glass-edge),
     inset 0 0 0 1px var(--glass-rim),
-    0 2px 6px rgb(0 0 0 / 0.07),
-    0 12px 28px -10px color-mix(in srgb, var(--tint) 55%, transparent);
+    0 1px 3px rgb(0 0 0 / 0.06),
+    0 10px 30px -10px var(--glass-shadow);
+}
+[data-theme="dark"] .glass {
+  --glass-fill: rgb(38 42 49 / 0.8);
+  --glass-edge: rgb(255 255 255 / 0.14);
+  --glass-rim: rgb(255 255 255 / 0.06);
+  --glass-shadow: rgb(0 0 0 / 0.5);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--surface);
+  }
+}
+
+.glass-fab {
   animation: glass-fab-in 420ms var(--ease-out-soft) backwards;
   transition: transform 220ms var(--ease-out-soft);
-}
-[data-theme="dark"] .glass-fab {
-  --glass-edge: rgb(255 255 255 / 0.16);
-  --glass-rim: rgb(255 255 255 / 0.07);
-  --glass-glint: rgb(255 255 255 / 0.07);
-}
-/* Light caught on the upper edge of the glass. */
-.glass-fab::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background: radial-gradient(120% 80% at 22% 0%, var(--glass-glint), transparent 62%);
-  pointer-events: none;
 }
 .glass-fab:active {
   transform: scale(0.92);
@@ -361,11 +357,6 @@ body {
 }
 .glass-fab:active .glass-fab-icon {
   transform: rotate(90deg);
-}
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass-fab {
-    background: var(--surface);
-  }
 }
 @keyframes glass-fab-in {
   from {
