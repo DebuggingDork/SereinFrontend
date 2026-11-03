@@ -158,12 +158,7 @@ export default function FoodsPage() {
             <Card
               title={ruleGroup}
               action={
-                <span className="flex items-center gap-1">
-                  <AddItem section="eating_rule" items={eatingRules} grp={ruleGroup} />
-                  <Button variant="ghost" size="sm" onClick={() => setEditingList((value) => !value)}>
-                    {editingList ? "Done" : "Edit"}
-                  </Button>
-                </span>
+                <AddItem section="eating_rule" items={eatingRules} grp={ruleGroup} />
               }
             >
               <RuleList items={eatingRules} />
