@@ -6,7 +6,7 @@ const ALL_PAGES = [
   "/finance", "/finance/transactions", "/finance/accounts", "/finance/budgets", "/finance/scheduled",
   "/finance/debts", "/finance/goals", "/finance/net-worth", "/finance/calendar", "/finance/charts", "/finance/settings",
   "/planner", "/planner/tasks", "/planner/deadlines", "/planner/calendar", "/planner/completed", "/planner/charts", "/planner/settings",
-  "/diet", "/diet/log", "/diet/plans", "/diet/targets", "/diet/water", "/diet/weight", "/diet/foods", "/diet/charts", "/diet/settings",
+  "/health", "/health/log", "/health/plans", "/health/targets", "/health/water", "/health/weight", "/health/foods", "/health/charts", "/health/settings",
   "/diary", "/diary/entries", "/diary/calendar", "/diary/moods", "/diary/search", "/diary/settings",
 ];
 
@@ -158,7 +158,7 @@ test("diet: a meal counts against the target, water and weight log", async ({ pa
   const errors = watchErrors(page);
   await createReadyUser(page);
 
-  await page.goto("/diet/foods");
+  await page.goto("/health/foods");
   await page.getByRole("button", { name: "Add", exact: true }).click();
   let dialog = await modal(page, "New food");
   await dialog.getByLabel("Name").fill("Poha");
@@ -169,7 +169,7 @@ test("diet: a meal counts against the target, water and weight log", async ({ pa
   await dialog.getByRole("button", { name: "Save" }).click();
   await expect(page.getByText("320 kcal")).toBeVisible();
 
-  await page.goto("/diet");
+  await page.goto("/health");
   await page.getByRole("button", { name: "Log a meal" }).click();
   dialog = await modal(page, "Log a meal");
   await dialog.getByLabel("From my foods").selectOption({ index: 1 });
@@ -180,12 +180,12 @@ test("diet: a meal counts against the target, water and weight log", async ({ pa
   await page.getByRole("button", { name: "+500 ml" }).click();
   await expect(page.getByText("500").first()).toBeVisible();
 
-  await page.goto("/diet/weight");
+  await page.goto("/health/weight");
   await page.getByLabel("Weight in kilograms").fill("72.5");
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByText("Latest 72.5 kg")).toBeVisible();
 
-  await page.goto("/diet/charts");
+  await page.goto("/health/charts");
   await expect(page.getByRole("heading", { name: "Calories versus target" })).toBeVisible();
   await expect(page.getByText(/Protein \d+%/)).toBeVisible();
   expect(errors).toEqual([]);

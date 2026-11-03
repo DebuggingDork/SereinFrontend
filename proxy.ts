@@ -8,7 +8,7 @@ const GATE_PATHS = ["/gate"];
 const PRE_GATE_ONLY = ["/login", "/signup"];
 // Everything behind the gate. Other addresses fall through, so a mistyped one reaches the
 // not-found page instead of a login form. A new signed-in section must be listed here.
-const APP_PATHS = ["/home", "/finance", "/planner", "/diet", "/diary", "/profile", "/admin", "/onboarding"];
+const APP_PATHS = ["/home", "/finance", "/planner", "/health", "/diary", "/profile", "/admin", "/onboarding"];
 
 const matches = (pathname: string, paths: string[]) =>
   paths.some((path) => (path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`)));

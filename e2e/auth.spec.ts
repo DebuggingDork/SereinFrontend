@@ -15,7 +15,7 @@ test("landing page leads with finance and signup", async ({ page }) => {
 });
 
 test("protected pages send visitors to login", async ({ page }) => {
-  for (const path of ["/home", "/finance", "/planner", "/diet", "/diary", "/admin", "/onboarding", "/profile"]) {
+  for (const path of ["/home", "/finance", "/planner", "/health", "/diary", "/admin", "/onboarding", "/profile"]) {
     await page.goto(path);
     await expect(page).toHaveURL(/\/login/);
   }
