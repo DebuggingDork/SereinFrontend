@@ -8,15 +8,13 @@ import { Modal } from "@/components/ui/modal";
 import { Chip } from "@/components/ui/primitives";
 import { RowActions } from "@/components/ui/row-actions";
 import { useRemove, useSave } from "@/lib/data";
-import { formatDay, number, today } from "@/lib/format";
+import { addDays, formatDay, number, today } from "@/lib/format";
 import { useCheckpoints, useWeights, type Checkpoint, type WeightLog } from "./plan-data";
 import { useEditing } from "./plan-items";
 
 // A checkpoint is judged on the weigh-in closest to its date, within the week before it.
 function readingFor(point: Checkpoint, weights: WeightLog[]) {
-  const weekBefore = new Date(`${point.due_on}T12:00:00`);
-  weekBefore.setDate(weekBefore.getDate() - 7);
-  const from = weekBefore.toISOString().slice(0, 10);
+  const from = addDays(point.due_on, -7);
   return weights.filter((log) => log.logged_on >= from && log.logged_on <= point.due_on).at(-1);
 }
 
