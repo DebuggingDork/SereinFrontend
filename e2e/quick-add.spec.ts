@@ -11,25 +11,25 @@ test("quick add: the plus adds the right thing in each module", async ({ page })
 
   // Nothing to add from Home, so no plus there.
   await page.goto("/home");
-  await expect(page.getByRole("link", { name: /^(Add a|Log a|Write a)/ })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /^New (transaction|task|meal|diary entry)/ })).toHaveCount(0);
 
   await page.goto("/finance");
-  await page.getByRole("link", { name: "Add a transaction" }).click();
+  await page.getByRole("link", { name: "New transaction" }).click();
   await expect(page).toHaveURL(/\/finance\/transactions\?new=1/);
   await expect(page.getByRole("dialog", { name: "New entry" })).toBeVisible();
 
   await page.goto("/planner");
-  await page.getByRole("link", { name: "Add a task" }).click();
+  await page.getByRole("link", { name: "New task" }).click();
   await expect(page).toHaveURL(/\/planner\/tasks\?new=1/);
   await expect(page.getByRole("dialog")).toBeVisible();
 
   await page.goto("/health/plan");
-  await page.getByRole("link", { name: "Log a meal" }).click();
+  await page.getByRole("link", { name: "New meal" }).click();
   await expect(page).toHaveURL(/\/health\/log\?new=1/);
   await expect(page.getByRole("dialog")).toBeVisible();
 
   await page.goto("/diary/moods");
-  await page.getByRole("link", { name: "Write a new diary entry" }).click();
+  await page.getByRole("link", { name: "New diary entry" }).click();
   await expect(page).toHaveURL(/\/diary\?new=1/);
   await expect(page.getByLabel("Entry", { exact: true })).toBeFocused();
   expect(errors).toEqual([]);
@@ -41,7 +41,7 @@ test("quick add: it works again and again from the page it opens", async ({ page
   await createReadyUser(page);
 
   await page.goto("/planner/tasks");
-  const plus = page.getByRole("link", { name: "Add a task" });
+  const plus = page.getByRole("link", { name: "New task" });
   for (let round = 0; round < 2; round++) {
     await plus.click();
     const dialog = page.getByRole("dialog");
@@ -56,7 +56,7 @@ test("quick add: it works again and again from the page it opens", async ({ page
   const entry = page.getByLabel("Entry", { exact: true });
   await entry.fill("First thought");
   await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible();
-  await page.getByRole("link", { name: "Write a new diary entry" }).click();
+  await page.getByRole("link", { name: "New diary entry" }).click();
   await expect(page).toHaveURL(/\/diary\?new=2/);
   await expect(entry).toHaveValue("");
   expect(errors).toEqual([]);
@@ -67,7 +67,7 @@ test("quick add: phones and tablets only, and it names itself then settles", asy
   await createReadyUser(page);
 
   await page.goto("/finance");
-  const plus = page.getByRole("link", { name: "Add a transaction" });
+  const plus = page.getByRole("link", { name: "New transaction" });
   await expect(plus).toContainText("Transaction");
   const wide = (await plus.boundingBox())!.width;
   expect(wide).toBeGreaterThan(80);
