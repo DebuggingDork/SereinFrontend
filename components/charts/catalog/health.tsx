@@ -1,6 +1,10 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { ChartCard } from "@/components/charts/chart-card";
+import { mondayOf } from "@/components/health/plan-data";
+import { useSessions, useSetHistory } from "@/components/health/workout-log";
+import { Select } from "@/components/ui/field";
 import { BarsChart, DonutChart, HeatStripChart, TrendChart } from "@/components/charts/marks";
 import { useRows, useRpc } from "@/lib/data";
 import { number, shortDay } from "@/lib/format";
@@ -172,6 +176,128 @@ export function MealTimingChart({ className }: ChartProps) {
           format={(v) => `${v} meal${v === 1 ? "" : "s"}`}
         />
       </div>
+    </ChartCard>
+  );
+}
+
+// The heaviest set per session shows whether strength is holding during a cut.
+export function LiftProgressChart({ className }: ChartProps) {
+  const history = useSetHistory();
+  const lifts = useMemo(() => {
+    const byName = new Map<string, Map<string, number>>();
+    for (const set of history.data ?? []) {
+      const day = set.workout_sessions?.logged_on;
+      if (!day || set.weight_kg === null) continue;
+      const days = byName.get(set.exercise_name) ?? new Map<string, number>();
+      days.set(day, Math.max(days.get(day) ?? 0, Number(set.weight_kg)));
+      byName.set(set.exercise_name, days);
+    }
+    return byName;
+  }, [history.data]);
+  const names = [...lifts.keys()].sort((a, b) => a.localeCompare(b));
+  const [picked, setPicked] = useState<string | null>(null);
+  const name = picked && lifts.has(picked) ? picked : names[0];
+  const rows = [...(name ? lifts.get(name)! : new Map<string, number>()).entries()]
+    .map(([day, weight]) => ({ day, weight }))
+    .sort((a, b) => a.day.localeCompare(b.day));
+  return (
+    <ChartCard
+      className={className}
+      title="Heaviest set by lift"
+      subtitle={name ?? "Per session"}
+      loading={history.isLoading}
+      error={history.error}
+      empty={rows.length === 0}
+      emptyHint="Log sets with a weight to see each lift here."
+      table={{ columns: ["Day", "Weight"], rows: rows.map((r) => [shortDay(r.day), `${r.weight} kg`]) }}
+    >
+      {names.length > 1 && (
+        <div className="mb-3 max-w-xs">
+          <Select aria-label="Choose a lift" value={name} onChange={(event) => setPicked(event.target.value)}>
+            {names.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
+      <TrendChart
+        data={rows}
+        x="day"
+        xFormat={shortDay}
+        series={[{ key: "weight", label: "Heaviest set", color: "var(--health)" }]}
+        format={(v) => `${number(v, 1)} kg`}
+        axisFormat={(v) => number(v, 1)}
+      />
+    </ChartCard>
+  );
+}
+
+export function SessionsPerWeekChart({ className }: ChartProps) {
+  const sessions = useSessions();
+  const rows = useMemo(() => {
+    const weeks = new Map<string, number>();
+    for (const session of sessions.data ?? []) {
+      if (!session.completed_at || session.kind === "rest") continue;
+      const monday = mondayOf(session.logged_on);
+      weeks.set(monday, (weeks.get(monday) ?? 0) + 1);
+    }
+    return [...weeks.entries()]
+      .map(([week, count]) => ({ week, count }))
+      .sort((a, b) => a.week.localeCompare(b.week))
+      .slice(-12);
+  }, [sessions.data]);
+  return (
+    <ChartCard
+      className={className}
+      title="Sessions per week"
+      subtitle="Lifting, cardio and games"
+      loading={sessions.isLoading}
+      error={sessions.error}
+      empty={rows.length === 0}
+      emptyHint="Finish a session to start the count."
+      table={{ columns: ["Week of", "Sessions"], rows: rows.map((r) => [shortDay(r.week), r.count]) }}
+    >
+      <BarsChart
+        data={rows}
+        x="week"
+        xFormat={shortDay}
+        series={[{ key: "count", label: "Sessions", color: "var(--health)" }]}
+        format={(v) => number(v)}
+        axisFormat={(v) => number(v)}
+      />
+    </ChartCard>
+  );
+}
+
+export function ChecklistChart({ className }: ChartProps) {
+  const checkins = useRows<{ logged_on: string; done: string[]; total: number }>("health_checkins", {
+    order: [["logged_on", { ascending: false }]],
+    limit: 30,
+  });
+  const rows = [...(checkins.data ?? [])].reverse().map((row) => ({ day: row.logged_on, ticks: row.done.length, total: row.total }));
+  const total = rows.at(-1)?.total;
+  return (
+    <ChartCard
+      className={className}
+      title="Daily checklist"
+      subtitle="Ticks per day, last 30 days"
+      loading={checkins.isLoading}
+      error={checkins.error}
+      empty={rows.length === 0}
+      emptyHint="Tick your daily checklist to see your streaks."
+      table={{ columns: ["Day", "Ticks"], rows: rows.map((r) => [shortDay(r.day), `${r.ticks} of ${r.total}`]) }}
+    >
+      <BarsChart
+        data={rows}
+        x="day"
+        xFormat={shortDay}
+        series={[{ key: "ticks", label: "Ticks", color: "var(--health)" }]}
+        format={(v) => number(v)}
+        axisFormat={(v) => number(v)}
+        target={total ? { value: total, label: "Clean day" } : undefined}
+      />
     </ChartCard>
   );
 }
