@@ -152,7 +152,7 @@ export default function ProgressPage() {
           <SectionTitle>Checkpoints</SectionTitle>
           <CheckpointList />
           {checkpointNotes.map((item) => (
-            <p key={item.id} className="mt-3 max-w-[70ch] px-1 text-sm leading-relaxed text-pretty text-ink-2">
+            <p key={item.id} className="mt-3 max-w-[70ch] text-sm leading-relaxed text-pretty text-ink-2">
               {item.label}
             </p>
           ))}
