@@ -252,7 +252,6 @@ body {
 
 .frost {
   backdrop-filter: blur(22px) saturate(1.15);
-  -webkit-backdrop-filter: blur(22px) saturate(1.15);
   background: var(--frost);
 }
 
