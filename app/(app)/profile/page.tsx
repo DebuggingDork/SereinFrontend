@@ -185,7 +185,9 @@ function AccountDetails() {
 const EXPORT_TABLES = [
   "accounts", "categories", "transactions", "transaction_templates", "budgets", "scheduled_items",
   "people", "debts", "debt_payments", "goals", "net_worth_snapshots", "tasks", "foods", "meal_logs",
-  "diet_targets", "meal_plans", "water_logs", "weight_logs", "diary_entries",
+  "diet_targets", "meal_plans", "water_logs", "weight_logs", "health_plans", "health_plan_items",
+  "health_checkpoints", "health_checkins", "body_measurements", "workout_days", "workout_exercises",
+  "workout_sessions", "workout_sets", "diary_entries",
 ];
 
 function DataExport() {
