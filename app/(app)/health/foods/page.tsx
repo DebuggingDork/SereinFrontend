@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Check, Pencil, Plus } from "lucide-react";
 import { useState } from "react";
 import { inSection, usePlanItems } from "@/components/health/plan-data";
 import { AddItem, EditingContext, ItemActions, RuleList } from "@/components/health/plan-items";
@@ -29,7 +29,7 @@ export default function FoodsPage() {
   const [picked, setPicked] = useState<Category | null>(null);
   const [diet, setDiet] = useState<DietFilter>("all");
   const [editing, setEditing] = useState<Partial<Food> | null>(null);
-  const [editingNotes, setEditingNotes] = useState(false);
+  const [editingList, setEditingNotes] = useState(false);
   const save = useSave("foods", { successMessage: "Saved" });
   const remove = useRemove("foods");
   const logMeal = useSave("meal_logs", { successMessage: "Added to today" });
@@ -71,25 +71,35 @@ export default function FoodsPage() {
         <Button variant="soft" size="sm" aria-label={`Add ${food.name} to today`} onClick={() => add(food)} disabled={logMeal.isPending}>
           <Plus size={13} aria-hidden /> Add
         </Button>
-        <RowActions
-          onEdit={() => setEditing(food)}
-          onDelete={() => remove.mutate(food.id)}
-          deleteTitle={`Delete ${food.name}?`}
-          deleteBody="Meals you already logged keep their numbers."
-        />
+        {editingList && (
+          <RowActions
+            onEdit={() => setEditing(food)}
+            onDelete={() => remove.mutate(food.id)}
+            deleteTitle={`Delete ${food.name}?`}
+            deleteBody="Meals you already logged keep their numbers."
+          />
+        )}
       </li>
     );
   }
 
   return (
-    <EditingContext.Provider value={editingNotes}>
+    <EditingContext.Provider value={editingList}>
       <PageHeader
         title="Foods"
         subtitle="Pick what fits. Add it to today in one tap."
         action={
-          <Button onClick={() => setEditing({ category: tab === "combo" ? "combo" : tab })}>
-            <Plus size={15} aria-hidden /> New food
-          </Button>
+          <>
+            <Button variant={editingList ? "primary" : "soft"} onClick={() => setEditingList((value) => !value)}>
+              {editingList ? <Check size={15} aria-hidden /> : <Pencil size={14} aria-hidden />}
+              {editingList ? "Done editing" : "Edit list"}
+            </Button>
+            {!editingList && (
+              <Button onClick={() => setEditing({ category: tab })}>
+                <Plus size={15} aria-hidden /> New food
+              </Button>
+            )}
+          </>
         }
       />
       <ErrorNote error={error} />
@@ -143,7 +153,7 @@ export default function FoodsPage() {
           ))}
         </div>
 
-        {(eatingRules.length > 0 || editingNotes) && (
+        {(eatingRules.length > 0 || editingList) && (
           <aside>
             <Card
               title={ruleGroup}
@@ -151,7 +161,7 @@ export default function FoodsPage() {
                 <span className="flex items-center gap-1">
                   <AddItem section="eating_rule" items={eatingRules} grp={ruleGroup} />
                   <Button variant="ghost" size="sm" onClick={() => setEditingNotes((value) => !value)}>
-                    {editingNotes ? "Done" : "Edit"}
+                    {editingList ? "Done" : "Edit"}
                   </Button>
                 </span>
               }
