@@ -40,8 +40,9 @@ export interface ModuleDef {
   label: string;
   href: string;
   color: string;
-  // The one thing people most often come here to add.
-  quickAdd: { label: string; title: string; href: string };
+  // The one thing people most often come here to add. It opens over the current page, or at
+  // href when it needs a page of its own.
+  quickAdd: { label: string; title: string; href?: string };
   items: NavItem[];
 }
 
@@ -59,7 +60,7 @@ export const MODULES: ModuleDef[] = [
     label: "Finance",
     href: "/finance",
     color: "var(--finance)",
-    quickAdd: { label: "Transaction", title: "New transaction", href: "/finance/transactions?new=1" },
+    quickAdd: { label: "Transaction", title: "New transaction" },
     items: [
       { label: "Overview", href: "/finance", icon: LayoutGrid },
       { label: "Transactions", href: "/finance/transactions", icon: ReceiptText },
@@ -79,7 +80,7 @@ export const MODULES: ModuleDef[] = [
     label: "Planner",
     href: "/planner",
     color: "var(--planner)",
-    quickAdd: { label: "Task", title: "New task", href: "/planner/tasks?new=1" },
+    quickAdd: { label: "Task", title: "New task" },
     items: [
       { label: "Today", href: "/planner", icon: Sun },
       { label: "All Tasks", href: "/planner/tasks", icon: ListChecks },
@@ -95,7 +96,7 @@ export const MODULES: ModuleDef[] = [
     label: "Health",
     href: "/health",
     color: "var(--health)",
-    quickAdd: { label: "Meal", title: "New meal", href: "/health/log?new=1" },
+    quickAdd: { label: "Meal", title: "New meal" },
     items: [
       { label: "Today", href: "/health", icon: Sun },
       { label: "Plan", href: "/health/plan", icon: ClipboardList },
