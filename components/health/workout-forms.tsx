@@ -25,7 +25,7 @@ export function DayForm({ weekday, day, onClose }: { weekday: number; day?: Work
             ],
           },
         ]}
-        initial={day ?? { kind: "lift" }}
+        initial={day ? { ...day } : { kind: "lift" }}
         onCancel={onClose}
         onSubmit={async (values) => {
           await save.mutateAsync(day ? { ...values, id: day.id } : { ...values, weekday });
@@ -66,7 +66,7 @@ export function ExerciseForm({
             ],
           },
         ]}
-        initial={exercise ?? { sets: 3, measure: "reps" }}
+        initial={exercise ? { ...exercise } : { sets: 3, measure: "reps" }}
         onCancel={onClose}
         onSubmit={async (values) => {
           await save.mutateAsync(exercise ? { ...values, id: exercise.id } : { ...values, day_id: dayId, position: nextPosition });

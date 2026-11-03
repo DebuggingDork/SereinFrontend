@@ -40,7 +40,7 @@ export function PlanForm({ plan, onClose }: { plan?: HealthPlan | null; onClose:
   const [confirming, setConfirming] = useState(false);
 
   async function submit(values: Record<string, unknown>) {
-    const row = { ...values, ease_in_weeks: values.ease_in_weeks ?? 0, ease_in_sets: values.ease_in_sets ?? 2 };
+    const row: Record<string, unknown> = { ...values, ease_in_weeks: values.ease_in_weeks ?? 0, ease_in_sets: values.ease_in_sets ?? 2 };
     if (String(row.ends_on) <= String(row.starts_on)) {
       toast("The end date has to come after the start.", { tone: "error" });
       return;
@@ -79,7 +79,7 @@ export function PlanForm({ plan, onClose }: { plan?: HealthPlan | null; onClose:
     <Modal title={plan ? "Edit plan" : "Set up your plan"} onClose={onClose}>
       <EntityForm
         fields={FIELDS}
-        initial={plan ?? { starts_on: today(), ends_on: addDays(today(), 83), ease_in_weeks: 2, ease_in_sets: 2 }}
+        initial={plan ? { ...plan } : { starts_on: today(), ends_on: addDays(today(), 83), ease_in_weeks: 2, ease_in_sets: 2 }}
         submitLabel={plan ? "Save plan" : "Create plan"}
         onCancel={onClose}
         onSubmit={submit}

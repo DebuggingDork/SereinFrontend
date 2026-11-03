@@ -72,7 +72,7 @@ export function ItemForm({
     <Modal title={item ? `Edit ${labels.title}` : `New ${labels.title}`} onClose={onClose}>
       <EntityForm
         fields={fields}
-        initial={item ?? { grp: grp ?? labels.grpOptions?.[0]?.value ?? null }}
+        initial={item ? { ...item } : { grp: grp ?? labels.grpOptions?.[0]?.value ?? null }}
         onCancel={onClose}
         onSubmit={async (values) => {
           await save.mutateAsync(item ? { ...values, id: item.id } : { ...values, section, position: nextPosition });
