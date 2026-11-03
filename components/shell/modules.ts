@@ -40,8 +40,18 @@ export interface ModuleDef {
   label: string;
   href: string;
   color: string;
+  // The one thing people most often come here to add.
+  quickAdd: { label: string; title: string; href: string };
   items: NavItem[];
 }
+
+// Each module's colour, in the shades that stay readable as text in both themes.
+export const MODULE_ACCENT: Record<ModuleDef["key"], string> = {
+  finance: "var(--good)",
+  planner: "var(--planner)",
+  health: "var(--warn)",
+  diary: "var(--diary)",
+};
 
 export const MODULES: ModuleDef[] = [
   {
@@ -49,6 +59,7 @@ export const MODULES: ModuleDef[] = [
     label: "Finance",
     href: "/finance",
     color: "var(--finance)",
+    quickAdd: { label: "Transaction", title: "Add a transaction", href: "/finance/transactions?new=1" },
     items: [
       { label: "Overview", href: "/finance", icon: LayoutGrid },
       { label: "Transactions", href: "/finance/transactions", icon: ReceiptText },
@@ -68,6 +79,7 @@ export const MODULES: ModuleDef[] = [
     label: "Planner",
     href: "/planner",
     color: "var(--planner)",
+    quickAdd: { label: "Task", title: "Add a task", href: "/planner/tasks?new=1" },
     items: [
       { label: "Today", href: "/planner", icon: Sun },
       { label: "All Tasks", href: "/planner/tasks", icon: ListChecks },
@@ -83,6 +95,7 @@ export const MODULES: ModuleDef[] = [
     label: "Health",
     href: "/health",
     color: "var(--health)",
+    quickAdd: { label: "Meal", title: "Log a meal", href: "/health/log?new=1" },
     items: [
       { label: "Today", href: "/health", icon: Sun },
       { label: "Plan", href: "/health/plan", icon: ClipboardList },
@@ -102,6 +115,7 @@ export const MODULES: ModuleDef[] = [
     label: "Diary",
     href: "/diary",
     color: "var(--diary)",
+    quickAdd: { label: "Entry", title: "Write a new diary entry", href: "/diary?new=1" },
     items: [
       { label: "Write", href: "/diary", icon: NotebookPen },
       { label: "Entries", href: "/diary/entries", icon: BookOpen },

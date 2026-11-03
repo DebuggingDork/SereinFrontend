@@ -2,26 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MODULES, type ModuleDef } from "./modules";
+import { MODULE_ACCENT, MODULES, type ModuleDef } from "./modules";
 
 function isActive(pathname: string, href: string, root: string) {
   return href === root ? pathname === root : pathname === href || pathname.startsWith(`${href}/`);
 }
-
-// Each module's colour, in the shades that stay readable as text in both themes.
-const ACCENT: Record<ModuleDef["key"], string> = {
-  finance: "var(--good)",
-  planner: "var(--planner)",
-  health: "var(--warn)",
-  diary: "var(--diary)",
-};
 
 export function ModuleLayout({ moduleKey, children }: { moduleKey: ModuleDef["key"]; children: React.ReactNode }) {
   const moduleDef = MODULES.find((m) => m.key === moduleKey)!;
   const pathname = usePathname();
 
   return (
-    <div className="mx-auto flex max-w-[1440px] gap-6 lg:px-6" style={{ "--accent": ACCENT[moduleKey] } as React.CSSProperties}>
+    <div className="mx-auto flex max-w-[1440px] gap-6 lg:px-6" style={{ "--accent": MODULE_ACCENT[moduleKey] } as React.CSSProperties}>
       <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 overflow-y-auto py-6 lg:block">
         <p className="display mb-4 flex items-center gap-2.5 px-3 text-2xl">
           <span className="size-2.5 rounded-full" style={{ background: moduleDef.color }} />
