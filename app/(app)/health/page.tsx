@@ -24,7 +24,7 @@ function Macro({ label, value, target }: { label: string; value: number; target:
   );
 }
 
-export default function DietTodayPage() {
+export default function HealthTodayPage() {
   const now = today();
   const { data: meals = [], isLoading } = useRows<MealLog>("meal_logs", {
     filters: [["logged_on", "eq", now]],

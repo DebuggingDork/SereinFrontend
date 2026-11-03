@@ -34,7 +34,7 @@ export interface NavItem {
 }
 
 export interface ModuleDef {
-  key: "finance" | "planner" | "diet" | "diary";
+  key: "finance" | "planner" | "health" | "diary";
   label: string;
   href: string;
   color: string;
@@ -77,8 +77,8 @@ export const MODULES: ModuleDef[] = [
     ],
   },
   {
-    key: "diet",
-    label: "Diet",
+    key: "health",
+    label: "Health",
     href: "/health",
     color: "var(--health)",
     items: [

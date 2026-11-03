@@ -285,7 +285,7 @@ export function widgetSpans(items: { size: WidgetSize }[]) {
 export interface WidgetDef {
   id: string;
   label: string;
-  module: "Finance" | "Planner" | "Diet" | "Diary";
+  module: "Finance" | "Planner" | "Health" | "Diary";
   description: string;
   size: WidgetSize;
   chart?: boolean;
@@ -320,8 +320,8 @@ export const WIDGETS: WidgetDef[] = [
   { id: "alerts", label: "Coming up", module: "Finance", description: "Bills, dues and overdue tasks", size: "n", render: () => <ComingUp className="h-full" /> },
   { id: "balance", label: "Net worth", module: "Finance", description: "What you own minus what you owe", size: "m", render: (s) => <BalanceWidget summary={s} /> },
   { id: "tasks", label: "Tasks due today", module: "Planner", description: "Including anything carried over", size: "m", render: (s) => <TasksWidget summary={s} /> },
-  { id: "calories", label: "Calories today", module: "Diet", description: "Against your target", size: "m", render: (s) => <CaloriesWidget summary={s} /> },
-  { id: "water", label: "Water today", module: "Diet", description: "Against your goal", size: "m", render: (s) => <WaterWidget summary={s} /> },
+  { id: "calories", label: "Calories today", module: "Health", description: "Against your target", size: "m", render: (s) => <CaloriesWidget summary={s} /> },
+  { id: "water", label: "Water today", module: "Health", description: "Against your goal", size: "m", render: (s) => <WaterWidget summary={s} /> },
   { id: "mood", label: "Latest mood", module: "Diary", description: "Your last entry", size: "m", render: (s) => <MoodWidget summary={s} /> },
 
   chart("chart-category", "Spending by category", "Finance", "Donut chart, this month", SpendingByCategoryChart),
@@ -341,12 +341,12 @@ export const WIDGETS: WidgetDef[] = [
   chart("chart-flow", "Created versus completed", "Planner", "By week", CreatedVsCompletedChart),
   chart("chart-tasks", "Tasks by category", "Planner", "All tasks", TasksByCategoryChart),
 
-  chart("chart-calories", "Calories versus target", "Diet", "Last 14 days", CaloriesVsTargetChart),
-  chart("chart-macros", "Macro split", "Diet", "Today, by energy", MacroSplitChart),
-  chart("chart-weekly-macros", "Weekly average macros", "Diet", "Grams per logged day", WeeklyMacrosChart),
-  chart("chart-water", "Water per day", "Diet", "Last 14 days", WaterPerDayChart),
-  chart("chart-weight", "Weight trend", "Diet", "All your entries", WeightTrendChart),
-  chart("chart-timing", "Meal timing", "Diet", "When you ate, last 30 days", MealTimingChart),
+  chart("chart-calories", "Calories versus target", "Health", "Last 14 days", CaloriesVsTargetChart),
+  chart("chart-macros", "Macro split", "Health", "Today, by energy", MacroSplitChart),
+  chart("chart-weekly-macros", "Weekly average macros", "Health", "Grams per logged day", WeeklyMacrosChart),
+  chart("chart-water", "Water per day", "Health", "Last 14 days", WaterPerDayChart),
+  chart("chart-weight", "Weight trend", "Health", "All your entries", WeightTrendChart),
+  chart("chart-timing", "Meal timing", "Health", "When you ate, last 30 days", MealTimingChart),
 
   chart("chart-mood", "Mood over time", "Diary", "Last 30 days", MoodOverTimeChart),
   chart("chart-mood-counts", "Mood counts", "Diary", "Last 30 days", MoodCountsChart),

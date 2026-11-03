@@ -12,7 +12,7 @@ function isActive(pathname: string, href: string, root: string) {
 const ACCENT: Record<ModuleDef["key"], string> = {
   finance: "var(--good)",
   planner: "var(--planner)",
-  diet: "var(--warn)",
+  health: "var(--warn)",
   diary: "var(--diary)",
 };
 

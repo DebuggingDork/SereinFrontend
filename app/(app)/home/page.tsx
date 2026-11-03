@@ -19,7 +19,7 @@ const SortableGrid = dynamic(() => import("@/components/home/sortable-grid").the
   loading: () => <Skeleton className="h-64 rounded-3xl" />,
 });
 
-const MODULES: WidgetDef["module"][] = ["Finance", "Planner", "Diet", "Diary"];
+const MODULES: WidgetDef["module"][] = ["Finance", "Planner", "Health", "Diary"];
 
 function greeting(name: string) {
   const hour = new Date().getHours();

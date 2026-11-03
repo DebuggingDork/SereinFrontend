@@ -10,7 +10,7 @@ import {
 } from "@/components/charts/catalog/health";
 import { PageHeader } from "@/components/ui/primitives";
 
-export default function DietChartsPage() {
+export default function HealthChartsPage() {
   return (
     <>
       <PageHeader title="Charts" />

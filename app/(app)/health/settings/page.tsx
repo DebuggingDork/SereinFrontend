@@ -1,10 +1,10 @@
 import { LinkButton } from "@/components/ui/button";
 import { Card, PageHeader } from "@/components/ui/primitives";
 
-export default function DietSettingsPage() {
+export default function HealthSettingsPage() {
   return (
     <>
-      <PageHeader title="Diet settings" />
+      <PageHeader title="Health settings" />
       <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
         <Card title="Daily targets">
           <p className="mb-4 text-sm text-ink-2">Calories, macros and your water goal.</p>

@@ -154,7 +154,7 @@ test("planner: a task can be added, finished and reviewed; recurring tasks roll 
   expect(errors).toEqual([]);
 });
 
-test("diet: a meal counts against the target, water and weight log", async ({ page }) => {
+test("health: a meal counts against the target, water and weight log", async ({ page }) => {
   const errors = watchErrors(page);
   await createReadyUser(page);
 

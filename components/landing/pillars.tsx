@@ -77,13 +77,13 @@ function FinancePillar() {
 
 const FOODS = ["Poha", "Curd bowl", "Dal + rice", "Whey shake"];
 
-function DietPillar() {
+function HealthPillar() {
   const [picked, setPicked] = useState<string[]>([]);
   const toggle = (food: string) =>
     setPicked((current) => (current.includes(food) ? current.filter((f) => f !== food) : [...current, food]));
 
   return (
-    <PillarCard name="Diet" color="var(--health)" className="md:col-span-4">
+    <PillarCard name="Health" color="var(--health)" className="md:col-span-4">
       <p className="-mt-0.5 mb-1 text-[13px] text-ink-2">Meal timing</p>
       <HeatStrip />
       <div className="mt-5 flex items-center gap-4">
@@ -174,12 +174,12 @@ export function Pillars() {
         All your money, <em>in one place.</em>
       </h2>
       <p className="display mt-[14px] text-base text-ink-2 italic">
-        Spending, budgets, debts, goals and net worth. Planner, diet and diary are there when you want them.
+        Spending, budgets, debts, goals and net worth. Planner, health and diary are there when you want them.
       </p>
       <div className="mt-[39px] grid gap-4 md:grid-cols-12">
         <FinancePillar />
         <PlannerPillar />
-        <DietPillar />
+        <HealthPillar />
         <DiaryPillar />
       </div>
     </section>
