@@ -6,7 +6,7 @@ const ALL_PAGES = [
   "/finance", "/finance/transactions", "/finance/accounts", "/finance/budgets", "/finance/scheduled",
   "/finance/debts", "/finance/goals", "/finance/net-worth", "/finance/calendar", "/finance/charts", "/finance/settings",
   "/planner", "/planner/tasks", "/planner/deadlines", "/planner/calendar", "/planner/completed", "/planner/charts", "/planner/settings",
-  "/health", "/health/log", "/health/plans", "/health/targets", "/health/water", "/health/weight", "/health/foods", "/health/charts", "/health/settings",
+  "/health", "/health/plan", "/health/workouts", "/health/log", "/health/plans", "/health/targets", "/health/water", "/health/weight", "/health/foods", "/health/charts", "/health/settings",
   "/diary", "/diary/entries", "/diary/calendar", "/diary/moods", "/diary/search", "/diary/settings",
 ];
 
