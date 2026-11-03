@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { QueryProvider } from "@/components/query-provider";
+import { QuickAdd } from "@/components/shell/quick-add";
 import { BottomBar, TopBar } from "@/components/shell/top-bar";
 import { supabaseServer } from "@/lib/supabase/server";
 
@@ -23,6 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="min-h-dvh">
         <TopBar name={profile?.display_name ?? ""} isAdmin={profile?.role === "admin"} />
         {children}
+        <QuickAdd />
         <BottomBar />
       </div>
     </QueryProvider>
