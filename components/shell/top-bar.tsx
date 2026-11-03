@@ -1,6 +1,6 @@
 "use client";
 
-import { Apple, BookOpen, House, ListChecks, Lock, LogOut, type LucideIcon, Moon, Shield, Sun, User, Wallet } from "lucide-react";
+import { BookOpen, HeartPulse, House, ListChecks, Lock, LogOut, type LucideIcon, Moon, Shield, Sun, User, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -130,7 +130,7 @@ const DOCK: { label: string; href: string; color: string; icon: LucideIcon }[] =
   { label: "Home", href: "/home", color: "#ecebe6", icon: House },
   { label: "Finance", href: "/finance", color: "#34d399", icon: Wallet },
   { label: "Planner", href: "/planner", color: "#7aa9ff", icon: ListChecks },
-  { label: "Health", href: "/health", color: "#fbbf24", icon: Apple },
+  { label: "Health", href: "/health", color: "#fbbf24", icon: HeartPulse },
   { label: "Diary", href: "/diary", color: "#b69cff", icon: BookOpen },
 ];
 
