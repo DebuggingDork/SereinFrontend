@@ -319,6 +319,8 @@ body {
 
 /* Frosted glass for controls that float over the page: mostly solid, so nothing behind it stays
    readable, with a thin lit edge and a neutral shadow in place of any coloured glow. */
+/* Write only the standard backdrop-filter: given both, the CSS build keeps just the -webkit- one,
+   which Chrome ignores. It adds the prefix for Safari on its own. */
 .glass {
   --glass-fill: rgb(252 251 249 / 0.78);
   --glass-edge: rgb(255 255 255 / 0.85);
@@ -326,7 +328,6 @@ body {
   --glass-shadow: rgb(20 23 26 / 0.16);
   background: var(--glass-fill);
   backdrop-filter: blur(28px) saturate(1.8);
-  -webkit-backdrop-filter: blur(28px) saturate(1.8);
   box-shadow:
     inset 0 1px 0 var(--glass-edge),
     inset 0 0 0 1px var(--glass-rim),
@@ -339,7 +340,7 @@ body {
   --glass-rim: rgb(255 255 255 / 0.06);
   --glass-shadow: rgb(0 0 0 / 0.5);
 }
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+@supports not (backdrop-filter: blur(1px)) {
   .glass {
     background: var(--surface);
   }
