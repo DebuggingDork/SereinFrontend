@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [{ source: "/api/backend/:path*", destination: `${backendUrl}/:path*` }];
   },
+  // Diet became Health, so old bookmarks and home screen shortcuts still land.
+  async redirects() {
+    return [
+      { source: "/diet", destination: "/health", permanent: true },
+      { source: "/diet/:path*", destination: "/health/:path*", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
