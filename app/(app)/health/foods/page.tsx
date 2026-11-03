@@ -29,7 +29,7 @@ export default function FoodsPage() {
   const [picked, setPicked] = useState<Category | null>(null);
   const [diet, setDiet] = useState<DietFilter>("all");
   const [editing, setEditing] = useState<Partial<Food> | null>(null);
-  const [editingList, setEditingNotes] = useState(false);
+  const [editingList, setEditingList] = useState(false);
   const save = useSave("foods", { successMessage: "Saved" });
   const remove = useRemove("foods");
   const logMeal = useSave("meal_logs", { successMessage: "Added to today" });
@@ -160,7 +160,7 @@ export default function FoodsPage() {
               action={
                 <span className="flex items-center gap-1">
                   <AddItem section="eating_rule" items={eatingRules} grp={ruleGroup} />
-                  <Button variant="ghost" size="sm" onClick={() => setEditingNotes((value) => !value)}>
+                  <Button variant="ghost" size="sm" onClick={() => setEditingList((value) => !value)}>
                     {editingList ? "Done" : "Edit"}
                   </Button>
                 </span>
