@@ -27,7 +27,7 @@ export const STATUS: Record<StatusName, StatusCopy> = {
   },
   slow: {
     icon: Snail,
-    tint: "var(--diet-soft)",
+    tint: "var(--health-soft)",
     ink: "var(--warn)",
     label: "Slow connection",
     title: (

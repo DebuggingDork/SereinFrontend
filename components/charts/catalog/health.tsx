@@ -36,7 +36,7 @@ export function CaloriesVsTargetChart({ className }: ChartProps) {
         data={(calories.data ?? []).map((r) => ({ ...r, calories: Number(r.calories) }))}
         x="day"
         xFormat={shortDay}
-        series={[{ key: "calories", label: "Calories", color: "var(--diet)" }]}
+        series={[{ key: "calories", label: "Calories", color: "var(--health)" }]}
         format={(v) => `${number(v)} kcal`}
         axisFormat={(v) => number(v)}
         target={{ value: target, label: "Target" }}
@@ -121,7 +121,7 @@ export function WaterPerDayChart({ className }: ChartProps) {
         data={water.data ?? []}
         x="day"
         xFormat={shortDay}
-        series={[{ key: "amount_ml", label: "Water", color: "var(--diet)" }]}
+        series={[{ key: "amount_ml", label: "Water", color: "var(--health)" }]}
         format={(v) => `${number(v)} ml`}
         axisFormat={(v) => number(v)}
         target={water.data?.[0] ? { value: water.data[0].goal_ml, label: "Goal" } : undefined}
@@ -146,7 +146,7 @@ export function WeightTrendChart({ className }: ChartProps) {
         data={(weight.data ?? []).map((r) => ({ day: r.logged_on, weight: Number(r.weight_kg) }))}
         x="day"
         xFormat={shortDay}
-        series={[{ key: "weight", label: "Weight", color: "var(--diet)" }]}
+        series={[{ key: "weight", label: "Weight", color: "var(--health)" }]}
         format={(v) => `${number(v, 1)} kg`}
         axisFormat={(v) => number(v, 1)}
       />

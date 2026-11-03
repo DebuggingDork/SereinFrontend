@@ -78,7 +78,7 @@ export default function MealPlansPage() {
                 <tr key={weekday}>
                   <th scope="row" className={`pr-3 text-left text-sm font-normal whitespace-nowrap ${weekday === todayIndex ? "text-ink" : "text-ink-2"}`}>
                     {DAY_NAME[weekday]}
-                    {weekday === todayIndex && <span className="ml-1.5 inline-block size-1.5 rounded-full bg-diet align-middle" title="Today" />}
+                    {weekday === todayIndex && <span className="ml-1.5 inline-block size-1.5 rounded-full bg-health align-middle" title="Today" />}
                   </th>
                   {MEAL_TYPES.map((type) => {
                     const plan = plans.find((p) => p.weekday === weekday && p.meal_type === type);

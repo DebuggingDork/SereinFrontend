@@ -222,7 +222,7 @@ const CHIP_TONES = {
   bad: "bg-bad-soft text-bad",
   finance: "bg-finance-soft text-good",
   planner: "bg-planner-soft text-planner",
-  diet: "bg-diet-soft text-warn",
+  health: "bg-health-soft text-warn",
   diary: "bg-diary-soft text-diary",
 } as const;
 

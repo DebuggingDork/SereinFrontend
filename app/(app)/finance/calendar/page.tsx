@@ -84,7 +84,7 @@ export default function FinanceCalendarPage() {
                   <span className="mb-0.5 flex gap-0.5">
                     {entry.income && <span title="Income" className="size-1.5 rounded-full bg-finance" />}
                     {entry.expense && <span title="Expense" className="size-1.5 rounded-full bg-ink-3" />}
-                    {entry.due > 0 && <span title="Due" className="size-1.5 rounded-full bg-diet" />}
+                    {entry.due > 0 && <span title="Due" className="size-1.5 rounded-full bg-health" />}
                   </span>
                   {entry.net !== 0 && (
                     <span className={`tabular hidden sm:block ${entry.net > 0 ? "text-good" : "text-ink-2"}`}>
@@ -99,7 +99,7 @@ export default function FinanceCalendarPage() {
           <p className="mt-3 flex flex-wrap gap-4 text-xs text-ink-2">
             <span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-finance" /> Income</span>
             <span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-ink-3" /> Expense</span>
-            <span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-diet" /> Due</span>
+            <span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-health" /> Due</span>
           </p>
         </Card>
 

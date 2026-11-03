@@ -31,7 +31,7 @@ export const DonutChart = held(LazyDonut as ComponentType<ComponentProps<typeof 
 // A single-hue strip where darker means more. Used for meal timing.
 export function HeatStripChart({
   data,
-  color = "var(--diet)",
+  color = "var(--health)",
   format,
 }: {
   data: { label: string; value: number }[];

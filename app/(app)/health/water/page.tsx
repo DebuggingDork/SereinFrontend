@@ -24,7 +24,7 @@ export default function WaterPage() {
           <span className="ml-2 font-sans text-sm tracking-normal text-ink-3">of {number(goal)} ml</span>
         </p>
         <div className="my-4">
-          <ProgressBar value={total / goal} color="var(--diet)" label="Water today" />
+          <ProgressBar value={total / goal} color="var(--health)" label="Water today" />
         </div>
         <WaterButtons current={total} />
       </Card>
@@ -41,7 +41,7 @@ export default function WaterPage() {
           data={daily}
           x="day"
           xFormat={shortDay}
-          series={[{ key: "amount_ml", label: "Water", color: "var(--diet)" }]}
+          series={[{ key: "amount_ml", label: "Water", color: "var(--health)" }]}
           format={(v) => `${number(v)} ml`}
           axisFormat={(v) => number(v)}
           target={{ value: goal, label: "Goal" }}

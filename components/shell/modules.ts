@@ -80,7 +80,7 @@ export const MODULES: ModuleDef[] = [
     key: "diet",
     label: "Diet",
     href: "/health",
-    color: "var(--diet)",
+    color: "var(--health)",
     items: [
       { label: "Today", href: "/health", icon: Sun },
       { label: "Meal Log", href: "/health/log", icon: Utensils },

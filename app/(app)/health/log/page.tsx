@@ -65,7 +65,7 @@ function MealLogContent() {
           <ul className="divide-y divide-line">
             {meals.map((meal) => (
               <li key={meal.id} className="flex items-center gap-3 py-2.5">
-                <Chip tone="diet">{MEAL_LABEL[meal.meal_type]}</Chip>
+                <Chip tone="health">{MEAL_LABEL[meal.meal_type]}</Chip>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm">{meal.name}</p>
                   <p className="tabular text-xs text-ink-3">

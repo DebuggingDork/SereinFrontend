@@ -19,7 +19,7 @@ function Macro({ label, value, target }: { label: string; value: number; target:
           {number(value)} / {number(target)} g
         </span>
       </div>
-      <ProgressBar value={target ? value / target : 0} color="var(--diet)" label={label} />
+      <ProgressBar value={target ? value / target : 0} color="var(--health)" label={label} />
     </div>
   );
 }
@@ -69,7 +69,7 @@ export default function DietTodayPage() {
       <div className="mb-4 grid gap-4 lg:grid-cols-2">
         <Card title="Calories and macros">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <Ring value={totals.calories / calorieTarget} color="var(--diet)" size={112} thickness={10}>
+            <Ring value={totals.calories / calorieTarget} color="var(--health)" size={112} thickness={10}>
               <span className="text-center leading-tight">
                 <span className="figure block text-2xl">{number(totals.calories)}</span>
                 <span className="text-[11px] text-ink-3">of {number(calorieTarget)}</span>
@@ -88,7 +88,7 @@ export default function DietTodayPage() {
             <span className="ml-1 font-sans text-sm tracking-normal text-ink-3">/ {number(waterGoal)} ml</span>
           </p>
           <div className="mt-3 mb-4">
-            <ProgressBar value={waterTotal / waterGoal} color="var(--diet)" label="Water today" />
+            <ProgressBar value={waterTotal / waterGoal} color="var(--health)" label="Water today" />
           </div>
           <WaterButtons current={waterTotal} />
         </Card>

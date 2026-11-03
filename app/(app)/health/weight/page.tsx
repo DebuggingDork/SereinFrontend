@@ -68,7 +68,7 @@ export default function WeightPage() {
             data={logs.map((l) => ({ day: l.logged_on, weight: Number(l.weight_kg) }))}
             x="day"
             xFormat={shortDay}
-            series={[{ key: "weight", label: "Weight", color: "var(--diet)" }]}
+            series={[{ key: "weight", label: "Weight", color: "var(--health)" }]}
             format={(v) => `${number(v, 1)} kg`}
             axisFormat={(v) => number(v, 1)}
             height={260}

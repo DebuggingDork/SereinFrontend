@@ -17,7 +17,7 @@ interface RangeProps extends ChartProps {
 }
 
 // Fixed order so a source keeps its colour however the data is filtered.
-const SOURCE_COLORS = ["var(--finance)", "var(--planner)", "var(--diet)", "var(--diary)"];
+const SOURCE_COLORS = ["var(--finance)", "var(--planner)", "var(--health)", "var(--diary)"];
 
 const hasSpend = (rows: { total: number }[] | undefined) => rows?.some((r) => Number(r.total) > 0);
 

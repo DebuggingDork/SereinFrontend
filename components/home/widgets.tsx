@@ -178,9 +178,9 @@ function CaloriesWidget({ summary }: WidgetProps) {
   const eaten = Number(summary.nutrition.calories);
   const target = Number(summary.targets?.calories ?? 2000);
   return (
-    <Tile title="Calories today" href="/health" color="var(--diet)">
+    <Tile title="Calories today" href="/health" color="var(--health)">
       <div className="flex items-center gap-4">
-        <Ring value={eaten / target} color="var(--diet)" size={84} thickness={9}>
+        <Ring value={eaten / target} color="var(--health)" size={84} thickness={9}>
           <span className="tabular text-sm">{Math.round((eaten / target) * 100)}%</span>
         </Ring>
         <div className="min-w-0">
@@ -198,12 +198,12 @@ function CaloriesWidget({ summary }: WidgetProps) {
 function WaterWidget({ summary }: WidgetProps) {
   const goal = Number(summary.targets?.water_ml ?? 2500);
   return (
-    <Tile title="Water today" href="/health/water" color="var(--diet)">
+    <Tile title="Water today" href="/health/water" color="var(--health)">
       <p className="figure text-[30px] leading-tight">
         {number(summary.water_ml)} <span className="text-base text-ink-2">of {number(goal)} ml</span>
       </p>
       <div className="mt-3">
-        <ProgressBar value={Number(summary.water_ml) / goal} color="var(--diet)" label="Water goal" />
+        <ProgressBar value={Number(summary.water_ml) / goal} color="var(--health)" label="Water goal" />
       </div>
       <div className="mt-4">
         <WaterButtons current={Number(summary.water_ml)} />

@@ -62,7 +62,7 @@ export default function PlannerTodayPage() {
       ) : (
         <div className="space-y-4">
           {carried.length > 0 && (
-            <Card title={<span className="flex items-center gap-2">Carried over <Chip tone="diet">{carried.length}</Chip></span>}>
+            <Card title={<span className="flex items-center gap-2">Carried over <Chip tone="health">{carried.length}</Chip></span>}>
               <ul className="divide-y divide-line">{carried.map(row)}</ul>
             </Card>
           )}

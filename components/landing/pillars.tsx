@@ -83,7 +83,7 @@ function DietPillar() {
     setPicked((current) => (current.includes(food) ? current.filter((f) => f !== food) : [...current, food]));
 
   return (
-    <PillarCard name="Diet" color="var(--diet)" className="md:col-span-4">
+    <PillarCard name="Diet" color="var(--health)" className="md:col-span-4">
       <p className="-mt-0.5 mb-1 text-[13px] text-ink-2">Meal timing</p>
       <HeatStrip />
       <div className="mt-5 flex items-center gap-4">
@@ -106,7 +106,7 @@ function DietPillar() {
             aria-pressed={picked.includes(food)}
             onClick={() => toggle(food)}
             className={`pressable h-[29px] cursor-pointer rounded-full border px-[13px] text-[13px] ${
-              picked.includes(food) ? "border-transparent bg-diet-soft text-warn" : "border-line hover:border-line-2"
+              picked.includes(food) ? "border-transparent bg-health-soft text-warn" : "border-line hover:border-line-2"
             }`}
           >
             {food}

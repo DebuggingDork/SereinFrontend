@@ -21,11 +21,11 @@
 
   /* Each module owns one hue. These read as identity, so they never mean good or bad. */
   --finance: #10b981;
-  --diet: #f59e0b;
+  --health: #f59e0b;
   --planner: #2563eb;
   --diary: #8b5cf6;
   --finance-soft: #d7f3e8;
-  --diet-soft: #fbe9c9;
+  --health-soft: #fbe9c9;
   --planner-soft: #dfe8fb;
   --diary-soft: #ebe4fd;
 
@@ -55,11 +55,11 @@
   --frost: rgb(15 17 20 / 0.5);
 
   --finance: #0f9f72;
-  --diet: #d98a0b;
+  --health: #d98a0b;
   --planner: #3b82f6;
   --diary: #8b5cf6;
   --finance-soft: #10302a;
-  --diet-soft: #33270f;
+  --health-soft: #33270f;
   --planner-soft: #16233f;
   --diary-soft: #251c40;
 
@@ -84,11 +84,11 @@
   --color-inverse: var(--inverse);
   --color-on-inverse: var(--on-inverse);
   --color-finance: var(--finance);
-  --color-diet: var(--diet);
+  --color-health: var(--health);
   --color-planner: var(--planner);
   --color-diary: var(--diary);
   --color-finance-soft: var(--finance-soft);
-  --color-diet-soft: var(--diet-soft);
+  --color-health-soft: var(--health-soft);
   --color-planner-soft: var(--planner-soft);
   --color-diary-soft: var(--diary-soft);
   --color-good: var(--good);

@@ -109,7 +109,7 @@ export function ConnectionStatus() {
         role="status"
         className="pop-in fixed inset-x-4 bottom-20 z-[60] mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-line bg-surface p-3 text-sm shadow-card lg:bottom-6"
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-diet-soft text-warn" aria-hidden>
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-health-soft text-warn" aria-hidden>
           <Snail size={16} />
         </span>
         <span className="flex-1">Your connection is slow. Still working on it.</span>
